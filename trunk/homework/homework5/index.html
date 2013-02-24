@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>David Bardwell Homework 5 - part 2a</title>       
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript">
+        
+        // top-level makes and their models
+        var makes = new Array("Toyota", "Honda", "Subaru", "Ford", "Audi");
+        var models0 = new Array("Camry", "Corolla", "FJ Cruiser", "Avalon", "Matrix");
+        var models1 = new Array("Civic", "Accord", "CR-Z", "CrossTour", "Fit");
+        var models2 = new Array("Outback", "Legacy", "Forester", "XV Crosstrek", "BRZ");
+        var models3 = new Array("Escape", "Fusion", "Focus", "Fiesta", "Flex");
+        var models4 = new Array("A3", "A4", "A5", "A6", "A7");
+        
+        // for each make and model, details about their specifications
+        // use 2-dimensional array to keep track of all this information.
+        var modelDescriptions = new Array("cylinders", "mpg", "passengers", "airbags");
+        var makes0 = new Array(5);
+        makes0[0] = new Array("4", "30", "5", "front, side and driver");
+        makes0[1] = new Array("4", "31", "5", "front, side and driver");
+        makes0[2] = new Array("6", "24", "5", "front, side and driver");
+        makes0[3] = new Array("6", "32", "5", "front, side and driver");
+        makes0[4] = new Array("6", "28", "5", "front, side and driver");
+        
+        var makes1 = new Array(5);
+        makes1[0] = new Array("4", "30", "5", "front, side and driver");
+        makes1[1] = new Array("4", "31", "5", "front, side and driver");
+        makes1[2] = new Array("6", "24", "5", "front, side and driver");
+        makes1[3] = new Array("6", "32", "5", "front, side and driver");
+        makes1[4] = new Array("6", "28", "5", "front, side and driver");
+        
+        var makes2 = new Array(5);
+        makes2[0] = new Array("4", "30", "5", "front, side and driver");
+        makes2[1] = new Array("4", "31", "5", "front, side and driver");
+        makes2[2] = new Array("6", "24", "5", "front, side and driver");
+        makes2[3] = new Array("6", "32", "5", "front, side and driver");
+        makes2[4] = new Array("6", "28", "5", "front, side and driver");
+
+        var makes3 = new Array(5);
+        makes3[0] = new Array("4", "30", "5", "front, side and driver");
+        makes3[1] = new Array("4", "31", "5", "front, side and driver");
+        makes3[2] = new Array("6", "24", "5", "front, side and driver");
+        makes3[3] = new Array("6", "32", "5", "front, side and driver");
+        makes3[4] = new Array("6", "28", "5", "front, side and driver");
+
+        var makes4 = new Array(5);
+        makes4[0] = new Array("4", "30", "5", "front, side and driver");
+        makes4[1] = new Array("4", "31", "5", "front, side and driver");
+        makes4[2] = new Array("6", "24", "5", "front, side and driver");
+        makes4[3] = new Array("6", "32", "5", "front, side and driver");
+        makes4[4] = new Array("6", "28", "5", "front, side and driver");
+        
+        var modelData;
+        $(document).ready(function() {
+            
+            // dynamically load the selections for each make
+            for (var i = 0; i < makes.length; i++) {
+                $("#make").append($("<option>", {
+                  value: i,
+                  text: makes[i]
+                }));
+            }    
+            
+            $("#make").on("change", handleMakeSelection);
+            $("#clear").on("click", handleClearOperation);
+        });
+        
+        function handleMakeSelection() {
+            var selectionValue = $("#make :selected").val();
+            
+            // dynamically create the model list and populate it based
+            // on the make selection. This was tough to figure out.
+            // The idea is that body is the container, and we want to
+            // append to the end of body our new model selecter.
+            var $headerForModel = $('<h3 id="modelHeader">Model:</h3>');
+            var $modelSelectElement = $('<select id="model"/> </select>');
+            $('body').append($headerForModel);
+            $('body').append($modelSelectElement);
+            $("#model").on("change", handleModelSelection);
+            
+            // get the DOM element to dynamically add the content
+            switch (selectionValue) {
+                case "0":
+                    modelData = models0;
+                    break;
+                case "1":
+                    modelData = models1;
+                    break;
+                case "2":
+                    modelData = models2;
+                    break;
+                case "3":
+                    modelData = models3;
+                    break;
+                case "4":
+                    modelData = models4;
+                    break;
+            }        
+                
+            // Make sure the selection is valid before dynamically
+            // adding to the model select
+            if (selectionValue === "0" || selectionValue === "1" ||
+                selectionValue === "2" || selectionValue === "3" ||
+                selectionValue === "4") {
+                
+                // add the top select one choice
+                $("#model").append($("<option>", {
+                  value: "foo",
+                  text: "select one"
+                }));
+                    
+                for (var i = 0; i < modelData.length; i++) {
+                    $("#model").append($("<option>", {
+                      value: i,
+                      text: modelData[i]
+                    }));
+                }
+            }    
+        }
+        
+        // Give a quick report of the make and model selection
+        function handleModelSelection() {
+            var $report = $("<p id='outputSummary'>a  </p>");
+            $('body').append($report);
+            var $reportDetail = $("<p id='outputDetail'>a  </p>");
+            $('body').append($reportDetail);
+        
+            var makeSelection = $("#make :selected").val();
+            var modelSelection = $("#model :selected").val();
+            var reportContent = makes[makeSelection] + " " + modelData[modelSelection];
+            $("#outputSummary").text(reportContent);  // this is a function call not an assignment ok
+            
+            var detailsOnModel;
+            // get the detail for the make and model
+            switch (makeSelection) {
+                case "0":
+                    detailsOnModel = makes0;
+                    break;
+                case "1":
+                    detailsOnModel = makes1;
+                    break;
+                case "2":
+                    detailsOnModel = makes2;
+                    break;
+                case "3":
+                    detailsOnModel = makes3;
+                    break;
+                case "4":
+                    detailsOnModel = makes4;
+                    break;
+            }
+            
+            // provide a one line detail list of make and model specification
+            var detailMessage=" ";
+            for (var i = 0; i < 4; i++) {
+                detailMessage = detailMessage + "<span>" + modelDescriptions[i] + "</span>" +
+                        " : " + detailsOnModel[modelSelection][i] + ",  ";
+            }
+            detailMessage = detailMessage.substring(0, detailMessage.length - 3);
+            $("#outputDetail").html(detailMessage);
+        }
+        
+        function handleClearOperation() {
+            // remove all but the make selection and reset the make selection
+            $("#outputSummary").remove();
+            $("#outputDetail").remove();
+            $("#modelHeader").remove();
+            $("#model").remove();
+            $("#make").empty();
+            $("#make").append($("<option>", {
+                  value: "foo",
+                  text: "select one"
+                }));
+                
+            // reload the makes again
+            for (var i = 0; i < makes.length; i++) {
+                $("#make").append($("<option>", {
+                  value: i,
+                  text: makes[i]
+                }));
+            }
+        }
+        </script>
+        
+        <style type="text/css">
+            h2 {
+                color : green;
+            }
+            span {
+                font-weight: bold;
+                color : green;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <header>
+            <h2>Welcome to the car detail service</h2>
+            <h3>Select a make and then a model within the make</h3>
+        </header>
+        <button id="clear">Clear</button>
+        <br/>
+        
+        <h3>Make:</h3>
+        <select id ="make" name="make">
+            <option value="foo">select one</option>
+            
+        </select>
+        <br/>
+    </body>
+</html>
