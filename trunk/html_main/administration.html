@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>David's Second-hand Bookstore Change Password</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <script type="text/javascript">
+            function navigateToMainPage() {
+                window.document.location.href="main.html";
+            }
+        </script>
+        
+        <style type="text/css">
+            h1 {
+                color : green;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>David's Second-hand Bookstore - Administration</h1>
+            
+            <section>
+                <h2>Change Password</h2>
+            
+                <input type="checkbox" id="changePasswordIndicator">Check if you wish to change password<br/>
+            
+                <p>Please provide your new password below. The password must be
+                 at least 8 characters long with both alphabetic and at least one 
+                 numeric character. Additionally, at least one alphabetic character
+                 in the password must be upper and lower case.</p>
+            
+                <table>
+                    <tr>
+                        <td><label for="password1" id="password_label1">New Password:</label></td>
+                        <td><input type="password" name="password1" id ="password1"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="password2" id="password_label2">Confirm New Password:</label></td>
+                        <td><input type="password" name="password2" id ="password2"></td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Change Security Question or Answer</h2>
+            
+                <input type="checkbox" id="changeSecurityQuestionIndicator">Check if you wish to change security question<br/>
+            
+                <table>
+                    <tr>
+                        <td><label for="securitySelection" id="security_label">Security Question:</label></td>
+                        <td><select id="securitySelection">
+                              <option value="foo">select and answer a security question correctly</option>
+                              <option value="1">What is your mother's maiden name?</option>
+                              <option value="2">What City were you born in?</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="securityResponse" id="securityResponse_label">Security Answer:</label></td>
+                        <td><input type="text" id="securityResponse"></td>
+                    </tr>
+                </table>
+            </section>
+            
+            <button value="Submit" onclick="navigateToMainPage()">Submit</button>
+            
+        </div>
+    </body>
+</html>

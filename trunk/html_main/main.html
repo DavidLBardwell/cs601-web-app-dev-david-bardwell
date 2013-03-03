@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>David's Second-hand Bookstore - Main Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript">
+            function goto_purchase() {
+                window.document.location.href="purchase.html";
+            }
+        </script>
+        <style type="text/css">
+            h1 {
+                font-weight: bold;
+                text-align: center;
+                color : green;
+            }
+            
+            caption {
+                font-weight : bold;
+            }
+            
+            #admin_nav {
+                text-align : right;
+            }
+            
+            #admin_nav li {
+                display: inline;
+                padding : 0 0.5em;
+                border-right: 1px solid black;
+            }
+            
+            #search_div {
+                float : right;
+            }
+            
+            #bookCatagory_div {
+                float : left;
+            }
+            
+            a:hover, button:hover {
+                color : red;
+            }
+            
+            table {
+                border : 1px solid black;
+                border-spacing : 2px;
+            }
+            
+            th, td {
+                border : 1px solid black;
+                padding : .2em .7em;
+                text-align: left;
+            }
+            
+            table#cart {
+                text-align : center;
+            }
+            
+            span, #search_label, #bookCatagory_label {
+                font-weight: bold;
+                color : green;
+            }
+            
+            
+        </style>
+        
+    </head>
+    <body>
+        <header>
+            <nav id ="admin_nav">
+                <ul>
+                    <li><a href="priorpurchases.html" id="prior">View Previous Purchases</a></li> 
+                    <li><a href="administration.html" id="admin">Administration</a></li>
+                    <li><a href="logout.html" id="logout">Logout</a></li>
+                </ul>
+            </nav>    
+        </header>
+        
+        <h1>David's Second-hand Bookstore</h1>
+
+        <div id="bookCatagory_div">
+            <label for="bookCategory" id="bookCatagory_label">Book Category:</label>
+            <select id="bookCategory">
+                <option value="foo">Select a book category</option>
+                <option value="1">Fiction</option>
+                <option value="2">Science Fiction</option>
+                <option value="3">Sports</option>
+                <option value="4">Business</option>
+                <option value="5">Finance</option>
+            </select>
+            <br/>
+            
+            <p>  </p>
+            <p>  </p>
+            
+        <table id="books">
+            <caption>Books available for category Fiction</caption>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Purchase</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><a href="viewdetails.html" id="viewDetails1">A Tale of Two Cities</a></td>
+                    <td>Charles Dickens</td>
+                    <td>$4.50</td>
+                    <td><button id="book1">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td><a href="viewdetails.html" id="viewDetails2">The Scarlet Letter</a></td>
+                    <td>Nathaniel Hawthorne</td>
+                    <td>$5.00</td>
+                    <td><button id="book2">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td><a href="viewdetails.html" id="viewDetails3">The old Man and the Sea</a></td>
+                    <td>Ernest Hemingway</td>
+                    <td>$5.25</td>
+                    <td><button id="book3">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td><a href="viewdetails.html" id="viewDetails4">Great Expectations</a></td>
+                    <td>Charles Dickens</td>
+                    <td>$10.00</td>
+                    <td><button id="book4">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td><a href="viewdetails.html" id="viewDetails5">The Great Gatsby</a></td>
+                    <td>F. Scott Fitzgerald</td>
+                    <td>$8.00</td>
+                    <td><button id="book5">Add to Cart</button></td>
+                </tr>
+                
+            </tbody>
+        </table>  
+        
+        <p>  </p>
+        <p>  </p>
+
+        <table id="cart">
+            <caption><span>Shopping Cart</span> - books selected for purchase</caption>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Purchase</th>
+                </tr>
+            </thead>
+            
+            <tfoot>
+                <tr>
+                    <td>Books</td>
+                    <td>Authors</td>
+                    <td>Total $9.50</td>
+                    <td><button id="cart_all">Clear Cart</button></td>
+                </tr>
+            </tfoot>    
+            
+            <tbody>
+                <tr>
+                    <td>A Tale of Two Cities</td>
+                    <td>Charles Dickens</td>
+                    <td>$4.50</td>
+                    <td><button id="cart1">Remove from Cart</button></td>
+                </tr>
+                <tr>
+                    <td>The Scarlet Letter</td>
+                    <td>Nathaniel Hawthorne</td>
+                    <td>$5.00</td>
+                    <td><button id="cart2">Remove from Cart</button></td>
+                </tr>
+            </tbody>    
+        </table>    
+        
+        <p>  </p>
+        <button id="checkOut" onclick="goto_purchase()">Proceed to Checkout</button>
+        </div>
+        
+        <div id="search_div">
+            <label for="search" id="search_label">Search:</label>
+            <input type="text" id="search">
+            <a href="searchresults.html" id="search_link">Go</a>
+            <input type="radio" name="search_choice" value="title">Title
+            <input type="radio" name="search_choice" value="autor">Author
+        </div>
+        
+    </body>
+</html>

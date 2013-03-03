@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>David's Second-hand Bookstore - Registration Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <script type="text/javascript">
+            function navigateToLoginPage() {
+                window.document.location.href="index.html";
+            }
+        </script>
+        <style type="text/css">
+            h1 {
+                text-align: center;
+                color : green;
+            }
+            
+            label {
+                text-weight : bold;
+                color : green;
+            }
+            
+            button:hover {
+                color : red;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>David's Second-hand Bookstore - Register Page</h1>
+            
+            <h2>Please complete the fields below to register</h2>
+            
+            <table>
+                <tr>
+                    <td><label for="username" id="username_label">Username:</label></td>
+                    <td><input type="text" id ="username"></td>
+                </tr>
+                <tr>
+                    <td><label for="password1" id="password_label1">Password:</label></td>
+                    <td><input type="password" id ="password1"></td>
+                </tr>
+                <tr>
+                    <td><label for="password2" id="password_label2">Reenter Password:</label></td>
+                    <td><input type="password" id ="password2"></td>
+                </tr>
+                <tr>
+                    <td><label for="firstName" id="firstName_label">First name:</label></td>
+                    <td><input type="text" id ="firstName"></td>
+                </tr>
+                <tr>
+                    <td><label for="lastName" id="lastName_label">Last name:</label></td>
+                    <td><input type="text" id ="lastName"></td>
+                </tr>
+                <tr>
+                    <td><label for="address1" id="address1_label">Address line 1:</label></td>
+                    <td><input type="text" id ="address1"></td>
+                </tr>
+                <tr>
+                    <td><label for="address2" id="address2_label">Address line 2:</label></td>
+                    <td><input type="text" id ="address2"></td>
+                </tr>
+                <tr>
+                    <td><label for="city" id="city_label">City:</label></td>
+                    <td><input type="text" id ="city"></td>
+                </tr>
+                <tr>
+                    <td><label for="state" id="state_label">State:</label></td>
+                    <td><input type="text" id ="state"></td>
+                </tr>
+                <tr>
+                    <td><label for="zip" id="zip_label">Zip code:</label></td>
+                    <td><input type="text" id ="zip"></td>
+                </tr>
+                <tr>
+                    <td><label for="email" id="email_label">E-mail:</label></td>
+                    <td><input type="email" id ="email"></td>
+                </tr>
+            
+            
+            </table>
+            
+            <button value="Register" onclick="navigateToLoginPage()">Register</button>
+        
+        </div>
+    </body>
+</html>
