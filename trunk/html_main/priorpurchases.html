@@ -3,8 +3,20 @@
     <head>
         <title>David's Second-hand Bookstore - Prior Purchases</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         
         <script type="text/javascript">
+            // handle user's request to write a comment
+            $(function() {
+                $("td").on("click", function(event) {
+                    var itemPressed = this.innerHTML;
+                    
+                    if (itemPressed === "Write Review") {
+                        window.document.location.href="writereview.html";
+                    }
+                });
+            });
+    
             function navigateToMainPage() {
                 window.document.location.href="main.html";
             }
@@ -32,9 +44,20 @@
                 text-align: left;
             }
             
+            td.writeReview {
+                color : green;
+                font-weight : bold;
+                text-decoration: underline;
+            }
+            
             a:hover, button:hover {
                 color : red;
-            }            
+            }
+            
+            td.writeReview:hover {
+                color : red;
+                text-decoration: underline;
+            }
             
         </style>
         
@@ -62,7 +85,7 @@
                         <td>Fiction</td>
                         <td>$4.50</td>
                         <td>04/12/2011</td>
-                        <td><button id="purchase1">Write Review</button></td>
+                        <td class="writeReview" id="purchase1">Write Review</td>
                     </tr>
                     <tr>
                         <td>The Scarlet Letter</td>
@@ -70,7 +93,7 @@
                         <td>Fiction</td>
                         <td>$5.00</td>
                         <td>05/20/2012</td>
-                        <td><button id="purchase2">Write Review</button></td>
+                        <td class="writeReview" id="purchase2">Write Review</td>
                     </tr>
                 </tbody>    
             </table>    
