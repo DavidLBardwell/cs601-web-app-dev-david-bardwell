@@ -1,0 +1,257 @@
+<?php
+
+// 
+// The index.php will act as the bookstore php controller. The important
+// design item is to encapsulate the entire bookstore php application in
+// this file using the require and include mechanisms. In this way the
+// user stays within the scope of index.php, and we do not run into 
+// issues with multiple independent php pages. Use of Session is needed
+// to keep the state of the user's cart and their current book category
+// selections. We can preserve state on the main bookstore page in this
+// way.
+//
+
+// require all model php classes to be present
+require('database.php');
+
+
+// We now get the action that caused this page to be engaged. Our controller
+// implementation will flow the action to the appropriate handlers.
+
+if (isset($_POST['action'])) {
+    $action = $_POST['action'];
+}
+else if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+}
+else {
+    $action = "show_login_page";
+}
+
+
+// based on the action, complete the required work to support the action
+if ($action == "show_login_page") {
+    include('login_view.php');
+}
+else if ($action == "login_requested") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    
+    $loginSuccessful = Database::login($username, $password);
+    
+    if ($loginSuccessful == true) {
+        // start the session now
+        $lifetime = 86400 * 14;  // 2 weeks in seconds
+        session_set_cookie_params($lifetime, '/');
+        session_start();
+        
+        // initialize cart to empty
+        $_SESSION['cart'] = array();
+        $_SESSION['username'] = $username;
+        $_SESSION['password'] = $password;
+        
+        $generalInterest = Database::getCustomerInterest($username, $password);
+        $_SESSION['general_interest'] = $generalInterest;
+
+        $books = Database::getBooks($generalInterest);
+        $bookCategories = Database::getBookCategories();
+        
+        include('bookstore_view.php');
+    }
+    else {
+        // TODO: login failure
+        // need to set some unsuccessful context and re-display
+        // the login page with the error so user can try again.
+    }
+
+    
+}
+else if ($action == 'show_admin_page') {
+    include('administration.php');
+    
+}
+else if ($action == 'process_admin_change') {
+    // process requested administration changes...
+    session_start();  // otherwise $_SESSION is lost
+    
+    $username = $_SESSION['username'];
+    $password = $_SESSION['password'];
+    //$generalInterest = Database::getCustomerInterest($username, $password);
+    $generalInterest = $_SESSION['general_interest'];  // restore current book category
+    
+    $books = Database::getBooks($generalInterest);
+    $bookCategories = Database::getBookCategories();
+    include('bookstore_view.php');  // will this work
+}
+
+else if ($action == 'redisplay_bookstore_page') {
+    session_start();  // otherwise $_SESSION is lost
+    $books = Database::getBooks("Fiction");  // TODO: get based on customer's interest
+    $bookCategories = Database::getBookCategories();
+    include('bookstore_view.php');  // everything should be ready to go, right?
+    
+}
+
+else if ($action == 'show_registration_page') {
+    $bookCategories = Database::getBookCategories();
+    include('register.php');
+    
+}
+else if ($action == 'process_new_registration') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $firstName = $_POST['firstName'];
+    $lastName = $_POST['lastName'];
+    $address1 = $_POST['address1'];
+    $address2 = $_POST['address2'];
+    $city = $_POST['city'];
+    $state = $_POST['state'];
+    $zipcode = $_POST['zipcode'];
+    $email = $_POST['email'];
+    $interests = $_POST['interests'];
+    
+    // setup an associative array to pass to the database function
+    $regInfo = array();
+    $regInfo['username'] = $username;
+    $regInfo['password'] = $password;
+    $regInfo['firstName'] = $firstName;
+    $regInfo['lastName'] = $lastName;
+    $regInfo['address1'] = $address1;
+    $regInfo['address2'] = $address2;
+    $regInfo['city'] = $city;
+    $regInfo['state']  = $state;
+    $regInfo['zipcode'] = $zipcode;
+    $regInfo['email'] = $email;
+    $regInfo['interests'] = $interests;
+    
+    $regSuccess = Database::processRegistration($regInfo);
+    if ($regSuccess == true) {
+        // TODO: give user a success message and then bring them to login
+        include('login_view.php');
+    }
+
+    
+}
+else if ($action == 'addBookToCart') {
+    session_start();  // need to get the current session
+    $book_key = $_POST['book_key'];
+    
+    // We just need to echo out what the new cart should look like. The
+    // state of the cart is tracked by the $_SESSION['cart'].
+            
+    // Update the Session cart with the posted book details.
+    // Avoid requerying the database as it slows down the user
+    $_SESSION['cart'][$book_key] = array();
+    $_SESSION['cart'][$book_key]['book_key'] = $book_key;
+    $_SESSION['cart'][$book_key]['title'] = $_POST['title'];
+    $_SESSION['cart'][$book_key]['author'] = $_POST['author'];
+    $_SESSION['cart'][$book_key]['price'] = $_POST['price'];
+    
+    // calculate new total
+    $totalAmount = 0;
+    foreach ($_SESSION['cart'] as $cartItem) {
+        $totalAmount = $totalAmount + $cartItem['price'];
+    }
+    
+    // reconstruct the html of the cart through a set of echos which will
+    // be the new cart for the customer to see.
+    $cartContents = regenerateCartBodyContents();
+    $footerContents = regenerateCartFooterContents($totalAmount);
+    
+    // Send back two html fragments via JSON encoding
+    $response = array($cartContents, $footerContents);
+
+    echo json_encode($response);
+}
+else if ($action == 'removeBookFromCart') {
+    session_start();  // need to get the current session
+    $book_key = $_POST['book_key'];
+    
+    // find the book_key in the session and remove it
+    foreach ($_SESSION['cart'] as $cartItem) {
+        if ($cartItem['book_key'] == $book_key) {
+            unset ($_SESSION['cart'][$book_key]);
+            break;
+        }
+    }
+    
+    // calculate new total
+    $totalAmount = 0;
+    foreach ($_SESSION['cart'] as $cartItem) {
+        $totalAmount = $totalAmount + $cartItem['price'];
+    }
+    
+    // reconstruct the html of the cart through a set of echos which will
+    // be the new cart for the customer to see.
+    $cartContents = regenerateCartBodyContents();
+    $footerContents = regenerateCartFooterContents($totalAmount);
+    
+    // Send back two html fragments via JSON encoding
+    $response = array($cartContents, $footerContents);
+
+    echo json_encode($response);
+}
+
+else if ($action == 'clearCart') {
+    session_start();  // need to get the current session
+    $_SESSION['cart'] = array();  // reset the cart
+    
+    echo '<tr>';
+    echo '<td>Books</td>';
+    echo '<td>Authors</td>';
+    echo '<td>Total ' . '$0.00</td>';
+    echo '<td><button id="cart_all" onclick="clearCart();">Clear Cart</button></td>';
+    echo '</tr>';
+}
+else if ($action == 'categorySelectionChanged') {
+    session_start();
+    $bookCategory = $_POST['book_category'];
+    $_SESSION['general_interest'] = $bookCategory;
+    
+    // get the books based on the new category
+    $books = Database::getBooks($bookCategory);
+    
+    foreach ($books as $book) { 
+        echo '<tr id="row' . $book['book_key'] . '">';
+        echo   '<td><a href="http://www.google.com" id="viewDetails' . $book['book_key'] . '">' . $book['title'] . '</a></td>';
+        echo   '<td>' . $book['author'] . '</td>';
+        echo   '<td>' . '$' . $book['price'] . '</td>';
+        echo   '<td><button id="book' . $book['book_key'] . '" onclick="addBookToCart(' . $book['book_key'] . ');">Add to Cart</button></td>';
+        
+        echo   '<td><input type="hidden" id="hdata' . $book['book_key'] . '" name="tablerowdetails" value="' . 
+                'book_key=' . $book['book_key'] . ',title=' . $book['title'] . ',author=' . $book['author'] .
+                ',price=' . $book['price'] . '"></td>';
+        echo  '</tr>';
+    }
+}
+
+
+// The Session object has been updated, regenerate the cart
+function regenerateCartBodyContents() {
+    // reconstruct the html of the cart through a set of echos which will
+    // be the new cart for the customer to see.
+    $cartContents = null;
+    foreach ($_SESSION['cart'] as $cartItem) {
+        $cartContents .= '<tr>';
+        $cartContents .= '<td>' . $cartItem['title'] . '</td>';
+        $cartContents .= '<td>' . $cartItem['author'] . '</td>';
+        $cartContents .= '<td>' . '$' . $cartItem['price'] . '</td>';
+        $cartContents .= '<td><button id="cart' . $cartItem['book_key'] . '" onclick="removeBookFromCart(' 
+                            . $cartItem['book_key'] . ');">Remove from Cart</button></td>';
+        $cartContents .= '</tr>';
+    }
+    return $cartContents;
+}
+
+// The Session object has changed, regenerate the cart footer for new total
+function regenerateCartFooterContents($totalAmount) {
+    $footerContents = '<tr>';
+    $footerContents .= '<td>Books</td>';
+    $footerContents .= '<td>Authors</td>';
+    $footerContents .= '<td>Total ' . '$' . number_format($totalAmount, 2) . '</td>';
+    $footerContents .= '<td><button id="cart_all" onclick="clearCart();">Clear Cart</button></td>';
+    $footerContents .= '</tr>';
+    return $footerContents;
+}
+
+?>
