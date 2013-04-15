@@ -140,6 +140,7 @@ class Database {
             $books[$book_key]['title'] = $book['title'];
             $books[$book_key]['author'] = $book['author'];
             $books[$book_key]['price'] = $book['price'];
+            $books[$book_key]['imagepath'] = $book['path_to_image'];
         }
         
         return $books;
@@ -147,6 +148,7 @@ class Database {
     
     // Get the details for a specific book
     // This method is used to help with adding book to cart
+    // This function is currently not used
     public static function getBookDetails($book_key) {
         
         $databaseConnection = Database::getDB();
@@ -161,6 +163,7 @@ class Database {
             $books[$book_key]['title'] = $book['title'];
             $books[$book_key]['author'] = $book['author'];
             $books[$book_key]['price'] = $book['price'];
+            $books[$book_key]['imagepath'] = $book[path_to_image];
         }
         return $books;
     }

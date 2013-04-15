@@ -213,14 +213,14 @@ else if ($action == 'categorySelectionChanged') {
     
     foreach ($books as $book) { 
         echo '<tr id="row' . $book['book_key'] . '">';
-        echo   '<td><a href="http://www.google.com" id="viewDetails' . $book['book_key'] . '">' . $book['title'] . '</a></td>';
+        echo   '<td><a href="http://www.google.com" class="showBookDetails"  id="viewDetails' . 
+                   $book['book_key'] . '">' . $book['title'] . '</a></td>';
         echo   '<td>' . $book['author'] . '</td>';
         echo   '<td>' . '$' . $book['price'] . '</td>';
         echo   '<td><button id="book' . $book['book_key'] . '" onclick="addBookToCart(' . $book['book_key'] . ');">Add to Cart</button></td>';
-        
         echo   '<td><input type="hidden" id="hdata' . $book['book_key'] . '" name="tablerowdetails" value="' . 
                 'book_key=' . $book['book_key'] . ',title=' . $book['title'] . ',author=' . $book['author'] .
-                ',price=' . $book['price'] . '"></td>';
+                ',price=' . $book['price'] . ',imagepath=' . $book['imagepath'] . '"></td>';
         echo  '</tr>';
     }
 }
