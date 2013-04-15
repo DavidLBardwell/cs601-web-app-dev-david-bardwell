@@ -12,14 +12,46 @@
             // Called when the DOM is ready. Set up static listeners and
             // other initializations. 
             $(document).ready(function() {
+                // set the table to just display 5 books at a time.
                 $('#books').dataTable( {
                     "iDisplayLength" : 5
                 });
                 
+                // Establish handler for changing book catagory selection
                 $("#bookCategory").on("change", handleBookCategorySelection);
+                
+                // Initialize the book details link handler
+                initializeBookDetailLinkEvents();
+            });
 
-            });    
-	
+            // Allow the book links to display a nice book cover. The path to
+            // the images are stored in the database book record. The images
+            // are available on the web server's images directory.
+            // Here we use a class selector for our links.
+            function initializeBookDetailLinkEvents() {
+                $(".showBookDetails").on("click", function(e) {
+                    var idoflink = this.id;  // get the id so we can lookup the book image
+                    var bookId = idoflink.substr(11); // viewdetails1
+                    var hiddenDataElement = document.getElementById("hdata" + bookId);
+                    var bookData = hiddenDataElement.value;
+                
+                    var args = bookData.split(",");
+                    var imagePathData = args[4];
+                    var imagePath = imagePathData.substr(imagePathData.indexOf("=") + 1);
+                    if (imagePath != '') {
+                        imageElement = '<img src="' + imagePath + '" alt="Book Image">';
+                        $("#detail_book_div").empty();  // remove previous image
+                        $("#detail_book_div").append(imageElement);
+                    }
+                    return false;  // do not want the href link value to fire.
+                });            
+            
+            }
+            
+            // Customer selects a new book category handle through ajax call
+            // Note: AJAX updates the DOM, and the DOM events need to be
+            //       rebinded or the links for viewing book images will no 
+            //       longer work.
             function handleBookCategorySelection() {
                 var categorySelected = $("#bookCategory :selected").val();
                 
@@ -32,6 +64,7 @@
                     success: function(data, status, xhr) {
                         $("#bookbody").html(data);  // note: data is the html
                         $("#bookcategorycaption").html('Books available for category ' + categorySelected);
+                        initializeBookDetailLinkEvents(); // must re-bind links
                     }
                 });
             }
@@ -168,6 +201,10 @@
             table#books, table#cart, #dataTables_wrapper {
                 margin-top: 20px;
             }
+            div#detail_book_div {
+                margin-top: 40px;
+            }
+            
         </style>
     </head>
     
@@ -222,16 +259,14 @@
                 // load the books into the table and use a hidden field to store the book data
                 foreach ($books as $book) { 
                     echo '<tr id="row' . $book['book_key'] . '">';
-                    echo   '<td><a href="http://www.google.com" id="viewDetails' . $book['book_key'] . '">' . $book['title'] . '</a></td>';
+                    echo   '<td><a href="http://www.google.com" class="showBookDetails"  id="viewDetails' . 
+                              $book['book_key'] . '">' . $book['title'] . '</a></td>';
                     echo   '<td>' . $book['author'] . '</td>';
                     echo   '<td>' . '$' . $book['price'] . '</td>';
                     echo   '<td><button id="book' . $book['book_key'] . '" onclick="addBookToCart(' . $book['book_key'] . ');">Add to Cart</button></td>';
                     echo   '<td><input type="hidden" id="hdata' . $book['book_key'] . '" name="tablerowdetails" value="' . 
                               'book_key=' . $book['book_key'] . ',title=' . $book['title'] . ',author=' . $book['author'] .
-                              ',price=' . $book['price'] . '"></td>';
-                   $checkit = '<td><input type="hidden" id="hdata' . $book['book_key'] . '" name="tablerowdetails" value="' . 
-                            'book_key=' . $book['book_key'] . ',title=' . $book['title'] . ',author=' . $book['author'] .
-                            ',price=' . $book['price'] . '"></td>';
+                              ',price=' . $book['price'] . ',imagepath=' . $book['imagepath'] . '"></td>';
                     echo  '</tr>';
                 }
 ?>
@@ -298,7 +333,15 @@
             <a href="searchresults.php" id="search_link">Go</a>
             <input type="radio" name="search_choice" id="radio_title" value="title">Title
             <input type="radio" name="search_choice" id="radio_author" value="author">Author
+            
+            <div id="detail_book_div">
+                
+                
+                
+            </div>
         </div>
+        
+
         
     </body>
 </html>
