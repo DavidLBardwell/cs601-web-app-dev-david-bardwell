@@ -260,11 +260,16 @@ else if ($action=='process_payment_on_purchase') {
     }
     
     Database::postTransaction($summary, $details);
+    
+    // TODO: give a success page with some details and then
+    // return user to the main screen since they are still logged in.
+    $_SESSION['cart'] = array();  // reset the cart
+    
+    $generalInterest = $_SESSION['general_interest'];  // restore current book category
+    $books = Database::getBooks($generalInterest);
+    $bookCategories = Database::getBookCategories();
 
-    
-    
-    
-    
+    include('bookstore_view.php');
 }
 
 
