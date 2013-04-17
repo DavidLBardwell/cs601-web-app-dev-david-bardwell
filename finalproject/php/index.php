@@ -50,7 +50,10 @@ else if ($action == "login_requested") {
         $_SESSION['username'] = $username;
         $_SESSION['password'] = $password;
         
-        $generalInterest = Database::getCustomerInterest($username, $password);
+        $customer_info = Database::getCustomerInterest($username, $password);
+        $customer_key = $customer_info[1];
+        $generalInterest = $customer_info[2];
+        $_SESSION['customer_key'] = $customer_key;
         $_SESSION['general_interest'] = $generalInterest;
 
         $books = Database::getBooks($generalInterest);
@@ -223,6 +226,45 @@ else if ($action == 'categorySelectionChanged') {
                 ',price=' . $book['price'] . ',imagepath=' . $book['imagepath'] . '"></td>';
         echo  '</tr>';
     }
+}
+else if ($action=='proceed_to_checkout') {
+    session_start();
+    include('purchase.php');
+}
+else if ($action=='process_payment_on_purchase') {
+    session_start();
+    
+    // build transaction object and pass to the Database class for
+    // back-end transaction posting
+    $summary = array();
+    $summary['customer_key'] = $_SESSION['customer_key'];
+    $summary['purchase_date'] = date("Y/m/d");
+    $summary['payment_method'] = $_POST['paymentMethod'];
+    $summary['delivery_method'] = $_POST['deliveryMethod'];
+    
+    // calculate new total
+    $totalAmount = 0;
+    foreach ($_SESSION['cart'] as $cartItem) {
+        $totalAmount = $totalAmount + $cartItem['price'];
+    }
+    $summary['total_amount'] = $totalAmount;
+    
+    // details
+    $details = array();
+    foreach ($_SESSION['cart'] as $cartItem) {
+        $book_key = $cartItem['book_key'];
+        $details[$book_key] = array();
+        $details[$book_key]['book_key'] = $book_key;
+        $details[$book_key]['customer_key'] = $_SESSION['customer_key'];
+        $details[$book_key]['amount'] = $cartItem['price'];
+    }
+    
+    Database::postTransaction($summary, $details);
+
+    
+    
+    
+    
 }
 
 

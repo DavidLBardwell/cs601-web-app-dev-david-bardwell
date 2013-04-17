@@ -129,7 +129,7 @@
     
             
             function goto_purchase() {
-                window.document.location.href="purchase.php";
+                window.document.location.href="index.php?action=proceed_to_checkout";
             }
         </script>
         
