@@ -116,7 +116,7 @@ class Database {
                     " where security_key = " . $security_key);
         }
         catch(PDOException $e) {  
-            echo "error: " + $e->getMessage();  
+            echo "error: " + $e->getMessage();
         }
         return true;  // for now, just return true
     }
@@ -189,14 +189,72 @@ class Database {
     public static function getCustomerInterest($username, $password) {
         $databaseConnection = Database::getDB();
         
-        $customerQuery = "SELECT c.general_interest general_interest from customers c, bookstore_security s where s.username='" . 
+        $customerQuery = "SELECT c.customer_key customer_key, c.general_interest general_interest from customers c, bookstore_security s where s.username='" . 
                 $username . "' and s.password='" . $password . "' and c.customer_key = s.customer_key";
                 
-        $generalIntestResults = $databaseConnection->query($customerQuery);
-        foreach ($generalIntestResults as $generalInterestResult) {
-            $generalInterest = $generalInterestResult['general_interest'];
+        $customerResults = $databaseConnection->query($customerQuery);
+        foreach ($customerResults as $customerResult) {
+            $customer_key = $customerResult['customer_key'];
+            $generalInterest = $customerResult['general_interest'];
         }
-        return $generalInterest;
+        
+        $customer_info = array();
+        $customer_info[1] = $customer_key;
+        $customer_info[2] = $generalInterest;
+        
+        return $customer_info;
     }
+    
+    public static function postTransaction($summary, $details) {
+        // complete the transaction by inserting into a transaction
+        // summary table and a transaction detail table. There is one
+        // row in the summary transaction table and a row for each book
+        // in the transaction detail table.
+        
+        $db = Database::getDB();
+        
+        try {
+            $db->beginTransaction();
+        
+            $customer_key = $summary['customer_key'];
+            $purchase_date = $summary['purchase_date'];
+            $payment_method = $summary['payment_method'];
+            $delivery_method = $summary['delivery_method'];
+            $total_amount = $summary['total_amount'];
+        
+        
+            $insertSummary = "INSERT into transaction_summary values(null," . $customer_key . ", '" . 
+                               $purchase_date . "', " . $total_amount . ", '" . $payment_method . "', '" . 
+                               $delivery_method . "')";
+            $db->exec($insertSummary);
+            
+            // need transaction key for detail row to link summary and detail transaction tables
+            // MySQL is read consistent so I can read the inserted row in 
+            // my transaction even though it has not yet been committed to 
+            // the database.
+            $transaction_key_results = $db->query("SELECT MAX(transaction_key) transaction_key from transaction_summary");
+            foreach ($transaction_key_results as $transaction_key_result) {
+                $transaction_key = $transaction_key_result['transaction_key'];
+            }    
+            
+            $lineitem = 0;
+            foreach ($details as $detail) {
+                $lineitem = $lineitem + 1;
+                $customer_key = $detail['customer_key'];
+                $book_key = $detail['book_key'];
+                $amount = $detail['amount'];
+                $insertDetail = "INSERT into transaction_detail values(null, " . $transaction_key . ", " .
+                                $lineitem . ", " . $customer_key . ", " . $book_key . ", " . $amount . ")";
+                $db->exec($insertDetail);
+            }
+            // everything inserted do one final atomic commit
+            $db->commit();
+        }
+        catch(PDOException $e) {  
+            echo "error: " + $e->getMessage();
+            $db->rollback();
+        }
+    }
+    
 }
 ?>
