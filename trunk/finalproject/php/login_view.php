@@ -16,8 +16,9 @@
             function loginValidation() {
                 //window.document.location.href="main.php";
                 // client side validation of login before continuing
-                var checkit = document.getElementById('checkit');
-                checkit.innerHTML = "Invalid username or password";
+                //var checkit = document.getElementById('checkit');
+                //checkit.innerHTML = "Invalid username or password";
+                // TODO: make sure entered both user name and password
                 return true;
             }
         </script>
@@ -51,6 +52,10 @@
                 color : red;
             }
             
+            #loginFailed {
+                color : red;
+            }
+            
         </style>
     </head>
     <body>
@@ -63,7 +68,7 @@
                 <table>
                     <tr>
                         <td><label for="username" id="username_label">Username:</label></td>
-                        <td><input type="text" name="username" id ="username"></td>
+                        <td><input type="text" name="username" id ="username" <?php echo 'value="' . $username . '"'?>></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -83,7 +88,13 @@
             
             <br/>
             
-            <p id="checkit">  </p>
+            <p id="checkit">
+ <?php
+            if ($loginFailed == true) {
+                echo '<span id="loginFailed">Login Failed:</span> Please check your username and password and try again';
+            }
+  ?>
+            </p>
             
             <h2>Become a new customer</h2>
             <p>If you would like to become a new customer, it is super easy to 

@@ -31,6 +31,9 @@ else {
 
 // based on the action, complete the required work to support the action
 if ($action == "show_login_page") {
+    $loginFailed = false;
+    $username='';
+    $password='';
     include('login_view.php');
 }
 else if ($action == "login_requested") {
@@ -65,6 +68,8 @@ else if ($action == "login_requested") {
         // TODO: login failure
         // need to set some unsuccessful context and re-display
         // the login page with the error so user can try again.
+        $loginFailed = true;
+        include('login_view.php');
     }
 
     
