@@ -50,6 +50,22 @@ class Database {
         return $ret;        
     }
     
+    public static function updatePassword($customer_key, $newPassword) {
+        $db = Database::getDB();
+        $db->beginTransaction();
+        $updateQuery = "UPDATE bookstore_security set password='" . $newPassword .
+                       "' WHERE customer_key = " . $customer_key;
+        
+        try {
+            $affectedRows = $db->exec($updateQuery);
+            $db->commit();
+        }
+        catch (PDOException $e) {
+            echo "error: " + $e->getMessage();  
+            $db->rollBack();
+        }        
+    }
+    
     // A new user has just submitted a new registration, create a
     // new customer record and a new bookstore_security record for the customer.
     public static function processRegistration($registrationInfo) {
@@ -203,6 +219,60 @@ class Database {
         $customer_info[2] = $generalInterest;
         
         return $customer_info;
+    }
+    
+    // Search for all books in the bookstore which match the search text
+    // and search option for either searching based on title or author
+    public static function searchBooks($searchText, $searchOption) {
+        $databaseConnection = Database::getDB();
+        
+        if ($searchOption == 'Title') {
+            $bookQuery = "SELECT book_key, title, author, category, price from books where title like '%" . $searchText . "%'";
+        }
+        else {
+            $bookQuery = "SELECT book_key, title, author, category, price from books where author like '%" . $searchText . "%'";
+        }
+        
+        $booksFound = array();
+        $bookQueryResults = $databaseConnection->query($bookQuery);
+        foreach ($bookQueryResults as $bookQueryResult) {
+            $book_key = $bookQueryResult['book_key'];
+            $booksFound[$book_key] = array();
+            $booksFound[$book_key]['book_key'] = $bookQueryResult['book_key'];
+            $booksFound[$book_key]['title'] = $bookQueryResult['title'];
+            $booksFound[$book_key]['author'] = $bookQueryResult['author'];
+            $booksFound[$book_key]['category'] = $bookQueryResult['category'];
+            $booksFound[$book_key]['price'] = $bookQueryResult['price'];
+        }
+        return $booksFound;
+    }
+    
+    // Get all books previously purchased by a customer. This requires a 4
+    // table join which demonstrates a somewhat complex SQL query.
+    // Return the books in an appropriate order by most recent to least recently
+    // purchased.
+    public static function getBooksPreviouslyPurchased($customer_key) {
+        $db = Database::getDB();
+        
+        $priorQuery = "SELECT b.book_key, b.title, b.author, b.category, b.price, s.purchase_date " .
+                      " FROM books b, transaction_summary s, transaction_detail d, " .
+                      " customers c WHERE s.transaction_key = d.transaction_key and " .
+                      " d.book_key = b.book_key and s.customer_key = " . $customer_key .
+                      " ORDER BY s.purchase_date desc, b.category, b.title";
+        $bookQueryResults = $db->query($priorQuery);
+        
+        $booksFound = array();
+        foreach ($bookQueryResults as $bookQueryResult) {
+            $book_key = $bookQueryResult['book_key'];
+            $booksFound[$book_key] = array();
+            $booksFound[$book_key]['book_key'] = $bookQueryResult['book_key'];
+            $booksFound[$book_key]['title'] = $bookQueryResult['title'];
+            $booksFound[$book_key]['author'] = $bookQueryResult['author'];
+            $booksFound[$book_key]['category'] = $bookQueryResult['category'];
+            $booksFound[$book_key]['price'] = $bookQueryResult['price'];
+            $booksFound[$book_key]['purchase_date'] = $bookQueryResult['purchase_date'];
+        }
+        return $booksFound;
     }
     
     public static function postTransaction($summary, $details) {

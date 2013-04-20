@@ -75,30 +75,29 @@
                         <th>Category</th>
                         <th>Price</th>
                         <th>Purchase Date</th>
-                        <th>Review</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>A Tale of Two Cities</td>
-                        <td>Charles Dickens</td>
-                        <td>Fiction</td>
-                        <td>$4.50</td>
-                        <td>04/12/2011</td>
-                        <td class="writeReview" id="purchase1">Write Review</td>
-                    </tr>
-                    <tr>
-                        <td>The Scarlet Letter</td>
-                        <td>Nathaniel Hawthorne</td>
-                        <td>Fiction</td>
-                        <td>$5.00</td>
-                        <td>05/20/2012</td>
-                        <td class="writeReview" id="purchase2">Write Review</td>
-                    </tr>
+<?php
+                foreach ($booksPreviouslyPurchased as $book) {
+                    echo '<tr>';
+                    echo '<td>' . $book['title'] . '</td>';
+                    echo '<td>' . $book['author'] . '</td>';
+                    echo '<td>' . $book['category'] . '</td>';
+                    echo '<td>' . $book['price'] . '</td>';
+                    echo '<td>' . $book['purchase_date'] . '</td>';
+                    echo '</tr>';
+                }    
+?>
                 </tbody>    
-            </table>    
+            </table>
+            <br/>
+            <br/>
 
-            <button value="Return to Main page" onclick="navigateToMainPage();">Return to Main page</button>            
+            <form id="returnFromSearch" action="index.php" method="post">
+                <button type="submit">Return to Bookstore page</button>
+                <input type="hidden" name="action" value="returnFromSearch">
+            </form>
         </div>
     </body>
 </html>

@@ -23,6 +23,20 @@
                 // Initialize the book details link handler
                 initializeBookDetailLinkEvents();
             });
+            
+            function searchValidation() {
+                // Make sure there is some text in the search text field
+                searchText = $("#searchField").val();
+                ret = true;
+                if (searchText == null || searchText.length == 0) {
+                    $("#searchErrorText").html('<span>Please enter some search text</span>');
+                    ret = false;
+                }
+                else {
+                    $("#searchErrorText").html('');
+                }
+                return ret;
+            }
 
             // Allow the book links to display a nice book cover. The path to
             // the images are stored in the database book record. The images
@@ -190,6 +204,11 @@
                 color : green;
             }
             
+            p > span {
+                font-weight: bold;
+                color : purple;
+            }
+            
             #radio_title, #radio_author {
                 color : green;
             }
@@ -212,7 +231,7 @@
         <header>
             <nav id ="admin_nav">
                 <ul>
-                    <li><a href="priorpurchases.php" id="prior">View Previous Purchases</a></li> 
+                    <li><a href="index.php?action=view_prior_purchases" id="prior">View Previous Purchases</a></li> 
                     <li><a href="index.php?action=show_admin_page" id="admin">Administration</a></li>
                     <li><a href="logout.php" id="logout">Logout</a></li>
                 </ul>
@@ -326,20 +345,26 @@
             <p id="output_area">  </p>
         </div>
 
-        
-        <div id="search_div">
-            <label for="search" id="search_label">Search:</label>
-            <input type="text" id="search">
-            <a href="searchresults.php" id="search_link">Go</a>
-            <input type="radio" name="search_choice" id="radio_title" value="title">Title
-            <input type="radio" name="search_choice" id="radio_author" value="author">Author
+        <form id="searchForm" action="index.php" method="post" onsubmit="return searchValidation(this);">
+            <div id="search_div">
+                <label for="search" id="search_label">Search:</label>
+                <input type="text" name="searchField" id="searchField" placeholder="Enter search text">
+                <button type="submit" id="search_button">Go</button>
+                <input type="radio" name="search_choice" id="radio_title" checked="checked" value="Title">Title
+                <input type="radio" name="search_choice" id="radio_author" value="Author">Author
+                <input type="hidden" name="action" value="bookSearch">
+                
+                <div id="searchError_div">
+                    <p id="searchErrorText"></p>
+                </div>   
             
-            <div id="detail_book_div">
+                <div id="detail_book_div">
                 
                 
                 
+                </div>
             </div>
-        </div>
+        </form>
         
 
         
