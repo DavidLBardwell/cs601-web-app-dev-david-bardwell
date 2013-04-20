@@ -140,6 +140,7 @@ else if ($action == 'process_new_registration') {
     $regSuccess = Database::processRegistration($regInfo);
     if ($regSuccess == true) {
         // TODO: give user a success message and then bring them to login
+        $loginFailed = false;
         include('login_view.php');
     }
 }

@@ -91,12 +91,12 @@ class Database {
         try {
             $databaseConnection->beginTransaction();
             $insertSecurityStatement = "INSERT INTO bookstore_security values(null, '" . 
-                                       $username . "', '" . $password . "', null)";
+                                       $username . "', '" . $password . "', null, null, null)";
             $affectedRows = $databaseConnection->exec($insertSecurityStatement);
         
             $insertNewCustomer = "INSERT INTO customers values(null, 1, '" . 
                 $firstName . "', '" . $lastName . "', '" . $address1 . "', '" . $address2 . "', '" . 
-                $city . "', '" . $state . "', '" . $zipcode . "', '" . $email . "', '" . $interests . "', 'foo', 'bar')";
+                $city . "', '" . $state . "', '" . $zipcode . "', '" . $email . "', '" . $interests . "')";
             $affectedRows = $databaseConnection->exec($insertNewCustomer);
             $databaseConnection->commit();
         
