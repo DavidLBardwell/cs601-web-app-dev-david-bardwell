@@ -28,7 +28,6 @@ else {
     $action = "show_login_page";
 }
 
-
 // based on the action, complete the required work to support the action
 if ($action == "show_login_page") {
     $loginFailed = false;
@@ -65,14 +64,10 @@ else if ($action == "login_requested") {
         include('bookstore_view.php');
     }
     else {
-        // TODO: login failure
-        // need to set some unsuccessful context and re-display
         // the login page with the error so user can try again.
         $loginFailed = true;
         include('login_view.php');
     }
-
-    
 }
 else if ($action == 'show_admin_page') {
     include('administration.php');
@@ -81,6 +76,17 @@ else if ($action == 'show_admin_page') {
 else if ($action == 'process_admin_change') {
     // process requested administration changes...
     session_start();  // otherwise $_SESSION is lost
+    
+    if (isset($_POST['changePasswordIndicator'])) {
+        $changePasswordRequest = $_POST['changePasswordIndicator'];
+        $newPassword = $_POST['password1'];
+        $customer_key = $_SESSION['customer_key'];
+        Database::updatePassword($customer_key, $newPassword);
+    }
+    
+    
+    
+    
     
     $username = $_SESSION['username'];
     $password = $_SESSION['password'];
@@ -99,7 +105,6 @@ else if ($action == 'redisplay_bookstore_page') {
     include('bookstore_view.php');  // everything should be ready to go, right?
     
 }
-
 else if ($action == 'show_registration_page') {
     $bookCategories = Database::getBookCategories();
     include('register.php');
@@ -137,8 +142,6 @@ else if ($action == 'process_new_registration') {
         // TODO: give user a success message and then bring them to login
         include('login_view.php');
     }
-
-    
 }
 else if ($action == 'addBookToCart') {
     session_start();  // need to get the current session
@@ -232,6 +235,62 @@ else if ($action == 'categorySelectionChanged') {
         echo  '</tr>';
     }
 }
+else if ($action == 'bookSearch') {
+    session_start();
+    $searchText = $_POST['searchField'];
+    $searchOption = $_POST['search_choice'];
+    $doublecheck = $searchOption;
+    
+    $booksFound = Database::searchBooks($searchText, $searchOption);
+    
+    // if the results are all in the same category, set general_interest to
+    // the category so that when the customer returns to the main bookstore
+    // page the most appropriate category will already be selected so they
+    // can get to their book(s) of interest more quickly.
+    $allSameCategory = true;
+    if (sizeof($booksFound) > 0) {
+        $lastCategory = null;
+        foreach ($booksFound as $bookFound) {
+            if ($lastCategory == null) {
+                $lastCategory = $bookFound['category'];
+            }
+            else {
+                if ($lastCategory != $bookFound['category']) {
+                    $allSameCategory = false;
+                    break;
+                }
+            }
+        }
+        if ($allSameCategory == true) {
+            $_SESSION['general_interest'] = $lastCategory;
+        }
+    }    
+    
+    $searchCriterion = $searchOption . ": " . $searchText;
+    include('searchresults.php');
+}
+else if ($action == 'returnFromSearch') {
+    // return to the main bookstore page by reinitializing state for page
+    session_start();  // otherwise $_SESSION is lost
+    
+    $username = $_SESSION['username'];
+    $password = $_SESSION['password'];
+    $generalInterest = $_SESSION['general_interest'];  // restore current book category
+    
+    $books = Database::getBooks($generalInterest);
+    $bookCategories = Database::getBookCategories();
+    include('bookstore_view.php');  // will this work    
+}
+else if ($action == 'view_prior_purchases') {
+    session_start();
+    
+    $customer_key = $_SESSION['customer_key'];
+    $booksPreviouslyPurchased = Database::getBooksPreviouslyPurchased($customer_key);
+    
+    include('priorpurchases.php');
+    
+}
+
 else if ($action=='proceed_to_checkout') {
     session_start();
     include('purchase.php');

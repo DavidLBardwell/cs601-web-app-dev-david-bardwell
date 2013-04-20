@@ -1,17 +1,56 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>David's Second-hand Bookstore Change Password</title>
+        <title>David's Second-hand Bookstore Administration</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js">
+        </script>
         <script type="text/javascript">
-            function navigateToMainPage() {
-                window.document.location.href="main.php";
-            }
             
+            $(document).ready(function() {
+                $("#changePasswordIndicator").change(
+                    function() { 
+                        // Toggle the new password fields being enabled based on the user electing
+                        // to change their password checkbox.                
+                        // note: as a novice javascript/jQuery developer, getting the correct
+                        // state of a checkbox has been more difficult than it should be.
+                        // The online information on this was at best highly misleading.
+                        var isChecked = $("#changePasswordIndicator").is(':checked');
+                        
+                        if (isChecked) {
+                            $("#password1").attr("disabled", false);
+                            $("#password2").attr("disabled", false);
+                        }
+                        else {
+                            $("#password1").attr("disabled", true);
+                            $("#password2").attr("disabled", true);                            
+                        }
+                    }    
+                );    
+            });
+            
+            
+            // Verify the correctness of the information 
             function adminValidation() {
-                // to do: add real validation, for now ok
-                return true;
+                var ret = true;
+                var isChecked = $("#changePasswordIndicator").is(':checked');
+                if (isChecked == true) {
+                    var password1 = $("#password1").val();
+                    var password2 = $("#password2").val();
+                    if (password1 == null || password1.length == 0) {
+                        $("#validation_error_output_div").html('<p class="error">The first password field cannot be empty.</p>');
+                        ret = false;
+                    }
+                    else if (password2 == null || password2.length == 0) {
+                        $("#validation_error_output_div").html('<p class="error">The second password field cannot be empty.</p>');
+                        ret = false;
+                    }
+                    else if (password1 != password2) {
+                        $("#validation_error_output_div").html('<p class="error">The password confirmation does not match.</p>');
+                        ret = false;
+                    }
+                }    
+                return ret;
             }
         </script>
         
@@ -28,6 +67,11 @@
             button {
                 font-weight: bold;
             }
+            
+            .error {
+                font-weight: bold;
+                color : red;
+            }
         </style>
     </head>
     <body>
@@ -38,7 +82,7 @@
                 <section>
                     <h2>Change Password</h2>
 
-                    <input type="checkbox" id="changePasswordIndicator">Check if you wish to change password<br/>
+                    <input type="checkbox" name="changePasswordIndicator" id="changePasswordIndicator">Check if you wish to change password<br/>
             
                     <p>Please provide your new password below. The password must be
                      at least 8 characters long with both alphabetic and at least one 
@@ -48,11 +92,11 @@
                     <table>
                         <tr>
                             <td><label for="password1" id="password_label1">New Password:</label></td>
-                            <td><input type="password" name="password1" id ="password1"></td>
+                            <td><input type="password" name="password1" id ="password1" disabled></td>
                         </tr>
                         <tr>
                             <td><label for="password2" id="password_label2">Confirm New Password:</label></td>
-                            <td><input type="password" name="password2" id ="password2"></td>
+                            <td><input type="password" name="password2" id ="password2" disabled></td>
                         </tr>
                     </table>
                 </section>
@@ -83,6 +127,9 @@
             
                 <button value="Submit" type="submit">Submit</button>
             </form>
+        </div>
+        <div id="validation_error_output_div">
+            
         </div>
     </body>
 </html>
