@@ -10,8 +10,6 @@ create table customers (
     state VARCHAR(80) NOT NULL,
     zipcode VARCHAR(10) NOT NULL,
     email VARCHAR(80) NOT NULL,
-    general_interest VARCHAR(40),
-    security_question VARCHAR(80) NOT NULL,
-    security_answer VARCHAR(80) NOT NULL
+    general_interest VARCHAR(40)
 );
 
