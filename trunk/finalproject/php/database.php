@@ -66,6 +66,22 @@ class Database {
         }        
     }
     
+    public static function updateSecurityQuestion($customer_key, $question, $answer) {
+        $db = Database::getDB();
+        $db->beginTransaction();
+        $updateQuery = "UPDATE bookstore_security set security_question='" . $question .
+                       "', security_answer = '" . $answer . "' WHERE customer_key = " . $customer_key;
+        
+        try {
+            $affectedRows = $db->exec($updateQuery);
+            $db->commit();
+        }
+        catch (PDOException $e) {
+            echo "error: " + $e->getMessage();  
+            $db->rollBack();
+        }
+    }
+    
     // A new user has just submitted a new registration, create a
     // new customer record and a new bookstore_security record for the customer.
     public static function processRegistration($registrationInfo) {

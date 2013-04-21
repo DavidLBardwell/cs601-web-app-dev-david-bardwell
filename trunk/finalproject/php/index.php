@@ -76,16 +76,19 @@ else if ($action == 'show_admin_page') {
 else if ($action == 'process_admin_change') {
     // process requested administration changes...
     session_start();  // otherwise $_SESSION is lost
+    $customer_key = $_SESSION['customer_key'];
     
     if (isset($_POST['changePasswordIndicator'])) {
         $changePasswordRequest = $_POST['changePasswordIndicator'];
         $newPassword = $_POST['password1'];
-        $customer_key = $_SESSION['customer_key'];
         Database::updatePassword($customer_key, $newPassword);
     }
     
-    
-    
+    if (isset($_POST['changeSecurityQuestionIndicator'])) {
+        $securityQuestion = $_POST['securitySelection'];
+        $securityAnswer = $_POST['securityResponse'];
+        Database::updateSecurityQuestion($customer_key, $securityQuestion, $securityAnswer);
+    }
     
     
     $username = $_SESSION['username'];

@@ -11,10 +11,10 @@
                 $("#changePasswordIndicator").change(
                     function() { 
                         // Toggle the new password fields being enabled based on the user electing
-                        // to change their password checkbox.                
-                        // note: as a novice javascript/jQuery developer, getting the correct
-                        // state of a checkbox has been more difficult than it should be.
-                        // The online information on this was at best highly misleading.
+                        // to change their password checkbox.
+                        // A quick note on the next line of jQuery. I struggled to
+                        // find this exact code and many other examples of how to
+                        // do this were not working for me (including the text book).
                         var isChecked = $("#changePasswordIndicator").is(':checked');
                         
                         if (isChecked) {
@@ -26,13 +26,29 @@
                             $("#password2").attr("disabled", true);                            
                         }
                     }    
-                );    
+                );
+
+                // As an audit measure, make sure the user has made their intentions clear
+                // that they wish to change the security question and/or answer.
+                $("#changeSecurityQuestionIndicator").change(
+                    function() {
+                        var isChecked = $("#changeSecurityQuestionIndicator").is(':checked');
+                        
+                        if (isChecked) {
+                            $("#securityResponse").attr("disabled", false);
+                        }
+                        else {
+                            $("#securityResponse").attr("disabled", true);
+                        }
+                    }
+                );   
             });
-            
             
             // Verify the correctness of the information 
             function adminValidation() {
                 var ret = true;
+                
+                // See if user wants to change their password
                 var isChecked = $("#changePasswordIndicator").is(':checked');
                 if (isChecked == true) {
                     var password1 = $("#password1").val();
@@ -49,7 +65,19 @@
                         $("#validation_error_output_div").html('<p class="error">The password confirmation does not match.</p>');
                         ret = false;
                     }
-                }    
+                }
+                
+                // See if user wants to change their security question or answer
+                if (ret == true) {
+                    isChecked = $("#changeSecurityQuestionIndicator").is(':checked');
+                    if (isChecked == true) {
+                        var securityResponse = $("#securityResponse").val();
+                        if (securityResponse == null || securityResponse.length == 0) {
+                            $("#validation_error_output_div").html('<p class="error">The security answer cannot be empty.</p>');
+                            ret = false;
+                        }
+                    }
+                }
                 return ret;
             }
         </script>
@@ -104,21 +132,21 @@
                 <section>
                     <h2>Change Security Question or Answer</h2>
             
-                    <input type="checkbox" id="changeSecurityQuestionIndicator">Check if you wish to change security question<br/>
+                    <input type="checkbox" id="changeSecurityQuestionIndicator" name="changeSecurityQuestionIndicator">Check if you wish to change security question<br/>
             
                     <table>
                         <tr>
                             <td><label for="securitySelection" id="security_label">Security Question:</label></td>
-                            <td><select id="securitySelection">
-                                  <option value="foo">select and answer a security question correctly</option>
-                                  <option value="1">What is your mother's maiden name?</option>
-                                  <option value="2">What City were you born in?</option>
+                            <td><select id="securitySelection" name="securitySelection">
+                                  <option value="Mother_Maiden_Name">What is your mother's maiden name?</option>
+                                  <option value="City_Born">What city were you born in?</option>
+                                  <option value="Favorite_Color">What is your favorite color?</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="securityResponse" id="securityResponse_label">Security Answer:</label></td>
-                            <td><input type="text" id="securityResponse"></td>
+                            <td><input type="text" id="securityResponse" name="securityResponse" disabled></td>
                         </tr>
                     </table>
                 </section>
