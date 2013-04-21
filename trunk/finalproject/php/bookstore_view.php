@@ -215,11 +215,17 @@
             
             #bookCategory {
                 margin-bottom : 20px;
+                width : 15em;
+            }
+            
+            #searchField:hover {
+                background-color: lightblue;
             }
             
             table#books, table#cart, #dataTables_wrapper {
                 margin-top: 20px;
             }
+            
             div#detail_book_div {
                 margin-top: 40px;
             }
