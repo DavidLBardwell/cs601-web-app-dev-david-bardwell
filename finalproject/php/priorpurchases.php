@@ -4,10 +4,17 @@
         <title>David's Second-hand Bookstore - Prior Purchases</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js">
+        </script>
         
         <script type="text/javascript">
-            // handle user's request to write a comment
+            // Set up data tables for viewing prior book purchases
             $(function() {
+                // set the table to just display 5 books at a time.
+                $('#prior_purchases').dataTable( {
+                    "iDisplayLength" : 10
+                });
+                
                 $("td").on("click", function(event) {
                     var itemPressed = this.innerHTML;
                     
@@ -16,10 +23,6 @@
                     }
                 });
             });
-    
-            function navigateToMainPage() {
-                window.document.location.href="main.php";
-            }
         </script>
         
         <style type='text/css'>

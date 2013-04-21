@@ -122,6 +122,8 @@ else if ($action == 'process_new_registration') {
     $zipcode = $_POST['zipcode'];
     $email = $_POST['email'];
     $interests = $_POST['interests'];
+    $security_question = $_POST['security_question'];
+    $security_answer = $_POST['security_answer'];
     
     // setup an associative array to pass to the database function
     $regInfo = array();
@@ -136,6 +138,8 @@ else if ($action == 'process_new_registration') {
     $regInfo['zipcode'] = $zipcode;
     $regInfo['email'] = $email;
     $regInfo['interests'] = $interests;
+    $regInfo['security_question'] = $security_question;
+    $regInfo['security_answer'] = $security_answer;
     
     $regSuccess = Database::processRegistration($regInfo);
     if ($regSuccess == true) {
@@ -144,6 +148,7 @@ else if ($action == 'process_new_registration') {
         include('login_view.php');
     }
 }
+
 else if ($action == 'addBookToCart') {
     session_start();  // need to get the current session
     $book_key = $_POST['book_key'];

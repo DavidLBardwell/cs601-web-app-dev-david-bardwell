@@ -82,6 +82,8 @@ class Database {
         $zipcode = $registrationInfo['zipcode'];
         $email = $registrationInfo['email'];
         $interests = $registrationInfo['interests'];
+        $security_question = $registrationInfo['security_question'];
+        $security_answer = $registrationInfo['security_answer'];
         
         // get the database connection context
         $databaseConnection = Database::getDB();
@@ -91,7 +93,8 @@ class Database {
         try {
             $databaseConnection->beginTransaction();
             $insertSecurityStatement = "INSERT INTO bookstore_security values(null, '" . 
-                                       $username . "', '" . $password . "', null, null, null)";
+                                       $username . "', '" . $password . "', '" . $security_question . "', '" . 
+                                       $security_answer . "', null)";
             $affectedRows = $databaseConnection->exec($insertSecurityStatement);
         
             $insertNewCustomer = "INSERT INTO customers values(null, 1, '" . 
@@ -257,20 +260,23 @@ class Database {
         $priorQuery = "SELECT b.book_key, b.title, b.author, b.category, b.price, s.purchase_date " .
                       " FROM books b, transaction_summary s, transaction_detail d, " .
                       " customers c WHERE s.transaction_key = d.transaction_key and " .
-                      " d.book_key = b.book_key and s.customer_key = " . $customer_key .
+                      " d.book_key = b.book_key and c.customer_key = s.customer_key and s.customer_key = " . $customer_key .
                       " ORDER BY s.purchase_date desc, b.category, b.title";
         $bookQueryResults = $db->query($priorQuery);
         
         $booksFound = array();
+        
+        // Index by a counter not book_key since we want to be able to 
+        // see if the customer bought the same book more than once.
+        $i = 1;
         foreach ($bookQueryResults as $bookQueryResult) {
-            $book_key = $bookQueryResult['book_key'];
-            $booksFound[$book_key] = array();
-            $booksFound[$book_key]['book_key'] = $bookQueryResult['book_key'];
-            $booksFound[$book_key]['title'] = $bookQueryResult['title'];
-            $booksFound[$book_key]['author'] = $bookQueryResult['author'];
-            $booksFound[$book_key]['category'] = $bookQueryResult['category'];
-            $booksFound[$book_key]['price'] = $bookQueryResult['price'];
-            $booksFound[$book_key]['purchase_date'] = $bookQueryResult['purchase_date'];
+            $booksFound[$i] = array();
+            $booksFound[$i]['title'] = $bookQueryResult['title'];
+            $booksFound[$i]['author'] = $bookQueryResult['author'];
+            $booksFound[$i]['category'] = $bookQueryResult['category'];
+            $booksFound[$i]['price'] = $bookQueryResult['price'];
+            $booksFound[$i]['purchase_date'] = $bookQueryResult['purchase_date'];
+            $i = $i + 1;
         }
         return $booksFound;
     }
