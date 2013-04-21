@@ -34,6 +34,8 @@ class Database {
         return self::$db;
     }
     
+    // validate login
+    // Return true: login successful, false: login failed
     public static function login($username, $password) {
         $db = Database::getDB();
         
@@ -50,6 +52,29 @@ class Database {
         return $ret;        
     }
     
+    // Validate that the reset password request is good.
+    // Return true: request is valid, false: request failed security check
+    public static function validatePasswordResetRequest($suppliedUsername, $question, $answer) {
+        $db = Database::getDB();
+        
+        // check that the username exists and match security question/answer
+        $checkSecurityQuery = "SELECT COUNT(*) rowcount from bookstore_security WHERE username='" . $suppliedUsername . "'" .
+                " and security_question='" . $question . "' and security_answer='" . $answer . "'";
+        
+        $records = $db->query($checkSecurityQuery);
+        $ret = false;
+        foreach ($records as $rec) {
+            $rowcount = $rec['rowcount'];
+            if ($rowcount == 1) {
+                $ret = true;
+            }
+        }
+        return $ret;
+    }
+    
+    // User wishes to change their password
+    // The user has already successfully authenticated themselves to the
+    // database. There is no need to validate the user. 
     public static function updatePassword($customer_key, $newPassword) {
         $db = Database::getDB();
         $db->beginTransaction();
@@ -66,6 +91,9 @@ class Database {
         }        
     }
     
+    // User wishes to change their security question and/or answer
+    // The user has already successfully authenticated themselves to the
+    // database. There is no need to validate the user. 
     public static function updateSecurityQuestion($customer_key, $question, $answer) {
         $db = Database::getDB();
         $db->beginTransaction();

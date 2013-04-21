@@ -74,7 +74,7 @@
                     <tr>
                         <td><label for="password" id="password_label">Password:</label></td>
                         <td><input type="password" name="password" id ="password"></td>
-                        <td><a href="forgotpassword.php" id="forgotPassword">Forgot Password</a>
+                        <td><a href="index.php?action=reset_password" id="forgotPassword">Forgot Password</a>
                     </tr>
                     <tr>
                         <td><input type="hidden" name="action" value="login_requested"/></td>

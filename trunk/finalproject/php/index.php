@@ -69,6 +69,48 @@ else if ($action == "login_requested") {
         include('login_view.php');
     }
 }
+else if ($action == "reset_password") {
+    $resetPasswordError = false;
+    $suppliedUsername='';
+    $suppliedSecurityQuestion='';
+    $suppliedSecurityAnswer='';
+    include('forgotPassword.php');
+}
+else if ($action == 'process_reset_password') {
+    // user requested resetting of their password
+    // For this project, I will simply verify that the information
+    // is correct. Thus, the client side portion will be complete,
+    // but the server side email generation will be left for another time.
+    // 
+    // Support is available in php to send email but
+    // requires some special libraries and php.ini configuration which 
+    // is somewhat beyond the scope of this application.
+    
+    // Verify that the user gave us valid credentials i.e. username and
+    // security question and answer that matches what is on file for the
+    // the valid username.
+    $suppliedUsername = $_POST['username'];
+    $suppliedSecurityQuestion = $_POST['securitySelection'];
+    $suppliedSecurityAnswer = $_POST['securityResponse'];
+    
+    // check the database that there is a match
+    $result = Database::validatePasswordResetRequest($suppliedUsername, 
+                           $suppliedSecurityQuestion, $suppliedSecurityAnswer);
+    
+    if ($result == false) {
+        // give the user back an error
+        $resetPasswordError = true;
+        include('forgotPassword.php');
+    }
+    else {
+        // tell user their password has been reset via a dialog
+        $loginFailed = false;
+        $username='';
+        $password='';
+        include('login_view.php');
+    }
+}
+
 else if ($action == 'show_admin_page') {
     include('administration.php');
     
@@ -89,7 +131,6 @@ else if ($action == 'process_admin_change') {
         $securityAnswer = $_POST['securityResponse'];
         Database::updateSecurityQuestion($customer_key, $securityQuestion, $securityAnswer);
     }
-    
     
     $username = $_SESSION['username'];
     $password = $_SESSION['password'];
