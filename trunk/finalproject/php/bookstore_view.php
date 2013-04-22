@@ -13,8 +13,12 @@
             // other initializations. 
             $(document).ready(function() {
                 // set the table to just display 5 books at a time.
+                // Also, make sure the book link manages the image correctly
+                // so set callback on each row loaded to initialize the link
+                // handler.
                 $('#books').dataTable( {
-                    "iDisplayLength" : 5
+                    "iDisplayLength" : 5,
+                    'fnRowCallback': initializeBookDetailLinkEvents()
                 });
                 
                 // Establish handler for changing book catagory selection
@@ -62,25 +66,31 @@
             
             }
             
-            // Customer selects a new book category handle through ajax call
-            // Note: AJAX updates the DOM, and the DOM events need to be
-            //       rebinded or the links for viewing book images will no 
-            //       longer work.
+            // Customer selects a new book category.
             function handleBookCategorySelection() {
                 var categorySelected = $("#bookCategory :selected").val();
                 
-                // use ajax to get the new books to show based on the selected category
-                $.ajax({
-                    url: "index.php",
-                    type : "post",
-                    data: {action : 'categorySelectionChanged', book_category : categorySelected },
-                    dataType: "text",
-                    success: function(data, status, xhr) {
-                        $("#bookbody").html(data);  // note: data is the html
-                        $("#bookcategorycaption").html('Books available for category ' + categorySelected);
-                        initializeBookDetailLinkEvents(); // must re-bind links
+                // use post to get the new books to show based on the selected category
+                // just reload the full page again with the new information.
+                $.post(
+                    "index.php",
+                    {action : 'categorySelectionChanged', book_category : categorySelected },
+                    function(result){
+                        window.location = 'index.php?action=redisplay_bookstore_page';  // force a page reload
                     }
-                });
+                    
+                      // The code below did not work as there are very complex interactions
+                      // with jQuery/ajax and the dataTable. I believe with a lot of
+                      // work it may be possible to get dataTables to work with an
+                      // external ajax approach but is so complex, let us abandon this
+                      // and just simply reload the full page.
+//                    success: function(data, status, xhr) {
+//                        $("#bookbody").html(data);  // note: data is the html
+//                        $("#bookcategorycaption").html('Books available for category ' + categorySelected);
+//                        initializeBookDetailLinkEvents(); // must re-bind links
+//                    }
+                );
+                return true;
             }
                 
             // Add book to cart, this is called directly off the button onclick directive
@@ -90,7 +100,6 @@
                 debugger;
                 var hiddenDataElement = document.getElementById("hdata" + bookId);
                 var bookData = hiddenDataElement.value;
-                //$("#output_area").html(bookData);
                 
                 // format the data for the ajax call
                 var args = bookData.split(",");
@@ -227,7 +236,8 @@
             }
             
             div#detail_book_div {
-                margin-top: 40px;
+                margin-top: 60px;
+                margin-left: 10px;
             }
             
         </style>

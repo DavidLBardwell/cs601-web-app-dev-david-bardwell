@@ -144,7 +144,8 @@ else if ($action == 'process_admin_change') {
 
 else if ($action == 'redisplay_bookstore_page') {
     session_start();  // otherwise $_SESSION is lost
-    $books = Database::getBooks("Fiction");  // TODO: get based on customer's interest
+    $generalInterest = $_SESSION['general_interest'];  // restore current book category
+    $books = Database::getBooks($generalInterest);
     $bookCategories = Database::getBookCategories();
     include('bookstore_view.php');  // everything should be ready to go, right?
     
@@ -265,25 +266,29 @@ else if ($action == 'clearCart') {
     echo '</tr>';
 }
 else if ($action == 'categorySelectionChanged') {
+    // A simple post call needs to set the session general category to
+    // the new choice. The client will then call back again with
+    // a request to load the bookstore_view.php page. This is handled
+    // by the redisplay_bookstore_page action request.
     session_start();
     $bookCategory = $_POST['book_category'];
     $_SESSION['general_interest'] = $bookCategory;
     
-    // get the books based on the new category
-    $books = Database::getBooks($bookCategory);
-    
-    foreach ($books as $book) { 
-        echo '<tr id="row' . $book['book_key'] . '">';
-        echo   '<td><a href="http://www.google.com" class="showBookDetails"  id="viewDetails' . 
-                   $book['book_key'] . '">' . $book['title'] . '</a></td>';
-        echo   '<td>' . $book['author'] . '</td>';
-        echo   '<td>' . '$' . $book['price'] . '</td>';
-        echo   '<td><button id="book' . $book['book_key'] . '" onclick="addBookToCart(' . $book['book_key'] . ');">Add to Cart</button></td>';
-        echo   '<td><input type="hidden" id="hdata' . $book['book_key'] . '" name="tablerowdetails" value="' . 
-                'book_key=' . $book['book_key'] . ',title=' . $book['title'] . ',author=' . $book['author'] .
-                ',price=' . $book['price'] . ',imagepath=' . $book['imagepath'] . '"></td>';
-        echo  '</tr>';
-    }
+//    This code represents a failed ajax attempt to update dataTables with new
+//    information. There is more complexity with updating a dataTable via ajax
+//    then is really worth implementing.     
+//    foreach ($books as $book) { 
+//        echo '<tr id="row' . $book['book_key'] . '">';
+//        echo   '<td><a href="http://www.google.com" class="showBookDetails"  id="viewDetails' . 
+//                   $book['book_key'] . '">' . $book['title'] . '</a></td>';
+//        echo   '<td>' . $book['author'] . '</td>';
+//        echo   '<td>' . '$' . $book['price'] . '</td>';
+//        echo   '<td><button id="book' . $book['book_key'] . '" onclick="addBookToCart(' . $book['book_key'] . ');">Add to Cart</button></td>';
+//        echo   '<td><input type="hidden" id="hdata' . $book['book_key'] . '" name="tablerowdetails" value="' . 
+//                'book_key=' . $book['book_key'] . ',title=' . $book['title'] . ',author=' . $book['author'] .
+//                ',price=' . $book['price'] . ',imagepath=' . $book['imagepath'] . '"></td>';
+//        echo  '</tr>';
+//    }
 }
 else if ($action == 'bookSearch') {
     session_start();
