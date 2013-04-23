@@ -58,10 +58,10 @@
   // determine what they got wrong.
   if ($suppliedSecurityQuestion != '') {
       if ($suppliedSecurityQuestion == 'Mother_Maiden_Name') {
-          echo "<option selected='selected' value='Mother_Maiden_Name'>What is your mother\'s maiden name?</option>";
+          echo "<option selected='selected' value='Mother_Maiden_Name'>What is your mother's maiden name?</option>";
       }
       else {
-          echo "<option value='Mother_Maiden_Name'>What is your mother\'s maiden name?</option>";
+          echo "<option value='Mother_Maiden_Name'>What is your mother's maiden name?</option>";
       }
       if ($suppliedSecurityQuestion == 'City_Born') {
           echo "<option selected='selected' value='City_Born'>What city were you born in?</option>";
@@ -77,7 +77,7 @@
       }
   }
   else {
-          echo "<option value='Mother_Maiden_Name'>What is your mother\'s maiden name?</option>";
+          echo "<option value='Mother_Maiden_Name'>What is your mother's maiden name?</option>";
           echo "<option value='City_Born'>What city were you born in?</option>";
           echo "<option value='Favorite_Color'>What is your favorite color?</option>";
       }
