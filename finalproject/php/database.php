@@ -184,6 +184,29 @@ class Database {
         return true;  // for now, just return true
     }
     
+    // get the customer information
+    public static function getCustomerDetails($customer_key) {
+        $db = Database::getDB();
+        
+        $selectCustomerQuery = "SELECT first_name, last_name, address1, address2, city, state," .
+                                       " zipcode from customers where customer_key = " . $customer_key;
+        
+        $customerDetailResults = $db->query($selectCustomerQuery);
+        
+        $customerInfo = array();
+        foreach ($customerDetailResults as $customerDetailResult) {
+            $customerInfo['key'] = $customer_key;
+            $customerInfo['firstName'] = $customerDetailResult['first_name'];
+            $customerInfo['lastName'] = $customerDetailResult['last_name'];
+            $customerInfo['address1'] = $customerDetailResult['address1'];
+            $customerInfo['address2'] = $customerDetailResult['address2'];
+            $customerInfo['city'] = $customerDetailResult['city'];
+            $customerInfo['state'] = $customerDetailResult['state'];
+            $customerInfo['zipcode'] = $customerDetailResult['zipcode'];
+        }
+        return $customerInfo;
+    }
+    
     // Get all books for a given catagory
     // For the class project, we will assume this is not unreasonable as
     // my bookstore is not that big.

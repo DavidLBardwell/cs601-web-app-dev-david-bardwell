@@ -13,6 +13,7 @@
 
 // require all model php classes to be present
 require('database.php');
+require('customer.php');
 
 
 // We now get the action that caused this page to be engaged. Our controller
@@ -57,7 +58,13 @@ else if ($action == "login_requested") {
         $generalInterest = $customer_info[2];
         $_SESSION['customer_key'] = $customer_key;
         $_SESSION['general_interest'] = $generalInterest;
-
+        
+        // read complete customer information
+        $customerDetails = Database::getCustomerDetails($customer_key);
+        $customer = new Customer($customerDetails);
+        $_SESSION['customer'] = $customer;
+        
+        // get the book and categories and show bookstore's main page
         $books = Database::getBooks($generalInterest);
         $bookCategories = Database::getBookCategories();
         
@@ -388,7 +395,8 @@ else if ($action=='process_payment_on_purchase') {
     $books = Database::getBooks($generalInterest);
     $bookCategories = Database::getBookCategories();
 
-    include('bookstore_view.php');
+    //include('bookstore_view.php');
+    include('purchaseconfirm.php');
 }
 
 
