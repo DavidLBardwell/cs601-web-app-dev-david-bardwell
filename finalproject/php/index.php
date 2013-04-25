@@ -32,6 +32,7 @@ else {
 // based on the action, complete the required work to support the action
 if ($action == "show_login_page") {
     $loginFailed = false;
+    $newRegistration=false;
     $username='';
     $password='';
     include('login_view.php');
@@ -73,6 +74,7 @@ else if ($action == "login_requested") {
     else {
         // the login page with the error so user can try again.
         $loginFailed = true;
+        $newRegistration=false;
         include('login_view.php');
     }
 }
@@ -112,6 +114,7 @@ else if ($action == 'process_reset_password') {
     else {
         // tell user their password has been reset via a dialog
         $loginFailed = false;
+        $newRegistration=false;
         $username='';
         $password='';
         include('login_view.php');
@@ -197,6 +200,7 @@ else if ($action == 'process_new_registration') {
     if ($regSuccess == true) {
         // TODO: give user a success message and then bring them to login
         $loginFailed = false;
+        $newRegistration=true;
         include('login_view.php');
     }
 }

@@ -56,6 +56,11 @@
                 color : red;
             }
             
+            #newRegistration {
+                color : green;
+                font-weight : bold;
+            }
+            
         </style>
     </head>
     <body>
@@ -92,6 +97,10 @@
  <?php
             if ($loginFailed == true) {
                 echo '<span id="loginFailed">Login Failed:</span> Please check your username and password and try again';
+            }
+            
+            if ($newRegistration == true) {
+                echo '<span id="newRegistration">Registration Successful: Please continue by logging in with your new username and password.</span>';
             }
   ?>
             </p>

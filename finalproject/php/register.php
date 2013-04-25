@@ -3,11 +3,16 @@
     <head>
         <title>David's Second-hand Bookstore - Registration Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js">
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>            
         </script>
         <script type="text/javascript">
             
             function registerValidation() {
+                // on successful registration show dialog
+                
+        
                 return true;
                 
                 // to do : validate form
@@ -76,7 +81,8 @@
                 <input type="text" class="textfield" name="username" id="username"><br/>
             
                 <label for="password1" id="password_label1">Password:</label>
-                <input type="password" class="textfield" name="password" id="password1"><br/>
+                <input type="password" class="textfield" name="password" id="password1" 
+                       title="Please enter a minimum of 8 characters with a least 1 number"><br/>
             
                 <label for="password2" id="password_label2">Reenter Password:</label>
                 <input type="password" class="textfield" name="password2" id="password2"><br/>
@@ -130,9 +136,13 @@
                 
                 <input type="hidden" name="action" value="process_new_registration"/>
             
-                <button type="submit" id="register_button" value="Register">Register</button>
+                <button type="submit" id="register_button" name="submit" value="Register">Register</button>
                 <button type="reset" id="reset_button" value="reset_button">Reset</button>
             </form>
         </div>
+        
+        <script>
+            $( document ).tooltip();
+        </script>
     </body>
 </html>
