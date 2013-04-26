@@ -36,12 +36,17 @@ class Database {
     
     // validate login
     // Return true: login successful, false: login failed
+    // Very important to use bind variables to prevent sql injection attacks
     public static function login($username, $password) {
         $db = Database::getDB();
         
-        $queryStr = "select COUNT(*) rowcount from bookstore_security where username='" . 
-                    $username . "' and password='" . $password ."'";
-        $records = $db->query($queryStr);
+        $queryStr = "select COUNT(*) rowcount from bookstore_security where " . 
+                    " username = :username and password = :password";
+        $statement = $db->prepare($queryStr);
+        $statement->bindValue(':username', $username);
+        $statement->bindValue(':password', $password);
+        $statement->execute();
+        $records = $statement->fetchAll();
         $ret = false;
         foreach ($records as $rec) {
             $rowcount = $rec['rowcount'];
@@ -49,6 +54,7 @@ class Database {
                 $ret = true;
             }
         }
+        $statement->closeCursor();
         return $ret;        
     }
     
@@ -58,10 +64,15 @@ class Database {
         $db = Database::getDB();
         
         // check that the username exists and match security question/answer
-        $checkSecurityQuery = "SELECT COUNT(*) rowcount from bookstore_security WHERE username='" . $suppliedUsername . "'" .
-                " and security_question='" . $question . "' and security_answer='" . $answer . "'";
+        $checkSecurityQuery = "SELECT COUNT(*) rowcount from bookstore_security WHERE username = :username " .
+                " and security_question = :security_question and security_answer = :security_answer";
+        $statement = $db->prepare($checkSecurityQuery);
+        $statement->bindValue(':username', $suppliedUsername);
+        $statement->bindValue(':security_question', $question);
+        $statement->bindValue(':security_answer', $answer);
+        $statement->execute();
         
-        $records = $db->query($checkSecurityQuery);
+        $records = $statement->fetchAll();
         $ret = false;
         foreach ($records as $rec) {
             $rowcount = $rec['rowcount'];
@@ -69,6 +80,7 @@ class Database {
                 $ret = true;
             }
         }
+        $statement->closeCursor();
         return $ret;
     }
     
@@ -77,17 +89,19 @@ class Database {
     // database. There is no need to validate the user. 
     public static function updatePassword($customer_key, $newPassword) {
         $db = Database::getDB();
-        $db->beginTransaction();
-        $updateQuery = "UPDATE bookstore_security set password='" . $newPassword .
-                       "' WHERE customer_key = " . $customer_key;
+        $updateQuery = "UPDATE bookstore_security set password = :newPassword " .
+                       " WHERE customer_key = :customer_key";
         
         try {
-            $affectedRows = $db->exec($updateQuery);
-            $db->commit();
+            $statement = $db->prepare($updateQuery);
+            $statement->bindValue(':newPassword', $newPassword);
+            $statement->bindValue(':customer_key', $customer_key);
+            $statement->execute();
+            $affectedRows = $statement->rowCount();
+            $statement->closeCursor();
         }
         catch (PDOException $e) {
             echo "error: " + $e->getMessage();  
-            $db->rollBack();
         }        
     }
     
@@ -96,17 +110,20 @@ class Database {
     // database. There is no need to validate the user. 
     public static function updateSecurityQuestion($customer_key, $question, $answer) {
         $db = Database::getDB();
-        $db->beginTransaction();
-        $updateQuery = "UPDATE bookstore_security set security_question='" . $question .
-                       "', security_answer = '" . $answer . "' WHERE customer_key = " . $customer_key;
+        $updateQuery = "UPDATE bookstore_security set security_question = :question " .
+                       ", security_answer = :answer WHERE customer_key = :customer_key";
         
         try {
-            $affectedRows = $db->exec($updateQuery);
-            $db->commit();
+            $statement = $db->prepare($updateQuery);
+            $statement->bindValue(':question', $question);
+            $statement->bindValue(':answer', $answer);
+            $statement->bindValue(':customer_key', $customer_key);
+            $statement->execute();
+            $affectedRows = $statement->rowCount();
+            $statement->closeCursor();
         }
         catch (PDOException $e) {
             echo "error: " + $e->getMessage();  
-            $db->rollBack();
         }
     }
     
@@ -130,27 +147,27 @@ class Database {
         $security_answer = $registrationInfo['security_answer'];
         
         // get the database connection context
-        $databaseConnection = Database::getDB();
+        $db = Database::getDB();
 
         // create a row for the bookstore security and customer table
         // make sure to make this atomic.
         try {
-            $databaseConnection->beginTransaction();
+            $db->beginTransaction();
             $insertSecurityStatement = "INSERT INTO bookstore_security values(null, '" . 
                                        $username . "', '" . $password . "', '" . $security_question . "', '" . 
                                        $security_answer . "', null)";
-            $affectedRows = $databaseConnection->exec($insertSecurityStatement);
+            $affectedRows = $db->exec($insertSecurityStatement);
         
             $insertNewCustomer = "INSERT INTO customers values(null, 1, '" . 
                 $firstName . "', '" . $lastName . "', '" . $address1 . "', '" . $address2 . "', '" . 
                 $city . "', '" . $state . "', '" . $zipcode . "', '" . $email . "', '" . $interests . "')";
-            $affectedRows = $databaseConnection->exec($insertNewCustomer);
-            $databaseConnection->commit();
+            $affectedRows = $db->exec($insertNewCustomer);
+            $db->commit();
         
         }
         catch(PDOException $e) {  
             echo "error: " + $e->getMessage();  
-            $databaseConnection->rollBack();
+            $db->rollBack();
         }
     
         try {
@@ -158,24 +175,24 @@ class Database {
             // for referential integrity.
 
             // get the security key for the new user and update the customer table with it
-            $sec_record = $databaseConnection->query("select security_key from bookstore_security where username = '" . $username . "'");
+            $sec_record = $db->query("select security_key from bookstore_security where username = '" . $username . "'");
             foreach ($sec_record as $rec) {
                 $security_key = $rec['security_key'];
             }
         
             // update the new customer with the security key
-            $databaseConnection->exec("UPDATE customers SET security_key = " . $security_key . " WHERE first_name = '" . 
+            $db->exec("UPDATE customers SET security_key = " . $security_key . " WHERE first_name = '" . 
                     $firstName . "' AND last_name = '" . $lastName . "'");
         
             // get the customer key for the new customer record
-            $customer_record = $databaseConnection->query("select customer_key from customers where first_name = '" . 
+            $customer_record = $db->query("select customer_key from customers where first_name = '" . 
                     $firstName . "' AND last_name = '" . $lastName . "'");
             foreach ($customer_record as $rec) {
                 $customer_key = $rec['customer_key'];
             }
 
             // update the new bookstore_security row with the customer key
-            $databaseConnection->exec("update bookstore_security set customer_key = " . $customer_key . 
+            $db->exec("update bookstore_security set customer_key = " . $customer_key . 
                     " where security_key = " . $security_key);
         }
         catch(PDOException $e) {  
