@@ -129,27 +129,37 @@ else if ($action == 'process_admin_change') {
     // process requested administration changes...
     session_start();  // otherwise $_SESSION is lost
     $customer_key = $_SESSION['customer_key'];
+    $deleteFlag = false;
     
-    if (isset($_POST['changePasswordIndicator'])) {
-        $changePasswordRequest = $_POST['changePasswordIndicator'];
-        $newPassword = $_POST['password1'];
-        Database::updatePassword($customer_key, $newPassword);
+    // process delete customer
+    if (isset($_POST['deleteCustomer'])) {
+        $deleteFlag = true;
+        $deleteCustomer = true;
+        Database::deleteCustomer($customer_key);
+        include('logout.php');
     }
     
-    if (isset($_POST['changeSecurityQuestionIndicator'])) {
-        $securityQuestion = $_POST['securitySelection'];
-        $securityAnswer = $_POST['securityResponse'];
-        Database::updateSecurityQuestion($customer_key, $securityQuestion, $securityAnswer);
-    }
+    // skip this if the customer has been deleted
+    if ($deleteFlag == false) {
+        if (isset($_POST['changePasswordIndicator'])) {
+            $newPassword = $_POST['password1'];
+            Database::updatePassword($customer_key, $newPassword);
+        }
     
-    $username = $_SESSION['username'];
-    $password = $_SESSION['password'];
-    //$generalInterest = Database::getCustomerInterest($username, $password);
-    $generalInterest = $_SESSION['general_interest'];  // restore current book category
+        if (isset($_POST['changeSecurityQuestionIndicator'])) {
+            $securityQuestion = $_POST['securitySelection'];
+            $securityAnswer = $_POST['securityResponse'];
+            Database::updateSecurityQuestion($customer_key, $securityQuestion, $securityAnswer);
+        }
     
-    $books = Database::getBooks($generalInterest);
-    $bookCategories = Database::getBookCategories();
-    include('bookstore_view.php');  // will this work
+        $username = $_SESSION['username'];
+        $password = $_SESSION['password'];
+        $generalInterest = $_SESSION['general_interest'];  // restore current book category
+    
+        $books = Database::getBooks($generalInterest);
+        $bookCategories = Database::getBookCategories();
+        include('bookstore_view.php');  // will this work
+    }    
 }
 
 else if ($action == 'redisplay_bookstore_page') {
@@ -401,6 +411,10 @@ else if ($action=='process_payment_on_purchase') {
 
     //include('bookstore_view.php');
     include('purchaseconfirm.php');
+}
+else if ($action == 'log_out') {
+    $deleteCustomer = false;
+    include('logout.php');
 }
 
 

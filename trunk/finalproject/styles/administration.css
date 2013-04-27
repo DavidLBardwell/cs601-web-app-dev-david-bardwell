@@ -16,3 +16,8 @@ button {
     font-weight: bold;
     color : red;
 }
+
+section#deleteCustomer_section {
+    margin-bottom : 30px;
+
+}

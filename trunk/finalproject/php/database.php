@@ -459,5 +459,27 @@ class Database {
         }
     }
     
+    // Deleting a customer requires removing there record from the customers
+    // table and the bookstore_security table also.
+    public static function deleteCustomer($customer_key) {
+        $db = Database::getDB();
+        
+        try {
+            $db->beginTransaction();
+
+            $deleteCustomer = "DELETE FROM customers where customer_key = " . $customer_key;
+            $db->exec($deleteCustomer);
+            
+            $delete_security = "DELETE FROM bookstore_security where customer_key = " . $customer_key;
+            $db->exec($delete_security);
+
+            // everything deleted do one final atomic commit
+            $db->commit();
+        }
+        catch (PDOException $e) {
+            echo "error: " + $e->getMessage();
+            $db->rollback();
+        }    
+    }
 }
 ?>
