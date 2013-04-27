@@ -9,34 +9,9 @@
                 return true; //TODO: add validation
             }
         </script>
-        
-        <style type="text/css">
-            h1 {
-                color : green;
-                text-align: center;
-            }
-            
-            table#Purchases {
-                border : 1px solid black;
-                border-spacing : 2px;
-            }
-            
-            table#Purchases th, table#Purchases td {
-                border : 1px solid black;
-                padding : .2em .7em;
-                text-align: left;
-            }
-            
-            span {
-                font-weight : bold;
-                color : green;
-            }
-            
-            div#payment_div {
-                margin-top: 25px;
-            }
-            
-        </style>
+
+        <link rel="stylesheet" href="../styles/purchases.css">
+
     </head>
     
     <body>
@@ -81,12 +56,10 @@
                     <tr>
                         <td><label for="paymentMethod" id="paymentMethod_label">Payment Method:</label></td>
                         <td><select name="paymentMethod" id ="paymentMethod" name="paymentMethod">
-                              <option value="foo">Select your payment method</option>
                               <option value="Mastercard">Mastercard</option>
                               <option value="Visa">Visa</option>
                               <option value="American Express">American Express</option>
                               <option value="Discover">Discover</option>
-                              <option value="PayPal">PayPal</option>
                             </select>
                         </td>
                     </tr>   
@@ -101,7 +74,6 @@
                     <tr>
                         <td><label for="deliveryMethod" id="deliveryMethod_label">Delivery Method:</label></td>
                         <td><select name="deliveryMethod" id="deliveryMethod" name="deliveryMethod">
-                              <option value="foo">select your delivery method</option>
                               <option value="Overnight">Overnight</option>
                               <option value="2nd Day Air">2nd Day Air</option>
                               <option value="Ground shipment">Ground shipment</option>

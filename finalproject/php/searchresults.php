@@ -9,33 +9,9 @@
                 window.document.location.href="main.php";
             }
         </script>    
-        
-        <style type="text/css">
-            h1 {
-                text-align: center;
-                color : green;
-            }
-            
-            a:hover, button:hover {
-                color : red;
-            }
-            
-            span {
-                font-weight: bold;
-                color : purple;
-            }
-            
-            table {
-                border : 1px solid black;
-                border-spacing : 2px;
-            }
-            
-            th, td {
-                border : 1px solid black;
-                padding : .2em .7em;
-                text-align: left;
-            }
-        </style>
+
+        <link rel="stylesheet" href="../styles/searchresults.css">
+
     </head>
     
     <body>
