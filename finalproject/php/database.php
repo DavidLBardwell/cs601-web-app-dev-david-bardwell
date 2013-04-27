@@ -153,50 +153,93 @@ class Database {
         // make sure to make this atomic.
         try {
             $db->beginTransaction();
-            $insertSecurityStatement = "INSERT INTO bookstore_security values(null, '" . 
-                                       $username . "', '" . $password . "', '" . $security_question . "', '" . 
-                                       $security_answer . "', null)";
-            $affectedRows = $db->exec($insertSecurityStatement);
+            $insertSecurityStatement = "INSERT INTO bookstore_security values(null, " . 
+                                       " :username, :password, :security_question, " . 
+                                       " :security_answer, null)";
+            
+            $statement = $db->prepare($insertSecurityStatement);
+            $statement->bindValue(':username', $username);
+            $statement->bindValue(':password', $password);
+            $statement->bindValue(':security_question', $security_question);
+            $statement->bindValue(':security_answer', $security_answer);
+            $success = $statement->execute();
+            $affectedRows = $statement->rowCount();
+            $statement->closeCursor();
         
-            $insertNewCustomer = "INSERT INTO customers values(null, 1, '" . 
-                $firstName . "', '" . $lastName . "', '" . $address1 . "', '" . $address2 . "', '" . 
-                $city . "', '" . $state . "', '" . $zipcode . "', '" . $email . "', '" . $interests . "')";
-            $affectedRows = $db->exec($insertNewCustomer);
-            $db->commit();
-        
-        }
-        catch(PDOException $e) {  
-            echo "error: " + $e->getMessage();  
-            $db->rollBack();
-        }
-    
-        try {
+            
+            $insertNewCustomer = "INSERT INTO customers values(null, 1, " . 
+                " :firstName, :lastName, :address1, :address2, " . 
+                " :city, :state, :zipcode, :email, :interests)";
+            
+            $statement = $db->prepare($insertNewCustomer);
+            $statement->bindValue(':firstName', $firstName);
+            $statement->bindValue(':lastName', $lastName);
+            $statement->bindValue(':address1', $address1);
+            $statement->bindValue(':address2', $address2);
+            $statement->bindValue(':city', $city);
+            $statement->bindValue(':state', $state);
+            $statement->bindValue(':zipcode', $zipcode);
+            $statement->bindValue(':email', $email);
+            $statement->bindValue(':interests', $interests);
+            $success = $statement->execute();
+            $affectedRows = $statement->rowCount();
+            $statement->closeCursor();
+            
             // The code below mutually links the customers table and the bookstore_security table
             // for referential integrity.
 
             // get the security key for the new user and update the customer table with it
-            $sec_record = $db->query("select security_key from bookstore_security where username = '" . $username . "'");
+            $sec_query = "select security_key from bookstore_security where username = :username";
+            $statement = $db->prepare($sec_query);
+            $statement->bindValue(':username', $username);
+            $statement->execute();
+            $sec_record = $statement->fetchAll();    
+            
             foreach ($sec_record as $rec) {
                 $security_key = $rec['security_key'];
             }
+            $statement->closeCursor();
         
             // update the new customer with the security key
-            $db->exec("UPDATE customers SET security_key = " . $security_key . " WHERE first_name = '" . 
-                    $firstName . "' AND last_name = '" . $lastName . "'");
+            $update_customer_query = "UPDATE customers SET security_key = :security_key WHERE first_name = " . 
+                    " :firstName AND last_name = :lastName";
+            $statement = $db->prepare($update_customer_query);
+            $statement->bindValue(':security_key', $security_key);
+            $statement->bindValue(':firstName', $firstName);
+            $statement->bindValue(':lastName', $lastName);
+            $success = $statement->execute();
+            $affectedRows = $statement->rowCount();
+            $statement->closeCursor();
         
             // get the customer key for the new customer record
-            $customer_record = $db->query("select customer_key from customers where first_name = '" . 
-                    $firstName . "' AND last_name = '" . $lastName . "'");
+            $select_customer_query = "select customer_key from customers where first_name = " . 
+                    " :firstName AND last_name = :lastName";
+            $statement = $db->prepare($select_customer_query);
+            $statement->bindValue(':firstName', $firstName);
+            $statement->bindValue(':lastName', $lastName);
+            $statement->execute();
+            $customer_record = $statement->fetchAll();
+                    
             foreach ($customer_record as $rec) {
                 $customer_key = $rec['customer_key'];
             }
+            $statement->closeCursor();
 
             // update the new bookstore_security row with the customer key
-            $db->exec("update bookstore_security set customer_key = " . $customer_key . 
-                    " where security_key = " . $security_key);
+            $update_bookstore_sec_query = "update bookstore_security set customer_key = :customer_key" .
+                    " where security_key = :security_key";
+            $statement = $db->prepare($update_bookstore_sec_query);
+            $statement->bindValue(':customer_key', $customer_key);
+            $statement->bindValue(':security_key', $security_key);
+            $statement->execute();
+            $affectedRows = $statement->rowCount();
+            $statement->closeCursor();
+            
+            $db->commit();
         }
         catch(PDOException $e) {  
-            echo "error: " + $e->getMessage();
+            echo "error: " + $e->getMessage();  
+            $db->rollBack();
         }
         return true;  // for now, just return true
     }
