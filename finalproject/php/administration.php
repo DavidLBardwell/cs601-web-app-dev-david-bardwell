@@ -13,6 +13,15 @@
             <h1>David's Second-hand Bookstore - Administration</h1>
             
             <form name="adminform" action="index.php" method="post" onsubmit="return adminValidation(this);">
+                
+                <section id="deleteCustomer_section">
+                    <h2>Delete my customer record from the book store</h2>
+                    
+                    <input type="checkbox" name="deleteCustomer" id="deleteCustomer">Check if you wish to be removed from the bookstore<br/>
+                    
+                </section>
+                
+                
                 <section>
                     <h2>Change Password</h2>
 

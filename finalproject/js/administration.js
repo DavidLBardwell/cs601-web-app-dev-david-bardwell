@@ -1,6 +1,31 @@
             
             
             $(document).ready(function() {
+                $("#deleteCustomer").change(
+                    function() { 
+                        var isChecked = $("#deleteCustomer").is(':checked');
+                    
+                        // if user decides to delete themselves from the bookstore,
+                        // uncheck and disable the other check boxes and input fields 
+                        // as they would be irrelevant.
+                        if (isChecked) {
+                            $("#changePasswordIndicator").prop("checked", false);
+                            $("#changeSecurityQuestionIndicator").prop("checked", false);
+                            $("#changePasswordIndicator").attr("disabled", true);
+                            $("#changeSecurityQuestionIndicator").attr("disabled", true);
+                            $("#password1").attr("disabled", true);
+                            $("#password2").attr("disabled", true);
+                            $("#securityResponse").attr("disabled", true);
+                        }
+                        else {
+                            // user decided not to delete their record, re-enable other check boxes
+                            $("#changePasswordIndicator").attr("disabled", false);
+                            $("#changeSecurityQuestionIndicator").attr("disabled", false);
+                        }    
+                    }
+                );
+                
+                
                 $("#changePasswordIndicator").change(
                     function() { 
                         // Toggle the new password fields being enabled based on the user electing

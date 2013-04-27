@@ -18,7 +18,7 @@
                 <ul>
                     <li><a href="index.php?action=view_prior_purchases" id="prior">View Previous Purchases</a></li> 
                     <li><a href="index.php?action=show_admin_page" id="admin">Administration</a></li>
-                    <li><a href="logout.php" id="logout">Logout</a></li>
+                    <li><a href="index.php?action=log_out" id="logout">Logout</a></li>
                 </ul>
             </nav>    
         </header>
