@@ -46,3 +46,8 @@ button:hover {
 .textfield:hover {
     background-color: lightblue;
 }
+
+span.showError {
+    color : red;
+    margin-left : 10px;
+}

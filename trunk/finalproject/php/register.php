@@ -5,22 +5,73 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
         <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>            
-        </script>
+        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
+        <link rel="stylesheet" href="../styles/register.css">
+        <script language="javascript" src="../js/validateObject.js"></script>
+        
+        <!-- Override the externally referenced css style file -->
+        <style type="text/css">
+            span.showError {
+                color : red;
+                margin-left : 10px;
+                font-weight: bold;
+            }
+            
+        </style>
+
         <script type="text/javascript">
             
+            // Support immediate validation using the onBlur event so
+            // user knows they did not fill in the field correctly.
+            // As below, also need to revalidate on form submission.
+            // Reuse the same core validation functions in the validateUtil
+            // object literal.
+            $(document).ready(function() {
+                $("#password1").on("blur", function() {
+                    var password = $("#password1").val();
+                    validateUtil.validateRegPassword1Field(password);
+                });
+                
+                $("#password2").on("blur", function() {
+                    var password1 = $("#password1").val();
+                    var password2 = $("#password2").val();
+                    validateUtil.validateRegPassword2Field(password1, password2);
+                });
+                
+                // more checking here...
+                
+                
+            });
+            
+            
+            // This is called upon form submission. All errors will be displayed
+            // not just the first error found. This way the user knows that they
+            // have to fix multiple errors. Use core validation object to do the
+            // validation checking.
             function registerValidation() {
-                // on successful registration show dialog
+                var password1 = $("#password1").val();
+                var password2 = $("#password2").val();
+                var result = true;
+                var ret = true;  // optimistic, if any field not valid cannot submit until fixed
+                
+                result = validateUtil.validateRegPassword1Field(password1);
+                if (result === false) {
+                    ret = false;
+                }
+                
+                result = validateUtil.validateRegPassword2Field(password2);
+                if (result === false) {
+                    ret = false;
+                }
                 
         
-                return true;
-                
-                // to do : validate form
+                return ret;
             }
             
         </script>
         
-        <link rel="stylesheet" href="../styles/register.css">
+
         
 
     </head>
@@ -33,38 +84,60 @@
             
             <form name="register" action="index.php" method="post" onsubmit="return registerValidation(this);">
                 <label for="username" id="username_label">Username:</label>
-                <input type="text" class="textfield" name="username" id="username"><br/>
+                <input type="text" class="textfield" name="username" id="username">
+                <span class="showError" id="span_username"></span>
+                <br/>
             
                 <label for="password1" id="password_label1">Password:</label>
                 <input type="password" class="textfield" name="password" id="password1" 
-                       title="Please enter a minimum of 8 characters with a least 1 number"><br/>
+                       title="Please enter a minimum of 8 characters with at least one numeric digit and starting with a letter.">
+                <span class="showError" id="span_password1"></span>
+                <br/>
             
-                <label for="password2" id="password_label2">Reenter Password:</label>
-                <input type="password" class="textfield" name="password2" id="password2"><br/>
+                <label for="password2" id="password_label2">Confirm Password:</label>
+                <input type="password" class="textfield" name="password2" id="password2">
+                <span class="showError" id="span_password2"></span>
+                <br/>
             
                 <label for="firstName" id="firstName_label">First name:</label>
-                <input type="text" class="textfield" name="firstName" id="firstName"><br/>
+                <input type="text" class="textfield" name="firstName" id="firstName">
+                <span class="showError" id="span_firstName"></span>
+                <br/>
             
                 <label for="lastName" id="lastName_label">Last name:</label>
-                <input type="text" class="textfield" name="lastName" id="lastName"><br/>
+                <input type="text" class="textfield" name="lastName" id="lastName">
+                <span class="showError" id="span_lastName"></span>
+                <br/>
             
                 <label for="address1" id="address1_label">Address line 1:</label>
-                <input type="text" class="textfield" name="address1" id ="address1"><br/>
+                <input type="text" class="textfield" name="address1" id ="address1">
+                <span class="showError" id="span_address1"></span>
+                <br/>
             
                 <label for="address2" id="address2_label">Address line 2:</label>
-                <input type="text" class="textfield" name="address2" id ="address2"><br/>
+                <input type="text" class="textfield" name="address2" id ="address2">
+                <span class="showError" id="span_address2"></span>
+                <br/>
             
                 <label for="city" id="city_label">City:</label>
-                <input type="text" class="textfield" name="city" id="city"><br/>
+                <input type="text" class="textfield" name="city" id="city">
+                <span class="showError" id="span_city"></span>
+                <br/>
             
                 <label for="state" id="state_label">State:</label>
-                <input type="text" class="textfield" name="state" id="state"><br/>
+                <input type="text" class="textfield" name="state" id="state">
+                <span class="showError" id="span_state"></span>
+                <br/>
             
                 <label for="zipcode" id="zip_label">Zip code:</label>
-                <input type="text" class="textfield" name="zipcode" id="zipcode"><br/>
+                <input type="text" class="textfield" name="zipcode" id="zipcode">
+                <span class="showError" id="span_zipcode"></span>
+                <br/>
             
                 <label for="email" id="email_label">E-mail:</label>
-                <input type="email" class="textfield" name="email" id="email"><br/>
+                <input type="email" class="textfield" name="email" id="email">
+                <span class="showError" id="span_email"></span>
+                <br/>
                 
                 <label for="interests" id="interests_label">General Interest:</label>
                 <select name="interests" id="interests">
