@@ -25,44 +25,8 @@
             });
         </script>
         
-        <style type='text/css'>
-            h1 {
-                color : green;
-                text-align: center;
-            }
-            
-            span {
-                color : green;
-                font-weight : bold;
-            }
-            
-            table {
-                border : 1px solid black;
-                border-spacing : 2px;
-            }
-            
-            th, td {
-                border : 1px solid black;
-                padding : .2em .7em;
-                text-align: left;
-            }
-            
-            td.writeReview {
-                color : green;
-                font-weight : bold;
-                text-decoration: underline;
-            }
-            
-            a:hover, button:hover {
-                color : red;
-            }
-            
-            td.writeReview:hover {
-                color : red;
-                text-decoration: underline;
-            }
-            
-        </style>
+        <link rel="stylesheet" href="../styles/priorpurchases.css">
+        
         
     </head>
     <body>

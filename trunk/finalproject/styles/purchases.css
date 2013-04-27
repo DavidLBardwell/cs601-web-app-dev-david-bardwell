@@ -1,0 +1,26 @@
+
+
+h1 {
+    color : green;
+    text-align: center;
+}
+            
+table#Purchases {
+    border : 1px solid black;
+    border-spacing : 2px;
+}
+            
+table#Purchases th, table#Purchases td {
+    border : 1px solid black;
+    padding : .2em .7em;
+    text-align: left;
+}
+            
+span {
+    font-weight : bold;
+    color : green;
+}
+            
+div#payment_div {
+    margin-top: 25px;
+}

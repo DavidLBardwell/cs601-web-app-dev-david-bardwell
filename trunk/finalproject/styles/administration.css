@@ -1,0 +1,18 @@
+
+h1 {
+    color : green;
+    text-align: center;
+}
+            
+button:hover {
+    color : red;
+}
+            
+button {
+    font-weight: bold;
+}
+            
+.error {
+    font-weight: bold;
+    color : red;
+}

@@ -157,92 +157,9 @@
                 window.document.location.href="index.php?action=proceed_to_checkout";
             }
         </script>
-        
-        <style type="text/css">
-            h1 {
-                font-weight: bold;
-                text-align: center;
-                color : green;
-            }
-            
-            caption {
-                font-weight : bold;
-            }
-            
-            #admin_nav {
-                text-align : right;
-            }
-            
-            #admin_nav li {
-                display: inline;
-                padding : 0 0.5em;
-                border-right: 1px solid black;
-            }
-            
-            #search_div {
-                float : right;
-            }
-            
-            #bookCatagory_div, #debug_div {
-                float : left;
-            }
-            
-            a:hover, button:hover {
-                color : red;
-            }
-            
-            button {
-                font-weight : bold;
-            }
-            
-            table {
-                border : 1px solid black;
-                border-spacing : 2px;
-            }
-            
-            th, td {
-                border : 1px solid black;
-                padding : .2em .7em;
-                text-align: left;
-            }
-            
-            table#cart {
-                text-align : center;
-            }
-            
-            span, #search_label, #bookCatagory_label {
-                font-weight: bold;
-                color : green;
-            }
-            
-            p > span {
-                font-weight: bold;
-                color : purple;
-            }
-            
-            #radio_title, #radio_author {
-                color : green;
-            }
-            
-            #bookCategory {
-                margin-bottom : 20px;
-                width : 15em;
-            }
-            
-            #searchField:hover {
-                background-color: lightblue;
-            }
-            
-            table#books, table#cart, #dataTables_wrapper {
-                margin-top: 20px;
-            }
-            
-            div#detail_book_div {
-                margin-top: 60px;
-                margin-left: 10px;
-            }
-            
-        </style>
+
+        <link rel="stylesheet" href="../styles/bookstore_view.css">
+
     </head>
     
     <body>

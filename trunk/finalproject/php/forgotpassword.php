@@ -13,25 +13,9 @@
 
 
         </script>
-        
-        <style type="text/css">
-            h1 {
-                color : green;
-                text-align: center;
-            }
-            label {
-                font-weight: bold;
-                color : green;
-            }
-            button {
-                font-weight : bold;
-                font-size : 16px;
-            }
-            #error {
-                font-weight : bold;
-                color : red;
-            }
-        </style>
+
+        <link rel="stylesheet" href="../styles/forgotpassword.css">
+
     </head>
     <body>
         <div>

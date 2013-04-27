@@ -21,52 +21,9 @@
             });
         
         </script>
-        
-        <style type="text/css">
-            h1 {
-                color : green;
-            }
-            #mailto {
-                margin-top: 30px;
-            }
-            
-            #header1 {
-                margin-top: 20px;
-            }
-            
-            #return {
-                margin-top : 20px;
-            }
-            
-            /* sibling selector,direct descendant and pseudo selector to get successful message line
-               note: without first-child this would match two paragraph dom elements */
-            h1 + div > p:first-child {
-                color : red;
-                font-weight : bold;
-            }
-            
-            /* direct descendant to another direct descendant to get delivery text */
-            div > p > span {
-                color : orange;
-                font-weight : bold;
-                font-size: 150%;
-            }
-            
-            /* direct descendant to a class selector to get name */
-            div > .name {
-                color : purple;
-                font-weight : bold;
-                font-family : sans-serif;
-            }
-            
-            /* direct descendant and sibling to get all address lines not including name */
-            div > p + p {
-                color : green;
-                font-weight: bold;
-            }
-            
 
-        </style>
+        <link rel="stylesheet" href="../styles/purchaseconfirm.css">
+
     </head>
     
     <body>

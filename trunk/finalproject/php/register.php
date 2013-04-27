@@ -19,55 +19,10 @@
             }
             
         </script>
-        <style type="text/css">
-            h1 {
-                text-align: center;
-                color : green;
-            }
-            
-            label {
-                float : left;
-                width : 8em;
-                font-weight : bold;
-                color : green;
-                text-align: right;
-            }
-            
-            input, select {
-                width : 20em;
-                margin-left : 1em;
-                margin-bottom : .5em;
-            }
-            
-            input:focus {
-                border : 2px solid green;
-            }
-            
-            #register_button, #reset {
-                width : 7em;
-                box-shadow : 2px 2px 0 silver;
-                background-color : silver;
-                margin-top: 20px;
-                margin-left: 25px;
-            }
+        
+        <link rel="stylesheet" href="../styles/register.css">
+        
 
-            #reset_button {
-                width : 7em;
-                box-shadow : 2px 2px 0 silver;
-                background-color : silver;
-                margin-left: 25px;
-                margin-top: 20px;
-            }
-            
-            button:hover {
-                color : red;
-            }
-            
-            .textfield:hover {
-                background-color: lightblue;
-            }
-            
-        </style>
     </head>
     <body>
         <div>

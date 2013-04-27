@@ -23,45 +23,9 @@
             }
         </script>
         
-        <style type="text/css">
-            h1#title {
-                font-weight: bold;
-                text-align: center;
-                color : green;
-            }
-            
-            label#username_label, label#password_label {
-                font-weight : bold;
-                color : green;
-            }    
-            button {
-                font-weight : bold;
-                font-size: 16px;
-            }
-            
-            button:hover {
-                color : red;
-            }
-            
-            a {
-                color : green;
-                font-weight : bold;
-            }
-            
-            a:hover {
-                color : red;
-            }
-            
-            #loginFailed {
-                color : red;
-            }
-            
-            #newRegistration {
-                color : green;
-                font-weight : bold;
-            }
-            
-        </style>
+        <link rel="stylesheet" href="../styles/login_view.css">
+        
+
     </head>
     <body>
         <div>

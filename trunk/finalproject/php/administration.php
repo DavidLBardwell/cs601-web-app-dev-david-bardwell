@@ -82,25 +82,7 @@
             }
         </script>
         
-        <style type="text/css">
-            h1 {
-                color : green;
-                text-align: center;
-            }
-            
-            button:hover {
-                color : red;
-            }
-            
-            button {
-                font-weight: bold;
-            }
-            
-            .error {
-                font-weight: bold;
-                color : red;
-            }
-        </style>
+        <link rel="stylesheet" href="../styles/administration.css">
     </head>
     <body>
         <div>
