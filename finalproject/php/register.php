@@ -39,9 +39,29 @@
                     validateUtil.validateRegPassword2Field(password1, password2);
                 });
                 
-                // more checking here...
-                
-                
+                // Generically check that a text field is not empty. Use
+                // some basic DOM scripting to find the associated span element
+                // to display error message.
+                $(".textfield").on("blur", function() {
+                    // skip checking passwords and address2
+                    if (this.id === "password1"
+                          || this.id === "password2" 
+                          || this.id === "address2") {
+                        return;
+                    }
+                    
+                    // walk the DOM to get to the span, for some reason there
+                    // is a sibling between this and spanElement?
+                    var fieldValue = this.value;
+                    var textSibling = this.nextSibling;
+                    var spanElement = textSibling.nextSibling;
+                    
+                    if (validateUtil.validateGenericField(fieldValue) === false) {
+                        spanElement.innerHTML = "Field cannot be empty";
+                    } else {
+                        spanElement.innerHTML = "";
+                    }
+                });
             });
             
             
@@ -50,37 +70,27 @@
             // have to fix multiple errors. Use core validation object to do the
             // validation checking.
             function registerValidation() {
-                var password1 = $("#password1").val();
-                var password2 = $("#password2").val();
-                var result = true;
-                var ret = true;  // optimistic, if any field not valid cannot submit until fixed
+                // reset any error messages
+                resetErrorMessages();
                 
-                result = validateUtil.validateRegPassword1Field(password1);
-                if (result === false) {
-                    ret = false;
-                }
-                
-                result = validateUtil.validateRegPassword2Field(password2);
-                if (result === false) {
-                    ret = false;
-                }
-                
-        
+                // call function on validation object for complete registration validation
+                ret = validateUtil.completeRegistrationValidation();
                 return ret;
             }
             
+            function resetErrorMessages() {
+                $('span').html("");
+            }
+            
+            
         </script>
-        
-
-        
-
     </head>
+    
     <body>
         <div>
             <h1>David's Second-hand Bookstore - Register Page</h1>
             
             <h2>Please complete the fields below to register</h2>
-            
             
             <form name="register" action="index.php" method="post" onsubmit="return registerValidation(this);">
                 <label for="username" id="username_label">Username:</label>
@@ -160,7 +170,9 @@
                 <br/>
                 
                 <label for="security_answer" id="security_answer_label">Security Answer:</label>
-                <input type="text" class="textfield" name="security_answer" id="security_answer"><br/>
+                <input type="text" class="textfield" name="security_answer" id="security_answer">
+                <span class="showError" id="span_security_answer"></span>
+                <br/>
                 
                 <input type="hidden" name="action" value="process_new_registration"/>
             
