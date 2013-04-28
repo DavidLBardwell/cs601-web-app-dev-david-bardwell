@@ -11,12 +11,18 @@
         </script>
 
         <link rel="stylesheet" href="../styles/purchases.css">
+        
+        <style type="text/css">
+            /* Add custom css rules here to override those in the imported css file */
+            
+        </style>
 
     </head>
     
     <body>
         <div id="cart_div">
-            <h1>David's Second-hand Bookstore - Purchase</h1>
+            <!-- override the css style in-line and make the color orange -->
+            <h1 STYLE="color: orange">David's Second-hand Bookstore - Purchase</h1>
             
             <table id="Purchases">
                 <caption><span>Shopping Cart - Current Purchases</span></caption>

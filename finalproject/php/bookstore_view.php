@@ -10,6 +10,14 @@
 
         <script language="javascript" src="../js/bookstore_view.js"></script>
         <link rel="stylesheet" href="../styles/bookstore_view.css">
+        
+        <style type="text/css">
+            /* This is where special override css rules would go to override the import css file */
+            tr:nth-of-type(even) { 
+                background-color: white;
+            }
+            
+        </style>
     </head>
     
     <body>

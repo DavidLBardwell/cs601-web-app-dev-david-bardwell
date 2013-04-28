@@ -27,6 +27,11 @@
         
         <link rel="stylesheet" href="../styles/priorpurchases.css">
         
+        <style type="text/css">
+            /* Add special css rules here to override the ones in the imported file */
+
+        </style>
+        
         
     </head>
     <body>
