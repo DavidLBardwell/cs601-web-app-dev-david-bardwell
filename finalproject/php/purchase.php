@@ -31,7 +31,9 @@
                     <tr>
                         <td>Books</td>
                         <td>Authors</td>
-                        <td>Total: $9.50</td>
+<?php                        
+                        echo "<td>Total: $" . $totalAmount . "</td>";
+?>                            
                     </tr>    
                 </tfoot>
                 <tbody>

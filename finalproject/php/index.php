@@ -369,6 +369,13 @@ else if ($action == 'view_prior_purchases') {
 
 else if ($action=='proceed_to_checkout') {
     session_start();
+    
+    // calculate total in the cart
+    // calculate new total
+    $totalAmount = 0;
+    foreach ($_SESSION['cart'] as $cartItem) {
+        $totalAmount = $totalAmount + $cartItem['price'];
+    }
     include('purchase.php');
 }
 else if ($action=='process_payment_on_purchase') {
