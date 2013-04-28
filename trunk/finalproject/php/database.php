@@ -332,17 +332,27 @@ class Database {
         return $bookCategories;
     }
     
+    // This function returns the customer key and customer interest immediately
+    // after logging in. Both customer key and interest are then stored in the 
+    // SESSION object for the remainder of the user's session on the bookstore web site.
     public static function getCustomerInterest($username, $password) {
-        $databaseConnection = Database::getDB();
+        $db = Database::getDB();
         
-        $customerQuery = "SELECT c.customer_key customer_key, c.general_interest general_interest from customers c, bookstore_security s where s.username='" . 
-                $username . "' and s.password='" . $password . "' and c.customer_key = s.customer_key";
+        $customerQuery = "SELECT c.customer_key customer_key, c.general_interest general_interest " .
+                " from customers c, bookstore_security s where s.username = :username " . 
+                " and s.password = :password and c.customer_key = s.customer_key";
                 
-        $customerResults = $databaseConnection->query($customerQuery);
+        $statement = $db->prepare($customerQuery);
+        $statement->bindValue(':username', $username);
+        $statement->bindValue(':password', $password);
+        $statement->execute();
+        $customerResults = $statement->fetchAll();
+        
         foreach ($customerResults as $customerResult) {
             $customer_key = $customerResult['customer_key'];
             $generalInterest = $customerResult['general_interest'];
         }
+        $statement->closeCursor();
         
         $customer_info = array();
         $customer_info[1] = $customer_key;
