@@ -36,3 +36,16 @@ td.writeReview:hover {
     text-decoration: underline;
 }
 
+/* show nice background color for all table column headers */
+table thead {
+    background-color: lightgreen;
+}
+            
+table tbody {
+    background-color: lightgrey;
+}
+            
+/* Allow alternating rows for grey and white in the tables */
+tr:nth-of-type(even) { 
+    background-color: white;
+}

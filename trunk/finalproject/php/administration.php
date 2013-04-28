@@ -7,7 +7,16 @@
         
         <script language="javascript" src="../js/administration.js"></script>    
         <link rel="stylesheet" href="../styles/administration.css">
+        
+        <style type="text/css">
+            /* additional css customizations beyond the styles administration.css file.
+               These will override the ones in administration.css if there is any
+               overlap with rules. */
+            
+            
+        </style>
     </head>
+    
     <body>
         <div>
             <h1>David's Second-hand Bookstore - Administration</h1>

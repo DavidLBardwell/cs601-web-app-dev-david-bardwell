@@ -1,4 +1,4 @@
-
+/* This is the full set of css3 rules for the main bookstore page */
 
 h1 {
     font-weight: bold;
@@ -28,7 +28,7 @@ caption {
     float : left;
 }
             
-a:hover, button:hover {
+button:hover {
     color : red;
 }
             
@@ -81,4 +81,54 @@ table#books, table#cart, #dataTables_wrapper {
 div#detail_book_div {
     margin-top: 60px;
     margin-left: 10px;
+}
+
+
+/* show nice background color for all table column headers
+   The special css below will override any css in the imported css file */
+table thead {
+    background-color: lightgreen;
+}
+            
+table tbody {
+    background-color: lightgrey;
+}
+            
+/* setup pseudo class selectors on links */
+a:link {
+    color : green;
+}
+            
+a:visited {
+    color : blue;
+}
+            
+a:hover {
+    color : red;
+}
+            
+/* Allow alternating rows for grey and white in the tables */
+tr:nth-of-type(even) { 
+    background-color: white;
+}
+            
+/* set the price cell to lightblue */
+tfoot tr > td + td + td {
+    background-color : lightblue;
+}
+            
+/* set the cell of clear cart to be orange */
+tfoot tr > td + td + td + td {
+    background-color: orange;
+}
+            
+/* set the text of the clear button to red */
+tfoot tr > td + td + td + td > button {
+    color : red;
+    font-weight: bold;
+}
+            
+/* set clear button to darkgreen when user hovers over the button */
+tfoot tr > td + td + td + td > button:hover {
+    color : darkgreen;
 }

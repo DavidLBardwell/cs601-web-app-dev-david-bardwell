@@ -1,11 +1,3 @@
-<?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-?>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,9 +16,20 @@
         </script>
         
         <link rel="stylesheet" href="../styles/login_view.css">
-        
-
+        <style type="text/css">
+           /* For some reason this is not working from the login_view.css file
+              yet it seems to be working good from here? */
+           input:focus {
+               border : 2px solid green;
+           }
+           
+           input:hover {
+                background-color: lightblue;
+           }
+           
+        </style>   
     </head>
+    
     <body>
         <div>
             <h1 id="title">Welcome to David's Second-hand Bookstore</h1>

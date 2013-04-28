@@ -5,13 +5,17 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
         <script type="text/javascript">
-            function navigateToMainPage() {
-                window.document.location.href="main.php";
-            }
+            /* This is a view-only page and there is no need for javascript */
+
         </script>    
 
         <link rel="stylesheet" href="../styles/searchresults.css">
+        
+        <style type="text/css">
+            /* This is where one could override the searchresults.css file */
+            
 
+        </style>
     </head>
     
     <body>

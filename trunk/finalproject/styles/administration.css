@@ -19,5 +19,12 @@ button {
 
 section#deleteCustomer_section {
     margin-bottom : 30px;
+}
 
+input:focus {
+    border : 2px solid green;
+}
+            
+section table input:hover {
+    background-color: lightblue;
 }
