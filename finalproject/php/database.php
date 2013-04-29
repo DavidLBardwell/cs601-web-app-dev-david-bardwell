@@ -37,24 +37,31 @@ class Database {
     // validate login
     // Return true: login successful, false: login failed
     // Very important to use bind variables to prevent sql injection attacks
+    // The password is stored encrypted and in a varbinary field. It is 
+    // necessary to cast it to a character string.
     public static function login($username, $password) {
         $db = Database::getDB();
         
         $queryStr = "select COUNT(*) rowcount from bookstore_security where " . 
-                    " username = :username and password = :password";
-        $statement = $db->prepare($queryStr);
-        $statement->bindValue(':username', $username);
-        $statement->bindValue(':password', $password);
-        $statement->execute();
-        $records = $statement->fetchAll();
-        $ret = false;
-        foreach ($records as $rec) {
-            $rowcount = $rec['rowcount'];
-            if ($rowcount == 1) {
-                $ret = true;
+                    " username = :username and CAST(AES_DECRYPT(password, 'key') as char) = :password";
+        try {
+            $statement = $db->prepare($queryStr);
+            $statement->bindValue(':username', $username);
+            $statement->bindValue(':password', $password);
+            $statement->execute();
+            $records = $statement->fetchAll();
+            $ret = false;
+            foreach ($records as $rec) {
+                $rowcount = $rec['rowcount'];
+                if ($rowcount == 1) {
+                    $ret = true;
+                }
             }
+            $statement->closeCursor();
         }
-        $statement->closeCursor();
+        catch (PDOException $e) {
+            echo "Error is " . $e->getMessage();
+        }
         return $ret;        
     }
     
@@ -89,13 +96,13 @@ class Database {
     // database. There is no need to validate the user. 
     public static function updatePassword($customer_key, $newPassword) {
         $db = Database::getDB();
-        $updateQuery = "UPDATE bookstore_security set password = :newPassword " .
-                       " WHERE customer_key = :customer_key";
+        $updateQuery = "UPDATE bookstore_security set password = AES_ENCRYPT(?, 'key') " .
+                       " WHERE customer_key = ?";
         
         try {
             $statement = $db->prepare($updateQuery);
-            $statement->bindValue(':newPassword', $newPassword);
-            $statement->bindValue(':customer_key', $customer_key);
+            $statement->bindValue(1, $newPassword);
+            $statement->bindValue(2, $customer_key);
             $statement->execute();
             $affectedRows = $statement->rowCount();
             $statement->closeCursor();
@@ -154,14 +161,14 @@ class Database {
         try {
             $db->beginTransaction();
             $insertSecurityStatement = "INSERT INTO bookstore_security values(null, " . 
-                                       " :username, :password, :security_question, " . 
-                                       " :security_answer, null)";
+                                       " ?, AES_ENCRYPT(?, 'key'), ?, " . 
+                                       " ?, null)";
             
             $statement = $db->prepare($insertSecurityStatement);
-            $statement->bindValue(':username', $username);
-            $statement->bindValue(':password', $password);
-            $statement->bindValue(':security_question', $security_question);
-            $statement->bindValue(':security_answer', $security_answer);
+            $statement->bindValue(1, $username);
+            $statement->bindValue(2, $password);
+            $statement->bindValue(3, $security_question);
+            $statement->bindValue(4, $security_answer);
             $success = $statement->execute();
             $affectedRows = $statement->rowCount();
             $statement->closeCursor();
@@ -340,7 +347,7 @@ class Database {
         
         $customerQuery = "SELECT c.customer_key customer_key, c.general_interest general_interest " .
                 " from customers c, bookstore_security s where s.username = :username " . 
-                " and s.password = :password and c.customer_key = s.customer_key";
+                " and CAST(AES_DECRYPT(s.password, 'key') as char) = :password and c.customer_key = s.customer_key";
                 
         $statement = $db->prepare($customerQuery);
         $statement->bindValue(':username', $username);
