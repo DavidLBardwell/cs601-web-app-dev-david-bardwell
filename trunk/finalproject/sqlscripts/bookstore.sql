@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 29, 2013 at 02:02 AM
+-- Generation Time: Apr 29, 2013 at 11:20 AM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.9
 
@@ -69,22 +69,21 @@ INSERT INTO `books` (`book_key`, `title`, `author`, `year_published`, `category`
 
 CREATE TABLE IF NOT EXISTS `bookstore_security` (
   `security_key` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(30) NOT NULL,
+  `username` varchar(80) NOT NULL,
+  `password` varbinary(80) NOT NULL,
   `security_question` varchar(80) DEFAULT NULL,
   `security_answer` varchar(80) DEFAULT NULL,
   `customer_key` int(11) DEFAULT NULL,
   PRIMARY KEY (`security_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `bookstore_security`
 --
 
 INSERT INTO `bookstore_security` (`security_key`, `username`, `password`, `security_question`, `security_answer`, `customer_key`) VALUES
-(22, 'DavidLBar', 'supernova300', 'City_Born', 'Cincinnati', 21),
-(23, 'John', 'smith100', 'City_Born', 'Boston', 22),
-(24, 'John', 'denver100', 'Mother_Maiden_Name', 'Denver', 23);
+(2, 'DavidLBar', 'Eø\n¡}ômœñ:àndp', 'Mother_Maiden_Name', 'Wesson', 26),
+(3, 'John', 'ŒŒÔ‚…œJÿÓVòƒ≤2º', 'Mother_Maiden_Name', 'Smith', 27);
 
 -- --------------------------------------------------------
 
@@ -141,16 +140,15 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `email` varchar(80) NOT NULL,
   `general_interest` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`customer_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `customers`
 --
 
 INSERT INTO `customers` (`customer_key`, `security_key`, `first_name`, `last_name`, `address1`, `address2`, `city`, `state`, `zipcode`, `email`, `general_interest`) VALUES
-(21, 22, 'David', 'Bardwell', '9 Saltonstall Parkway', 'Unit 2', 'Salem', 'MA', '01970', 'DavidLBar@aol.com', 'Fiction'),
-(22, 23, 'John', 'Smith', '100 Main Street', '', 'Burlington', 'MA', '01803', 'JSmith100@aol.com', 'Business'),
-(23, 24, 'John', 'Denver', '333 Cross St', '', 'Denver', 'Colorado', '84994', 'JD@argo2.net', 'Sports');
+(26, 2, 'David', 'Bardwell', '9 Saltonstall Parkway', 'Unit 2', 'Salem', 'MA', '01970', 'DavidLBar@aol.com', 'Fiction'),
+(27, 3, 'John', 'Smith', '77 Locust St', '', 'Burlington', 'MA', '01970', 'Smity1001@aol.com', 'Business');
 
 -- --------------------------------------------------------
 
@@ -166,35 +164,20 @@ CREATE TABLE IF NOT EXISTS `transaction_detail` (
   `book_key` int(11) NOT NULL,
   `amount` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`transaction_detail_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=70 ;
 
 --
 -- Dumping data for table `transaction_detail`
 --
 
 INSERT INTO `transaction_detail` (`transaction_detail_key`, `transaction_key`, `line_item`, `customer_key`, `book_key`, `amount`) VALUES
-(41, 19, 1, 21, 4, '8.50'),
-(42, 19, 2, 21, 6, '7.50'),
-(43, 20, 1, 21, 1, '5.25'),
-(44, 20, 2, 21, 2, '6.25'),
-(45, 21, 1, 21, 1, '5.25'),
-(46, 21, 2, 21, 2, '6.25'),
-(47, 21, 3, 21, 4, '8.50'),
-(48, 22, 1, 21, 8, '5.50'),
-(49, 22, 2, 21, 10, '10.00'),
-(50, 22, 3, 21, 1, '5.25'),
-(51, 23, 1, 22, 9, '6.75'),
-(52, 23, 2, 22, 7, '5.00'),
-(53, 24, 1, 21, 1, '5.25'),
-(54, 24, 2, 21, 2, '6.25'),
-(55, 25, 1, 21, 21, '9.50'),
-(56, 25, 2, 21, 20, '9.50'),
-(57, 25, 3, 21, 18, '10.50'),
-(58, 25, 4, 21, 19, '25.00'),
-(59, 25, 5, 21, 23, '10.00'),
-(60, 25, 6, 21, 22, '12.00'),
-(61, 25, 7, 21, 24, '12.00'),
-(62, 26, 1, 23, 21, '9.50');
+(63, 27, 1, 26, 2, '6.25'),
+(64, 28, 1, 26, 7, '5.00'),
+(65, 28, 2, 26, 10, '10.00'),
+(66, 29, 1, 26, 8, '5.50'),
+(67, 29, 2, 26, 9, '6.75'),
+(68, 30, 1, 27, 7, '5.00'),
+(69, 30, 2, 27, 10, '10.00');
 
 -- --------------------------------------------------------
 
@@ -210,21 +193,17 @@ CREATE TABLE IF NOT EXISTS `transaction_summary` (
   `payment_method` varchar(30) DEFAULT NULL,
   `delivery_method` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`transaction_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
 
 --
 -- Dumping data for table `transaction_summary`
 --
 
 INSERT INTO `transaction_summary` (`transaction_key`, `customer_key`, `purchase_date`, `amount`, `payment_method`, `delivery_method`) VALUES
-(19, 21, '2013-04-28', '16.00', 'Mastercard', 'Ground shipment'),
-(20, 21, '2013-04-28', '11.50', 'Mastercard', 'Ground shipment'),
-(21, 21, '2013-04-28', '20.00', 'Mastercard', '2nd Day Air'),
-(22, 21, '2013-04-28', '20.75', 'Mastercard', 'Overnight'),
-(23, 22, '2013-04-28', '11.75', 'Mastercard', 'Overnight'),
-(24, 21, '2013-04-28', '11.50', 'Mastercard', 'Overnight'),
-(25, 21, '2013-04-29', '88.50', 'Mastercard', 'Overnight'),
-(26, 23, '2013-04-29', '9.50', 'Mastercard', 'Overnight');
+(27, 26, '2013-04-29', '6.25', 'Mastercard', 'Overnight'),
+(28, 26, '2013-04-29', '15.00', 'Mastercard', 'Overnight'),
+(29, 26, '2013-04-29', '12.25', 'Mastercard', 'Overnight'),
+(30, 27, '2013-04-29', '15.00', 'Mastercard', 'Ground shipment');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
