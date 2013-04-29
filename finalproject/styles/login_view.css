@@ -1,10 +1,6 @@
 
+@import url(base.css);
 
-h1#title {
-    font-weight: bold;
-    text-align: center;
-    color : green;
-}
             
 label#username_label, label#password_label {
     font-weight : bold;
