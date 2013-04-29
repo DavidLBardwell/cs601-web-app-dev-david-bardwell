@@ -1,9 +1,6 @@
 
+@import url(base.css);
 
-h1 {
-    color : green;
-    text-align: center;
-}
             
 table#Purchases {
     border : 1px solid black;

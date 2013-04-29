@@ -11,18 +11,10 @@ button {
     font-weight : bold;
     font-size: 16px;
 }
-            
-button:hover {
-    color : red;
-}
-            
+           
 a {
     color : green;
     font-weight : bold;
-}
-            
-a:hover {
-    color : red;
 }
             
 #loginFailed {
@@ -33,4 +25,3 @@ a:hover {
     color : green;
     font-weight : bold;
 }
-

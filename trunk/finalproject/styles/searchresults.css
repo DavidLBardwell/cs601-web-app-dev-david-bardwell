@@ -1,14 +1,6 @@
 
+@import url(base.css);
 
-h1 {
-    text-align: center;
-    color : green;
-}
-            
-a:hover, button:hover {
-    color : red;
-}
-            
 span {
     font-weight: bold;
     color : purple;

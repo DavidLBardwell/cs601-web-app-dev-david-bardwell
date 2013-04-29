@@ -66,12 +66,12 @@
                 <table>
                     <tr>
                         <td><label for="username" id="username_label">Username:</label></td>
-                        <td><input type="text" name="username" id ="username" <?php echo 'value="' . $username . '"'?>></td>
+                        <td><input type="text" name="username" id ="username" maxlength="20" <?php echo 'value="' . $username . '"'?>></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td><label for="password" id="password_label">Password:</label></td>
-                        <td><input type="password" name="password" id ="password"></td>
+                        <td><input type="password" name="password" id ="password" maxlength="20"></td>
                         <td><a href="index.php?action=reset_password" id="forgotPassword">Forgot Password</a>
                     </tr>
                     <tr>

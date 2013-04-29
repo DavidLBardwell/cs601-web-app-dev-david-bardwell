@@ -1,10 +1,6 @@
 
+@import url(base.css);
 
-h1 {
-    text-align: center;
-    color : green;
-}
-            
 label {
     float : left;
     width : 8em;
@@ -19,9 +15,6 @@ input, select {
     margin-bottom : .5em;
 }
             
-input:focus {
-    border : 2px solid green;
-}
             
 #register_button, #reset {
     width : 7em;
@@ -39,9 +32,6 @@ input:focus {
     margin-top: 20px;
 }
             
-button:hover {
-    color : red;
-}
             
 .textfield:hover {
     background-color: lightblue;
