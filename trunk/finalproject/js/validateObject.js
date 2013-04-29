@@ -42,7 +42,7 @@ var validateUtil = {
        result = validateUtil.validateGenericField(username);
        if (result === false) {
            ret = false;
-           $("#checkit").html("Field cannot by empty");
+           $("#checkit").html("<span id='loginFailed'>Field cannot by empty</span>");
        }
        else {
            $("#checkit").html("");
@@ -54,7 +54,7 @@ var validateUtil = {
    validateLoginPasswordField : function(password) {
        var ret = true;
        if (validateUtil.validatePasswordRule(password) === false) {
-           $("#checkit").html("Password is not valid. Please review password rules.");
+           $("#checkit").html("<span id='loginFailed'>Password is not valid.</span>Please review password rules.");
            ret = false;
        }
        else {
