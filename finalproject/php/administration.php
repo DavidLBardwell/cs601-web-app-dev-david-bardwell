@@ -3,10 +3,13 @@
     <head>
         <title>David's Second-hand Bookstore Administration</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
         <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
         
-        <script language="javascript" src="../js/administration.js"></script>    
         <link rel="stylesheet" href="../styles/administration.css">
+        <script type="text/javascript" src="../js/validateObject.js"></script>
+        <script type="text/javascript" src="../js/administration.js"></script>    
         
         <style type="text/css">
             /* additional css customizations beyond the styles administration.css file.
@@ -30,7 +33,6 @@
                     
                 </section>
                 
-                
                 <section>
                     <h2>Change Password</h2>
 
@@ -44,7 +46,9 @@
                     <table>
                         <tr>
                             <td><label for="password1" id="password_label1">New Password:</label></td>
-                            <td><input type="password" name="password1" id ="password1" disabled></td>
+                            <td><input type="password" name="password1" id ="password1" disabled
+                                       title="Please enter a minimum of 8 characters with at least one numeric digit and starting with a letter.">
+                            </td>
                         </tr>
                         <tr>
                             <td><label for="password2" id="password_label2">Confirm New Password:</label></td>
@@ -83,5 +87,9 @@
         <div id="validation_error_output_div">
             
         </div>
+        
+<script>
+    $( document ).tooltip();
+</script>
     </body>
 </html>

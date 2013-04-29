@@ -1,3 +1,8 @@
+// This source file contains the javascript code to support the administration page.
+// All event handling and validation is managed in this file.
+// Some application-level check box management with associated password fields
+// is handled in this file. For example, the user needs to check the check box to
+// be able to enter a password field. This is a u/i that an auditor or lawyer would like.
             
             
             $(document).ready(function() {
@@ -71,12 +76,17 @@
                 if (isChecked == true) {
                     var password1 = $("#password1").val();
                     var password2 = $("#password2").val();
-                    if (password1 == null || password1.length == 0) {
-                        $("#validation_error_output_div").html('<p class="error">The first password field cannot be empty.</p>');
+                    
+                    // use the object literal to validate user supplied passwords
+                    var checkp1 = validateUtil.validatePasswordRule(password1);
+                    var checkp2 = validateUtil.validatePasswordRule(password2);
+                    
+                    if (checkp1 === false) {
+                        $("#validation_error_output_div").html('<p class="error">The first password is not valid.</p>');
                         ret = false;
                     }
-                    else if (password2 == null || password2.length == 0) {
-                        $("#validation_error_output_div").html('<p class="error">The second password field cannot be empty.</p>');
+                    else if (checkp2 === false) {
+                        $("#validation_error_output_div").html('<p class="error">The second password is not valid.</p>');
                         ret = false;
                     }
                     else if (password1 != password2) {
