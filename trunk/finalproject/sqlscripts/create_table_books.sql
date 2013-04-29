@@ -25,3 +25,11 @@ insert into books values (null, 'Creating Wealth', 'Robert G. Allen', 2006, 'Bus
 insert into books values (null, 'How To Make Money in Stocks', 'William Oneil', 2010, 'Business', 3, 6.75, '../images/Make_Money_In_Stocks.jpg');
 insert into books values (null, 'Thinking Like a Billionaire', 'Donald Trump', 2004, 'Business', 2, 10.00, '../images/Think_Like_A_Billionaire.jpg');
 
+-- Sports
+insert into books values (null, 'Let Me Tell You a Story', 'Red Aeurback', 2005, 'Sports', 3, 10.50, '../images/Tell_You_A_Story.jpg');
+insert into books values (null, 'Muhammad Alis Greatest Fight', 'Howard Bingham', 2004, 'Sports', 2, 25.00, '../images/Ali_Greatest_Fight.jpg');
+insert into books values (null, 'Drive The Story of My Life', 'Larry Bird', 1990, 'Sports', 2, 9.50,  '../images/Drive_Larry_Bird.jpg');
+insert into books values (null, 'A Season on the Brink', 'John Feinstein', 1989, 'Sports', 2, 9.50, '../images/Season_On_Brink.jpg');
+insert into books values (null, 'Seabiscuit An American Legend', 'Laura Hillenbrand', 2002, 'Sports', 3, 12.00, '../images/Seabiscuit_Legend.jpg');
+insert into books values (null, 'Rivals', 'Johnette Howard', 2005, 'Sports', 1, 10.00, '../images/Rivals.jpg'); 
+insert into books values (null, 'The Boys of Summer', 'Roger Kahn', 2000, 'Sports', 2, 12.00, '../images/Boys_Of_Summer.jpg');
