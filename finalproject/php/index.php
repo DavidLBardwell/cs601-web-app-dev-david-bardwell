@@ -64,6 +64,7 @@ else if ($action == "login_requested") {
         $customerDetails = Database::getCustomerDetails($customer_key);
         $customer = new Customer($customerDetails);
         $_SESSION['customer'] = $customer;
+        $firstName = $customer->getFirstName();
         
         // get the book and categories and show bookstore's main page
         $books = Database::getBooks($generalInterest);
@@ -158,6 +159,10 @@ else if ($action == 'process_admin_change') {
     
         $books = Database::getBooks($generalInterest);
         $bookCategories = Database::getBookCategories();
+        
+        $customer = $_SESSION['customer'];
+        $firstName = $customer->getFirstName();
+        
         include('bookstore_view.php');  // will this work
     }    
 }
@@ -167,6 +172,10 @@ else if ($action == 'redisplay_bookstore_page') {
     $generalInterest = $_SESSION['general_interest'];  // restore current book category
     $books = Database::getBooks($generalInterest);
     $bookCategories = Database::getBookCategories();
+    
+    $customer = $_SESSION['customer'];
+    $firstName = $customer->getFirstName();
+    
     include('bookstore_view.php');  // everything should be ready to go, right?
     
 }
@@ -355,6 +364,10 @@ else if ($action == 'returnFromSearch') {
     
     $books = Database::getBooks($generalInterest);
     $bookCategories = Database::getBookCategories();
+    
+    $customer = $_SESSION['customer'];
+    $firstName = $customer->getFirstName();
+    
     include('bookstore_view.php');  // will this work    
 }
 else if ($action == 'view_prior_purchases') {
@@ -366,7 +379,6 @@ else if ($action == 'view_prior_purchases') {
     include('priorpurchases.php');
     
 }
-
 else if ($action=='proceed_to_checkout') {
     session_start();
     
@@ -416,7 +428,6 @@ else if ($action=='process_payment_on_purchase') {
     $books = Database::getBooks($generalInterest);
     $bookCategories = Database::getBookCategories();
 
-    //include('bookstore_view.php');
     include('purchaseconfirm.php');
 }
 else if ($action == 'log_out') {

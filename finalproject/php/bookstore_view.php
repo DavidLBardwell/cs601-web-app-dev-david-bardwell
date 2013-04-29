@@ -30,8 +30,10 @@
                 </ul>
             </nav>    
         </header>
-        
-        <h1>David's Second-hand Bookstore</h1>
+
+<?php        
+        echo "<h1>Welcome " . $firstName . " To David's Second-hand Bookstore</h1>";
+?>
 
         <div id="bookCatagory_div">
             <label for="bookCategory" id="bookCatagory_label">Book Category:</label>
