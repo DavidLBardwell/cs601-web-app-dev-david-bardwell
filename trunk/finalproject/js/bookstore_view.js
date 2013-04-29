@@ -1,4 +1,7 @@
-
+// This is the javascript file to support the main bookstore view page.
+// AJAX is used to communicate updates to the cart for example adding
+// or removing a book from the cart. The SESSION object holds the state
+// of the cart. In this way, the cart is persisted across multiple pages.
 
             // Called when the DOM is ready. Set up static listeners and
             // other initializations. 
