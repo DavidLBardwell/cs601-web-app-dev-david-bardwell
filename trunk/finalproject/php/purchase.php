@@ -3,19 +3,18 @@
     <head>
         <title>David's Second-hand Bookstore - Purchase Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
         <link rel="stylesheet" href="../styles/purchases.css">
         
-        <script type="text/javascript">
-            function paymentValidation() {
-                return true; //TODO: add validation
-            }
-        </script>
-        
         <style type="text/css">
-            /* Add custom css rules here to override those in the imported css file */
-            
+            /* Override any css rules coming from the imported css rules file purchases.css */
+            #validateError > p {
+                color : red;
+                font-weight : bold;
+            }
         </style>
-
+        
+        <script type="text/javascript" src="../js/purchase.js"></script>
     </head>
     
     <body>
@@ -92,6 +91,9 @@
                 <br/>
                 <button id="submit" type="submit">Complete Order</button>
             </form>
+        </div>
+        <div id="validateError">
+            
         </div>
     </body>
 </html>
