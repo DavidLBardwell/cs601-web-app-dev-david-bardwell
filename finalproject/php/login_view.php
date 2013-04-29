@@ -22,19 +22,29 @@
                });
             });    
 
-            
+            // On form submit, revalidate the username and password fields on
+            // this client side. If invalid, no reason to waste time sending
+            // to apache server and interacting with the database.
             function loginValidation() {
-                // client side validation of login before continuing
-                //var checkit = document.getElementById('checkit');
-                //checkit.innerHTML = "Invalid username or password";
-                // TODO: make sure entered both user name and password
-                return true;
+                var ret = true;
+                var loginUsername = $("#username").val();
+                var result = validateUtil.validateLoginUsernameField(loginUsername);
+                if (result === false) {
+                    ret = false;
+                }
+                if (ret === true) {
+                    var loginPassword = $("#password").val();
+                    result = validateUtil.validateLoginPasswordField(loginPassword);
+                    if (result === false) {
+                        ret = false;
+                    }
+                }
+                return ret;
             }
         </script>
         
         <style type="text/css">
-           /* For some reason this is not working from the login_view.css file
-              yet it seems to be working good from here? */
+           /* Example of overriding css rules coming from imported css file login_view.css */
            input:focus {
                border : 2px solid green;
            }
