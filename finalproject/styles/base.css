@@ -1,25 +1,28 @@
 /* base.css contains share css rules across all pages. Each css rule file
    needs to include this file. This make maintenance much easier as the change
-   is only made in this one file. */
+   is only made in this one file. Mark most css rules as !important so they
+   carry additional weight with the css rules engine. I left the color on
+   h1 without an !important modifier intentionally as this is overridden on
+   the purchase page. */
 
 
 h1 {
-    font-weight: bold;
-    text-align: center;
+    font-weight: bold !important;
+    text-align: center !important;
     color : green;
 }
 
 
 a:hover, button:hover {
-    color : red;
+    color : red !important;
 }
 
 
 button {
-    font-weight : bold;
+    font-weight : bold !important;
 }
 
 
 input:focus {
-    border : 2px solid green;
+    border : 2px solid green !important;
 }
