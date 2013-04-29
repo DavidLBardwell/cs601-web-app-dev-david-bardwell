@@ -1,7 +1,25 @@
+/* base.css contains share css rules across all pages. Each css rule file
+   needs to include this file. This make maintenance much easier as the change
+   is only made in this one file. */
 
 
 h1 {
     font-weight: bold;
     text-align: center;
     color : green;
+}
+
+
+a:hover, button:hover {
+    color : red;
+}
+
+
+button {
+    font-weight : bold;
+}
+
+
+input:focus {
+    border : 2px solid green;
 }

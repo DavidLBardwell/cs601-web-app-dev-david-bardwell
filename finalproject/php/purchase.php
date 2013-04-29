@@ -3,14 +3,13 @@
     <head>
         <title>David's Second-hand Bookstore - Purchase Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="../styles/purchases.css">
         
         <script type="text/javascript">
             function paymentValidation() {
                 return true; //TODO: add validation
             }
         </script>
-
-        <link rel="stylesheet" href="../styles/purchases.css">
         
         <style type="text/css">
             /* Add custom css rules here to override those in the imported css file */

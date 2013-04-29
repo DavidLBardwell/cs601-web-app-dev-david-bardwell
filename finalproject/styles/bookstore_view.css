@@ -1,11 +1,8 @@
 /* This is the full set of css3 rules for the main bookstore page */
 
-h1 {
-    font-weight: bold;
-    text-align: center;
-    color : green;
-}
-            
+@import url(base.css);
+
+           
 caption {
     font-weight : bold;
 }
@@ -26,14 +23,6 @@ caption {
             
 #bookCatagory_div, #debug_div {
     float : left;
-}
-            
-button:hover {
-    color : red;
-}
-            
-button {
-    font-weight : bold;
 }
             
 table {

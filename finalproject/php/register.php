@@ -28,6 +28,11 @@
             // Reuse the same core validation functions in the validateUtil
             // object literal.
             $(document).ready(function() {
+                $("#reset_button").on("click", function() {
+                    // clear all error messages
+                    $(".showError").html("");
+                });
+        
                 $("#password1").on("blur", function() {
                     var password = $("#password1").val();
                     validateUtil.validateRegPassword1Field(password);
@@ -94,58 +99,58 @@
             
             <form name="register" action="index.php" method="post" onsubmit="return registerValidation(this);">
                 <label for="username" id="username_label">Username:</label>
-                <input type="text" class="textfield" name="username" id="username">
+                <input type="text" class="textfield" name="username" id="username" maxlength="20">
                 <span class="showError" id="span_username"></span>
                 <br/>
             
                 <label for="password1" id="password_label1">Password:</label>
-                <input type="password" class="textfield" name="password" id="password1" 
+                <input type="password" class="textfield" name="password" id="password1" maxlength="20" 
                        title="Please enter a minimum of 8 characters with at least one numeric digit and starting with a letter.">
                 <span class="showError" id="span_password1"></span>
                 <br/>
             
                 <label for="password2" id="password_label2">Confirm Password:</label>
-                <input type="password" class="textfield" name="password2" id="password2">
+                <input type="password" class="textfield" name="password2" id="password2" maxlength="20">
                 <span class="showError" id="span_password2"></span>
                 <br/>
             
                 <label for="firstName" id="firstName_label">First name:</label>
-                <input type="text" class="textfield" name="firstName" id="firstName">
+                <input type="text" class="textfield" name="firstName" id="firstName" maxlength="20">
                 <span class="showError" id="span_firstName"></span>
                 <br/>
             
                 <label for="lastName" id="lastName_label">Last name:</label>
-                <input type="text" class="textfield" name="lastName" id="lastName">
+                <input type="text" class="textfield" name="lastName" id="lastName" maxlength="30">
                 <span class="showError" id="span_lastName"></span>
                 <br/>
             
                 <label for="address1" id="address1_label">Address line 1:</label>
-                <input type="text" class="textfield" name="address1" id ="address1">
+                <input type="text" class="textfield" name="address1" id ="address1" maxlength="80">
                 <span class="showError" id="span_address1"></span>
                 <br/>
             
                 <label for="address2" id="address2_label">Address line 2:</label>
-                <input type="text" class="textfield" name="address2" id ="address2">
+                <input type="text" class="textfield" name="address2" id ="address2" maxlength="80">
                 <span class="showError" id="span_address2"></span>
                 <br/>
             
                 <label for="city" id="city_label">City:</label>
-                <input type="text" class="textfield" name="city" id="city">
+                <input type="text" class="textfield" name="city" id="city" maxlength="80">
                 <span class="showError" id="span_city"></span>
                 <br/>
             
                 <label for="state" id="state_label">State:</label>
-                <input type="text" class="textfield" name="state" id="state">
+                <input type="text" class="textfield" name="state" id="state" maxlength="30">
                 <span class="showError" id="span_state"></span>
                 <br/>
             
                 <label for="zipcode" id="zip_label">Zip code:</label>
-                <input type="text" class="textfield" name="zipcode" id="zipcode">
+                <input type="text" class="textfield" name="zipcode" id="zipcode" maxlength="10">
                 <span class="showError" id="span_zipcode"></span>
                 <br/>
             
                 <label for="email" id="email_label">E-mail:</label>
-                <input type="email" class="textfield" name="email" id="email">
+                <input type="email" class="textfield" name="email" id="email" maxlength="80">
                 <span class="showError" id="span_email"></span>
                 <br/>
                 
@@ -170,7 +175,7 @@
                 <br/>
                 
                 <label for="security_answer" id="security_answer_label">Security Answer:</label>
-                <input type="text" class="textfield" name="security_answer" id="security_answer">
+                <input type="text" class="textfield" name="security_answer" id="security_answer" maxlength="80">
                 <span class="showError" id="span_security_answer"></span>
                 <br/>
                 

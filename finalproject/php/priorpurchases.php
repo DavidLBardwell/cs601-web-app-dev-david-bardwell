@@ -6,6 +6,7 @@
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js">
         </script>
+        <link rel="stylesheet" href="../styles/priorpurchases.css">
         
         <script type="text/javascript">
             // Set up data tables for viewing prior book purchases
@@ -24,8 +25,6 @@
                 });
             });
         </script>
-        
-        <link rel="stylesheet" href="../styles/priorpurchases.css">
         
         <style type="text/css">
             /* Add special css rules here to override the ones in the imported file */

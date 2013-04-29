@@ -46,12 +46,12 @@
                     <table>
                         <tr>
                             <td><label for="password1" id="password_label1">New Password:</label></td>
-                            <td><input type="password" name="password1" id ="password1" disabled
+                            <td><input type="password" name="password1" id ="password1" maxlength="20" disabled
                                        title="Please enter a minimum of 8 characters with at least one numeric digit and starting with a letter.">
                             </td>
                         </tr>
                         <tr>
-                            <td><label for="password2" id="password_label2">Confirm New Password:</label></td>
+                            <td><label for="password2" id="password_label2" maxlength="20">Confirm New Password:</label></td>
                             <td><input type="password" name="password2" id ="password2" disabled></td>
                         </tr>
                     </table>
