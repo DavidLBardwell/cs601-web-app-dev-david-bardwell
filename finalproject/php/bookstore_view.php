@@ -8,7 +8,7 @@
         <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
         <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
 
-        <script language="javascript" src="../js/bookstore_view.js"></script>
+        <script type="text/javascript" src="../js/bookstore_view.js"></script>
         <link rel="stylesheet" href="../styles/bookstore_view.css">
         
         <style type="text/css">
