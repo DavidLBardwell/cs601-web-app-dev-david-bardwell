@@ -3,10 +3,27 @@
     <head>
         <title>David's Second-hand Bookstore - Login page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
         
+        <link rel="stylesheet" href="../styles/login_view.css">
+        <script type="text/javascript" src="../js/validateObject.js"></script>
+
         <script type="text/javascript">
+            
+            $(document).ready(function() {
+                $("#username").on("blur", function() {
+                    var loginUsername = $("#username").val();
+                    validateUtil.validateLoginUsernameField(loginUsername);
+               });
+                
+               $("#password").on("blur", function() {
+                    var loginPassword = $("#password").val();
+                    validateUtil.validateLoginPasswordField(loginPassword);
+               });
+            });    
+
+            
             function loginValidation() {
-                //window.document.location.href="main.php";
                 // client side validation of login before continuing
                 //var checkit = document.getElementById('checkit');
                 //checkit.innerHTML = "Invalid username or password";
@@ -15,7 +32,6 @@
             }
         </script>
         
-        <link rel="stylesheet" href="../styles/login_view.css">
         <style type="text/css">
            /* For some reason this is not working from the login_view.css file
               yet it seems to be working good from here? */

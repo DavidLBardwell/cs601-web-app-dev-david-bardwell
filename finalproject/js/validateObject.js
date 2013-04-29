@@ -36,7 +36,32 @@ var validateUtil = {
        }    
    },
    
+   // validate username for login
+   validateLoginUsernameField : function(username) {
+       ret = true;
+       result = validateUtil.validateGenericField(username);
+       if (result === false) {
+           ret = false;
+           $("#checkit").html("Field cannot by empty");
+       }
+       else {
+           $("#checkit").html("");
+       }
+       return ret;
+   },
    
+   // validate password for login
+   validateLoginPasswordField : function(password) {
+       var ret = true;
+       if (validateUtil.validatePasswordRule(password) === false) {
+           $("#checkit").html("Password is not valid. Please review password rules.");
+           ret = false;
+       }
+       else {
+           $("#checkit").html(''); // clear any error message
+       }
+       return ret;
+   },
    
    // validate password field 1 on the registration form
    validateRegPassword1Field : function(password) {
@@ -169,10 +194,4 @@ var validateUtil = {
        return ret;
    
    }
-   
-   
-   
-
 };
-
-
