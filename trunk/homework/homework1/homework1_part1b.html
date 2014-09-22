@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>David Bardwell Homework 1 Part 1b</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+  <script type="text/javascript">
+
+    // On load, exercise the module pattern with a public getSalary and
+    // setSalary functions and hide the underlying salary data.
+    window.onload = function() {
+      
+      var mySalaryModulePattern = (function() {
+        // hide the salary data from any client that wants to use
+        // this module pattern object.
+        var salary = 50000;
+          
+        return {
+          getSalary : function() {
+            return salary;
+          },
+          setSalary : function(newSalary) {
+            salary = newSalary;  
+          }
+        };
+      })();
+      
+      // first, return the initial salary
+      var outputSalary = document.getElementById("outputSalary");
+      outputSalary.innerHTML = "The initial salary is " + mySalaryModulePattern.getSalary();
+      
+      // now, update the salary amount with the setter call and show new salary
+      var newOutputSalary = document.getElementById("newOutputSalary");
+      mySalaryModulePattern.setSalary(60000);
+      newOutputSalary.innerHTML = "The new salary is " + mySalaryModulePattern.getSalary();
+    };
+  </script>
+</head>
+
+<body>
+    <div>
+      <h2>Output for homework1 part 1b of assignment</h2>
+      <p id="outputSalary"> </p>
+      <p id="newOutputSalary"> </p>
+    </div>  
+</body>
