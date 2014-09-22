@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>David Bardwell Homework 1 Part 1a</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+  <script type="text/javascript">
+    // on load, instantiate our Employee type and Manager type and
+    // display the salary for Employee and override getSalary function
+    // for Manager
+    window.onload = function() {
+      function Employee() {
+      }
+      
+      Employee.prototype = {
+        constructor : Employee,
+        salary : 50000,
+        getSalary : function() {
+          return this.salary;
+        }
+      };
+      
+      // get our instance of the Employee type
+      var myEmployee = new Employee();
+    
+      var outputSalary = document.getElementById("outputEmployee");
+      outputSalary.innerHTML = "Salary for Employee is " + myEmployee.getSalary();
+      
+      function Manager() {
+      }
+      
+      Manager.prototype = new Employee();
+      
+      // override the Employee's getSalary function and return 50% more  
+      Manager.prototype.getSalary = function() {
+        return this.salary * 1.5;
+      };
+      
+      var myManager = new Manager();
+      outputSalary = document.getElementById("outputManager");
+      outputSalary.innerHTML = "Salary for Manager is " + myManager.getSalary();
+    };
+  </script>
+</head>
+
+<body>
+    <div>
+      <h2>Output for homework1 part 1a of assignment</h2>
+      <p id="outputEmployee"> </p>
+      <p id="outputManager"> </p>
+    </div>  
+</body>

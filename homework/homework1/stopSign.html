@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>David Bardwell Homework 1 part 3</title>
+      <meta charset="UTF-8">
+  </head>
+  
+  <body>
+    <div>
+      <svg width="500" height="125">
+        <defs>
+          <g id="myGroup">
+            <polygon points="50,5   100,5  125,30  125,80 100,105
+                             50,105  25,80  25, 30"
+              style="stroke:#660000; fill:#cc3333; stroke-width: 3;"/>
+             
+            <text x=38 y=62 font-family="san-serif" 
+                  font-size="32px" fill="#FFFFFF">
+                  STOP
+            </text>
+          </g>
+        </defs>
+              
+        <use xlink:href="#myGroup" 
+             transform="translate(0,0)"></use>
+        
+        <use xlink:href="#myGroup" 
+             transform="translate(240,-15) rotate(90)"></use>
+              
+        <use xlink:href="#myGroup" 
+             transform="translate(375, 115) rotate(180)"></use>
+        
+      </svg>
+    </div>
+   
+    <div>
+      <svg width="500" height="300">
+        <defs>
+          <g id="myGroup2">
+            <polygon points="50,5   100,5  125,30  125,80 100,105
+                             50,105  25,80  25, 30"
+                style="stroke:#660000; fill:#cc3333; stroke-width: 3;"/>
+        
+            <text x=38 y=62 font-family="san-serif" 
+                  font-size="32px" fill="#FFFFFF">
+                  STOP
+            </text>
+            
+            <animateTransform
+              attributeName="transform"
+              begin="0s" dur="5s"
+              type="rotate"
+              from="0 75 55"
+              to="360 75 55"
+              repeatCount="indefinite">
+            </animateTransform>
+          </g>
+        </defs>  
+        
+        <use xlink:href="#myGroup2" 
+             transform="translate(110,0)"></use>
+      </svg>
+    </div>  
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <title>David Bardwell Homework 1 part 2 version 3</title>
+      <meta charset="utf-8">
+      <script type="text/javascript">
+        window.onload = function() {
+          // access the canvas element and its context
+          var canvas = document.getElementById("testCanvas");
+          var context = canvas.getContext("2d");
+          
+          function drawBullsEye() {
+            var radius = 200;    
+            var colorToFill = "#FF0000"; // start with red
+            
+            // get the current radius
+            var ringSize = document.getElementById("bullsEyeSlider").value;
+            
+            while (radius > 0) {
+              context.fillStyle = colorToFill;
+              context.beginPath();
+              context.arc(200, 200, radius, 0, 2 * Math.PI, true);
+              context.fill();
+              context.closePath();
+
+              // shrink radius for next ring and switch colors
+              radius -= ringSize;
+              if (colorToFill === "#FF0000") {
+                colorToFill = "#0000FF";
+              }
+              else {
+                colorToFill = "#FF0000";
+              }
+            }
+          }
+          // start with 25 for ringSize
+          drawBullsEye(25);
+          
+          // hook up event all call the draw function on slider change
+          var slider = document.getElementById("bullsEyeSlider");
+          slider.addEventListener("change", drawBullsEye, false);
+        };
+
+      </script>
+    </head>
+    <body>
+         <canvas id="testCanvas" width="400" height="400"> </canvas>
+         
+         <p></p>
+  
+         <label for="bullsEyeSlider">BandWidth:</label>
+         
+         <input id = "bullsEyeSlider" class="slider" type="range" min="5" max="50" step ="5" value="25">
+    </body>
+</html>
