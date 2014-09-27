@@ -4,32 +4,40 @@
       <title>David Bardwell Homework 1 part 3</title>
       <meta charset="UTF-8">
   </head>
-
+  
+  <!-- Use the <svg> html5 tag with an inner <defs> tag and group related
+       graphics together to allow for the correct translations, rotations
+       and animated transforms. Two groups are used. The first group for
+       the tree stop signs on the first row; a second group is used to
+       allow animated transforms of the second stop sign to show it 
+       spinning.
+    -->
+  
   <body>
     <div>
       <svg width="500" height="300">
         <defs>
           <g id="myGroup">
-            <polygon points="50,5   100,5  125,30  125,80 100,105
-                             50,105  25,80  25, 30"
+            <polygon points="50,5  100,5  125,30  125,80  100,105
+                             50,105  25,80  25,30"
               style="stroke:#660000; fill:#cc3333; stroke-width: 3;"/>
-
-            <text x=38 y=62 font-family="san-serif"
+             
+            <text x=38 y=62 font-family="san-serif" 
                   font-size="32px" fill="#FFFFFF">
                   STOP
             </text>
           </g>
-
+          
           <g id="myGroup2">
             <polygon points="50,5   100,5  125,30  125,80 100,105
                              50,105  25,80  25, 30"
                 style="stroke:#660000; fill:#cc3333; stroke-width: 3;"/>
-
-            <text x=38 y=62 font-family="san-serif"
+        
+            <text x=38 y=62 font-family="san-serif" 
                   font-size="32px" fill="#FFFFFF">
                   STOP
             </text>
-
+            
             <animateTransform
               attributeName="transform"
               begin="0s" dur="5s"
@@ -40,19 +48,19 @@
             </animateTransform>
           </g>
         </defs>
-
-        <use xlink:href="#myGroup"
+              
+        <use xlink:href="#myGroup" 
              transform="translate(0,0)"></use>
-
-        <use xlink:href="#myGroup"
-             transform="translate(110,0) rotate(90, 75, 55)"></use>
-
-        <use xlink:href="#myGroup"
-             transform="translate(220,0) rotate(180, 75, 55)"></use>
-
-        <use xlink:href="#myGroup2"
+        
+        <use xlink:href="#myGroup" 
+             transform="translate(240,-15) rotate(90)"></use>
+              
+        <use xlink:href="#myGroup" 
+             transform="translate(375, 115) rotate(180)"></use>
+        
+        <use xlink:href="#myGroup2" 
              transform="translate(110,130)"></use>
-
+        
       </svg>
     </div>
   </body>

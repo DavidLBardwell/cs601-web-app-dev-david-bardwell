@@ -6,9 +6,10 @@
   <script type="text/javascript">
     // on load, instantiate our Employee type and Manager type and
     // display the salary for Employee and override getSalary function
-    // for Manager
+    // for Manager.
     window.onload = function() {
-      function Employee() {
+      function Employee(name) {
+          this.name = name;
       }
       
       Employee.prototype = {
@@ -20,14 +21,16 @@
       };
       
       // get our instance of the Employee type
-      var myEmployee = new Employee();
+      var myEmployee = new Employee("John Smith");
     
       var outputSalary = document.getElementById("outputEmployee");
-      outputSalary.innerHTML = "Salary for Employee is " + myEmployee.getSalary();
+      outputSalary.innerHTML = "Default salary for employee " + myEmployee.name + " is " + myEmployee.getSalary();
       
-      function Manager() {
+      function Manager(name) {
+          this.name = name;
       }
       
+      // get our instance of the Manager type
       Manager.prototype = new Employee();
       
       // override the Employee's getSalary function and return 50% more  
@@ -35,9 +38,10 @@
         return this.salary * 1.5;
       };
       
-      var myManager = new Manager();
+      var myManager = new Manager("Tim Johnson");
+     
       outputSalary = document.getElementById("outputManager");
-      outputSalary.innerHTML = "Salary for Manager is " + myManager.getSalary();
+      outputSalary.innerHTML = "Salary for manager " + myManager.name + " based on employee prototype is " + myManager.getSalary();
     };
   </script>
 </head>
