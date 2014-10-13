@@ -1,10 +1,29 @@
 
 var senatorList = [];
 window.onload = function() {
+  // see if our senators exist in localStorage. If so, load
+  // up our JSON senator list from localStorage. If not, load
+  // via an AJAX call from the partyList.xml file.
+  if (window.localStorage.length > 0) {
+      for (var i = 0; i < window.localStorage.length; i++) {
+          var keyValue = localStorage.key(i);
+          // make sure data belongs to senators, and not something else
+          if (keyValue.indexOf('senator:') !== -1) {
+              var jsonSenator = JSON.parse(window.localStorage.getItem(keyValue));
+              senatorList.push(jsonSenator);
+          }
+      }
+      
+      // display the list of senators
+      displaySenators();
+  }
+  else {
+      loadFromAJAX();
+  }
 
-  // get the JSON representation of the party.xml file via an
-  // AJAX call. Then load the HTML members unordered list with
-  // the names from the JSON constructed senator object.
+};
+
+function loadFromAJAX() {
   var data_file = "http://localhost/homework2/partyList.xml";
   var http_request = new XMLHttpRequest();
 
@@ -25,9 +44,30 @@ window.onload = function() {
         var partyName = senator.children[1].innerHTML;
         var senatorJSON = {name : senatorName, party : partyName, voted : false};
         senatorList.push(senatorJSON);
-        //console.log(nodeNameName + ': ' + senatorName);
-        //console.log(nodeNameParty + ': ' + partyName);
       }
+      
+      // display the list of senators
+      displaySenators();
+     
+      // initialize local storage
+      initializeLocalStorage();
+    }
+  };
+  
+  // make AJAX request passing the xml file asynchronously
+  http_request.open("GET", data_file, true);
+  http_request.send();
+}
+
+function initializeLocalStorage() {
+    window.localStorage.clear();
+    for (i = 0; i < senatorList.length; i++) {
+        window.localStorage.setItem('senator:' + senatorList[i].name, 
+                                    JSON.stringify(senatorList[i]));
+    }
+}
+
+function displaySenators() {
      // display the list of senators
      var membersHTML = document.getElementById('members');
      membersHTML.innerHTML='';
@@ -36,10 +76,4 @@ window.onload = function() {
          nextLi.innerHTML = senatorList[i].name;
          membersHTML.appendChild(nextLi);
      }
-    }
-  };
-  
-  // make AJAX request passing the xml file asynchronously
-  http_request.open("GET", data_file, true);
-  http_request.send();
-};
+}
