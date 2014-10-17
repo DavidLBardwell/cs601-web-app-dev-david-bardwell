@@ -1,6 +1,9 @@
 
 var senatorList = [];
 var debugMsg;
+var republicanDrop;
+var democratDrop;
+
 window.onload = function() {
   // see if our senators exist in localStorage. If so, load
   // up our JSON senator list from localStorage. If not, load
@@ -86,8 +89,8 @@ function displaySenators() {
      membersHTML.ondragend = dragEndHandler;
      membersHTML.ondrag = dragHandler;     
      
-     var republicanDrop = document.getElementById("republicans");
-     var democratDrop = document.getElementById("democrats");
+     republicanDrop = document.getElementById("republicans");
+     democratDrop = document.getElementById("democrats");
      
     // Add event handlers for the target
     republicanDrop.ondragenter = dragEnterHandler;
@@ -129,5 +132,48 @@ function dropHandler(e) {
 //    target.innerHTML = "";
 //    target.appendChild(newElement);
     debugMsg.innerHTML = "Drop completed for " + e.target.id;
+    if (e.target.id === 'republicans') {
+        var senator = getJSONFromName(e.dataTransfer.getData("Text"));
+        if (senator.party === 'Republican') {
+            var nextLi = document.createElement("li");
+            nextLi.setAttribute("id", senator.name + ' Dropped');
+            nextLi.innerHTML = senator.name;
+            republicanDrop.appendChild(nextLi);
+            voteCompleted(senator.name);
+        }
+    }
+    else {
+        var senator = getJSONFromName(e.dataTransfer.getData("Text"));
+        if (senator.party === 'Democrat') {
+            var nextLi = document.createElement("li");
+            nextLi.setAttribute("id", senator.name + ' Dropped');
+            nextLi.innerHTML = senator.name;
+            democratDrop.appendChild(nextLi);
+            voteCompleted(senator.name);
+        }
+    }
+    // TODO: need to make the top element no longer draggable
+    //       need to update the local storage with the vote
     e.preventDefault();
+}
+
+function getJSONFromName(name) {
+    for (var i = 0; i < senatorList.length; i++) {
+        if (senatorList[i].name === name) {
+            return senatorList[i];
+        }
+    }
+}
+
+function voteCompleted(name) {
+    var membersHTML = document.getElementById('members');
+    // find the li for the senator and make draggable false
+    var liList = membersHTML.childNodes;
+    for (var i = 0; i < liList.length; i++) {
+        var liName = liList[i].getAttribute("id");
+        if (name === liName) {
+            liList[i].setAttribute("draggable", false);
+            break;
+        }
+    }
 }
