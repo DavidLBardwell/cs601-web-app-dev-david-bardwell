@@ -1,8 +1,4 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 window.onload = init;
 var url = "ws://echo.websocket.org";
 var socket;
@@ -33,9 +29,7 @@ function connectToServer() {
     socket.onerror = handleError;
     socket.onmessage = handleMessage;
     
-    // call the sendToServer every 5 seconds or 5000 milliseconds and
     // disable the start button so it cannot be clicked on again.
-    setInterval(sendToServer, 2000);
     document.getElementById("startButton").disabled = true;
     getLocation();
 }
@@ -49,8 +43,8 @@ function disconnectFromServer() {
 function sendToServer() {
     if (socket)
     {
-        var changeInLatitude = Math.random()/10;
-        var changeInLongitude = Math.random()/10;
+        var changeInLatitude = Math.random()/100;
+        var changeInLongitude = Math.random()/100;
         var data = JSON.stringify({latitude: changeInLatitude, longitude : changeInLongitude});
         socket.send(data);
     }
@@ -59,6 +53,7 @@ function sendToServer() {
 // WebSocket event handlers
 function handleOpenConnection(event) {
     //log("Open");
+    setInterval(sendToServer, 5000);
 }
 
 function handleCloseConnection(event) {
@@ -66,19 +61,19 @@ function handleCloseConnection(event) {
     socket = null;
 }
 
-// the client receives a message from the server.
+// This is the WebSocket callback message handler function or onmessage
+// event handler.
+// The client receives a message from the server once every 5 seconds.
 // We parse the stringified JSON object back into an object so
 // we can easily get the data for latitude and longitude.
 function handleMessage(event) {
     var data = JSON.parse(event.data);
     updateLocation(data);
-    //log("Received: Lat: " + data.lat + " Lon: " + data.lon);
-    
 }
 
 // the client handles an error condition, just log it for now
 function handleError(event) {
-    //log("Error:" + event.data);
+    log("Error:" + event.data);
 }
 
 // the log method appends to out page's output area the new information.
@@ -89,6 +84,8 @@ function log(message) {
     output.appendChild(pre);
 }
 
+// Upon startup and do only once, get the starting location and
+// display it via the geolocation API.
 function getLocation() {
 
     // asynchronous call with callback function specified
@@ -159,6 +156,7 @@ function handleError(error) {
     }
 }
 
+// show our error in the main status div
 function updateStatus(message) {
     document.getElementById("status").innerHTML = 
         "<strong>Error</strong>: " + message;
@@ -166,6 +164,8 @@ function updateStatus(message) {
 
 // show initial and new positions on the map. This includes
 // both position markers and lines that connect all the markers.
+// note: the createMap argument is needed to know if we need to create
+//       the Google map. It is true on the first invocation.
 function showOnMap(pos, createMap) {
     
     var googlePosition = 
@@ -220,7 +220,7 @@ function showPath()
   var latlong = new google.maps.LatLng(latitude, longitude);
   path.push(latlong);
   
-  // only draw path if there is at least two coordicates
+  // only draw path if there is at least two coordinates
   if (path.length > 1) {
       var line = new google.maps.Polyline({
           path : path,
