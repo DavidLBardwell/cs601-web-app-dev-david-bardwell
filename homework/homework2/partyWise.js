@@ -75,11 +75,29 @@ function initializeLocalStorage() {
 function displaySenators() {
      // display the list of senators
      var membersHTML = document.getElementById('members');
+     republicanDrop = document.getElementById("republicans");
+     republicanDrop.innerHTML='';
+     democratDrop = document.getElementById("democrats");
+     democratDrop.innerHTML='';
      membersHTML.innerHTML='';
      for (i = 0; i < senatorList.length; i++) {
          var nextLi = document.createElement("li");
          nextLi.setAttribute("id", senatorList[i].name);
-         nextLi.setAttribute("draggable", true);
+         if (senatorList[i].voted === false) {
+             nextLi.setAttribute("draggable", true);
+         }
+         else {
+             nextLi.setAttribute("draggable", false);
+             var dropLi = document.createElement("li");
+             dropLi.setAttribute("id", senatorList[i].name + ' Dropped');
+             dropLi.innerHTML = senatorList[i].name;
+             if (senatorList[i].party === 'Republican') {
+                 republicanDrop.appendChild(dropLi);
+             }
+             else {
+                 democratDrop.appendChild(dropLi);
+             }
+         }
          nextLi.innerHTML = senatorList[i].name;
          membersHTML.appendChild(nextLi);
      }
@@ -88,9 +106,6 @@ function displaySenators() {
      membersHTML.ondragstart = dragStartHandler;
      membersHTML.ondragend = dragEndHandler;
      membersHTML.ondrag = dragHandler;     
-     
-     republicanDrop = document.getElementById("republicans");
-     democratDrop = document.getElementById("democrats");
      
     // Add event handlers for the target
     republicanDrop.ondragenter = dragEnterHandler;
@@ -126,11 +141,6 @@ function dragOverHandler(e) {
 }
 
 function dropHandler(e) {
-//    var sourceId = e.dataTransfer.getData("Text");  
-//    var sourceElement = document.getElementById(sourceId);
-//    var newElement = sourceElement.cloneNode(false);               
-//    target.innerHTML = "";
-//    target.appendChild(newElement);
     debugMsg.innerHTML = "Drop completed for " + e.target.id;
     if (e.target.id === 'republicans') {
         var senator = getJSONFromName(e.dataTransfer.getData("Text"));
@@ -152,8 +162,6 @@ function dropHandler(e) {
             voteCompleted(senator.name);
         }
     }
-    // TODO: need to make the top element no longer draggable
-    //       need to update the local storage with the vote
     e.preventDefault();
 }
 
@@ -173,6 +181,10 @@ function voteCompleted(name) {
         var liName = liList[i].getAttribute("id");
         if (name === liName) {
             liList[i].setAttribute("draggable", false);
+            var senator = getJSONFromName(name);
+            senator.voted = true;
+            window.localStorage.setItem('senator:' + name, 
+                                    JSON.stringify(senator));
             break;
         }
     }
