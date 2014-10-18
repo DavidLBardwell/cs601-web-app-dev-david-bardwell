@@ -1,14 +1,9 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 window.onload = init;
 var url = "ws://echo.websocket.org";
 var socket;
 
 // register the event handlers for buttons
-
 function init() {
     var startButton = document.getElementById("startButton");
     startButton.onclick = connectToServer;
@@ -18,15 +13,13 @@ function connectToServer() {
     // create the WebSocket object
     socket = new WebSocket(url);
    
-    // event handlers for the WebSocket
+    // set up event handlers for the WebSocket
     socket.onopen = handleOpenConnection;
     socket.onclose = handleCloseConnection;  // not currently used by client
     socket.onerror = handleError;
     socket.onmessage = handleMessage;
     
-    // call the sendToServer every 5 seconds or 5000 milliseconds and
-    // disable the start button so it cannot be clicked on again.
-    setInterval(sendToServer, 5000);
+    // disable the start button so we cannot start again.
     document.getElementById("startButton").disabled = true;
 }
 
@@ -53,6 +46,9 @@ function sendToServer() {
 // WebSocket event handlers
 function handleOpenConnection(event) {
     log("Open");
+
+    // call the sendToServer every 5 seconds or 5000 milliseconds and
+    setInterval(sendToServer, 5000);
 }
 
 function handleCloseConnection(event) {
@@ -60,7 +56,8 @@ function handleCloseConnection(event) {
     socket = null;
 }
 
-// the client receives a message from the server.
+// The handleMessage function is the onmessage event handler.
+// The client receives a message from the server.
 // We parse the stringified JSON object back into an object so
 // we can easily get the data for latitude and longitude.
 function handleMessage(event) {
