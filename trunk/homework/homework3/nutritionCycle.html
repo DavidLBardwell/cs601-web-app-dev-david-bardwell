@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>NutritionInfo - David Bardwell homework 3</title>
+        <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.23.custom.css" 
+                rel="stylesheet" />
+        <script type="text/javascript" 
+                src="js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" 
+                src="js/jquery-ui-1.8.23.custom.min.js"></script>
+                
+        <style type="text/css">
+            
+        </style>
+                
+        <script type="text/javascript">
+            // array of JSON objects
+            var itemList = [];
+             
+            $(function() {
+                // disable the input until data is loaded
+                $('#target').attr("disabled", "disabled");
+                
+                $("#loadButton").click(function() {
+                    var result = [];
+                    // filter the data for matching entries
+                    result = $.grep(itemList,
+                        function(value, index) {
+                            return (value.label.toLowerCase().indexOf(
+                                $('#target').val().toLowerCase()) === 0);
+                        });
+                     $("#output").empty();
+                     for (var i = 0; i < result.length; i++) {
+                        $("#output").append("<p> " + result[i].data.name + "</p>");
+                    }
+                });
+                
+                $("#cycleButton").click(function() {
+                    
+                    
+                });
+
+                // make the ajax request
+                $.ajax({
+                    url : "cgi-bin/getData.php",
+                    data : {url : "http://kalathur.com/food/calories.xml"},
+                    complete : function(xhr, result) {
+                        if (result !== "success")
+                            return;
+                        var response = xhr.responseXML;
+                        // for each <song> element
+                        $(response).find("item").each (function() {
+                            var name = $(this).find("name").text();
+                            var size = $(this).find("size").text();
+                            var fat = $(this).find("fat").text();
+                            var item = 
+                                {label : name, 
+                                 value : name,
+                                 data : {name : name, size : size, 
+                                        fat : fat}};
+                           itemList.push(item); 
+                        });
+                    }
+                });
+                // enable the input
+                $('#target').removeAttr("disabled");
+            });
+            
+
+        </script>
+    </head>
+    
+    <body>
+        <h2>JQuery Nutrition Cycle</h2>
+        <div class="ui-widget">
+            <label for="target">Tag: </label>
+            <input id="target" size="60"/>
+            <input type="button" id="loadButton" title="load" value="load">
+            <input type="button" id="cycleButton" title="cycle" value="cycle">
+            <p></p>
+
+        </div>
+        <div id="output">
+            
+        </div>
+    </body>
+</html>
