@@ -12,12 +12,19 @@
         <script type="text/javascript" src="js/jquery.cycle.all.js"></script>                
                 
         <style type="text/css">
+            /* Customize the css on the generated research results divs to show
+               an orange rounded border. Bold the label in second css rule.
+            */
             #output div {
                 border: 2px solid orange;
                 width: 600px;
                 border-radius: 10px;
                 margin-top: 10px;
-            };
+            }
+            
+            #output div > p > span {
+                font-weight : bold;
+            }
         </style>
                 
         <script type="text/javascript">
@@ -37,8 +44,10 @@
                                 $('#target').val().toLowerCase()) === 0);
                         });
                      $("#output").empty();
+                     
+                     // format each result as its own div with name, cals, size
                      for (var i = 0; i < result.length; i++) {
-                        $("#output").append("<div><p>" + result[i].data.name + "</p> <p>" + result[i].data.fat + "</p> <p>" + result[i].data.size + "</p></div>");
+                        $("#output").append("<div><p><span>Name: </span>" + result[i].data.name + "</p> <p><span>Cals: </span>" + result[i].data.cals + "</p> <p><span>Size: </span>" + result[i].data.size + "</p></div>");
                     }
                 });
                 
@@ -54,7 +63,8 @@
                     });
                 });
 
-                // make the ajax request
+                // make the ajax request, note the url and data values to
+                // read the xml file from a different domain.
                 $.ajax({
                     url : "cgi-bin/getData.php",
                     data : {url : "http://kalathur.com/food/calories.xml"},
@@ -62,16 +72,16 @@
                         if (result !== "success")
                             return;
                         var response = xhr.responseXML;
-                        // for each <song> element
+                        // for each <item> element
                         $(response).find("item").each (function() {
                             var name = $(this).find("name").text();
                             var size = $(this).find("size").text();
-                            var fat = $(this).find("fat").text();
+                            var cals = $(this).find("cals").text();
                             var item = 
                                 {label : name, 
                                  value : name,
                                  data : {name : name, size : size, 
-                                        fat : fat}};
+                                        cals : cals}};
                            itemList.push(item); 
                         });
                     }
