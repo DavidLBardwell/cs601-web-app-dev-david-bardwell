@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>NutritionInfo - David Bardwell homework 3</title>
         <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.23.custom.css" 
                 rel="stylesheet" />
@@ -17,7 +17,10 @@
             $(function() {
                 // disable the input until data is loaded
                 $('#target').attr("disabled", "disabled");
-                // make the ajax request
+                
+                // make the ajax request, note use of url and data values
+                // to go across a different domain. The server reads the
+                // url and echos the data back via php code.
                 $.ajax({
                     url : "cgi-bin/getData.php",
                     data : {url : "http://kalathur.com/food/calories.xml"},
@@ -25,16 +28,18 @@
                         if (result !== "success")
                             return;
                         var response = xhr.responseXML;
-                        // for each <song> element
+                        // for each <item> element
+                        // In the menu show both the name and serving size to
+                        // disambiguate similarly named items.
                         $(response).find("item").each (function() {
                             var name = $(this).find("name").text();
                             var size = $(this).find("size").text();
-                            var fat = $(this).find("fat").text();
+                            var cals = $(this).find("cals").text();
                             var item = 
-                                {label : name, 
+                                {label : name + ' - ' + size, 
                                  value : name,
                                  data : {name : name, size : size, 
-                                        fat : fat}};
+                                        cals : cals}};
                            itemList.push(item); 
                         });
                     }
@@ -53,9 +58,11 @@
             // request.term -- user entry
             // callback -- to return array of values
             function selectEntries (request, callback) {
-                //console.log(request.term);
                 var result = [];
-                // filter the data for matching entries
+                
+                // filter the data for matching entries on the item name
+                // Only match if the search string matches from the 
+                // beginning of the given name.
                 result = $.grep(itemList,
                     function(value, index) {
                         return  (value.label.toLowerCase().indexOf(
@@ -68,7 +75,7 @@
             function makeSelection(event, ui) {
                 $('#name').val(ui.item.data.name);
                 $('#size').val(ui.item.data.size);
-                $('#fat').val(ui.item.data.fat);
+                $('#cals').val(ui.item.data.cals);
             }
         </script>
     </head>
@@ -76,17 +83,17 @@
     <body>
         <h2>JQuery Nutrition Autocomplete</h2>
         <div class="ui-widget">
-            <label for="target">Menu Item Name: </label>
+            <label for="target">Name: </label>
             <input id="target" size="60"/>
             <p></p>
-            <label for="name">Menu Item Name: </label>
+            <label for="name">Name: </label>
             <output id="name"></output>
             <p></p>
             <label for="size">Serving Size: </label>
             <output id="size"></output>
             <p></p>
-            <label for="fat">Calories: </label>
-            <output id="fat"></output>            
+            <label for="cals">Calories: </label>
+            <output id="cals"></output>            
         </div>
     </body>
 </html>
