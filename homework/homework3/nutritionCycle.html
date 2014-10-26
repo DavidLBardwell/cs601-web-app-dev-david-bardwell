@@ -9,9 +9,15 @@
                 src="js/jquery-1.8.0.min.js"></script>
         <script type="text/javascript" 
                 src="js/jquery-ui-1.8.23.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.cycle.all.js"></script>                
                 
         <style type="text/css">
-            
+            #output div {
+                border: 2px solid orange;
+                width: 600px;
+                border-radius: 10px;
+                margin-top: 10px;
+            };
         </style>
                 
         <script type="text/javascript">
@@ -32,13 +38,20 @@
                         });
                      $("#output").empty();
                      for (var i = 0; i < result.length; i++) {
-                        $("#output").append("<p> " + result[i].data.name + "</p>");
+                        $("#output").append("<div><p>" + result[i].data.name + "</p> <p>" + result[i].data.fat + "</p> <p>" + result[i].data.size + "</p></div>");
                     }
                 });
                 
                 $("#cycleButton").click(function() {
-                    
-                    
+                    $('#output').cycle({
+                        fx : 'shuffle',
+                        shuffle : {
+                            top : -230,
+                            left : 230
+                        },
+                        speed : 300,
+                        timeout : 1000
+                    });
                 });
 
                 // make the ajax request
