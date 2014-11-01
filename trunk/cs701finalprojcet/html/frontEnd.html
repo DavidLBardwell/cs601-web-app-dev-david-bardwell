@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>jQuery UI Example - Tabs</title>
+	     <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.23.custom.css" 
+                rel="stylesheet" />
+        <script type="text/javascript" 
+                src="js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" 
+                src="js/jquery-ui-1.8.23.custom.min.js"></script>
+                
+		<script type="text/javascript">
+			$(function(){
+			     var options = {event: "click",
+                               fx: {opacity : "toggle", 
+                                   duration: "fast"}};
+			 	 $("#target").tabs(options);
+			});
+		</script>
+		<style type="text/css">
+            div {
+                border: 1px dashed;
+            }
+        </style>
+	</head>
+	<body>
+        <p>
+            <h2>jQuery UI Tabs</h2>
+            <div id="target">
+                <ul>
+                    <li>
+                        <a href="#tab1">CS520</a>
+                    </li>
+                    <li>
+                        <a href="#tab2">CS601</a>
+                    </li>
+                    <li>
+                        <a href="#tab3">CS701</a>
+                    </li>
+                </ul>
+                <div id="tab1">
+                    Course on Information Structures.
+                </div>
+                <div id="tab2">
+                    Course on Web Development.
+                </div>
+                <div id="tab3">
+                    Course on Rich Internet Apps.
+                </div>
+            </div>
+    </body>
+</html>
