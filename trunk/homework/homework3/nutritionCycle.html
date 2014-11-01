@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>NutritionInfo - David Bardwell homework 3</title>
+        <title>NutritionCycle - David Bardwell homework 3</title>
         <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.23.custom.css" 
                 rel="stylesheet" />
         <script type="text/javascript" 
@@ -51,6 +51,7 @@
                     }
                 });
                 
+                // similar to the example from class, cycle thru the output 
                 $("#cycleButton").click(function() {
                     $('#output').cycle({
                         fx : 'shuffle',
@@ -67,7 +68,7 @@
                 // read the xml file from a different domain.
                 $.ajax({
                     url : "cgi-bin/getData.php",
-                    data : {url : "http://kalathur.com/food/calories.xml"},
+                    data : {url : "http://kalathur.com/food/calories2.xml"},
                     complete : function(xhr, result) {
                         if (result !== "success")
                             return;
