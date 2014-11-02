@@ -1,24 +1,13 @@
-window.onload = init;
-
 // current location
 var latitude, longitude;
+var latLong;
 
 // Google map
 var map = null;
+var service;
 
 // create map
 var createMap = true;
-
-// handle the go button click event
-//$( "#goButton" ).click(function() {
-//  showMap();
-//});
-
-// register the event handlers for buttons
-function init() {
-    var startButton = document.getElementById("goButton");
-    startButton.onclick = showMap;
-}
 
 function showMap() {
     // asynchronous call with callback function specified
@@ -37,7 +26,7 @@ function displayInitialLocation(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
     
-    showOnMap(position.coords);
+    initializePlaces(position.coords);
 }
 
 function handleError(error) {
@@ -60,24 +49,87 @@ function updateStatus(message) {
         "<strong>Error</strong>: " + message;
 }
 
-function showOnMap(pos) {
+//function showOnMap(pos) {
+//    var googlePosition = 
+//        new google.maps.LatLng(pos.latitude, pos.longitude);
+//    latLong = googlePosition;
+//    
+//    var mapOptions = {
+//        zoom: 15,
+//        center: googlePosition,
+//        mapTypeId: google.maps.MapTypeId.ROADMAP
+//    };
+//    
+//    var mapElement = document.getElementById("map");
+//    if (createMap === true) {
+//        map = new google.maps.Map(mapElement, mapOptions);
+//        createMap = false;
+//    }
+//    
+//    var latlong = new google.maps.LatLng(latitude, longitude);
+//
+//    // pan to the most recent position
+//    map.panTo(latlong);
+//}
+
+function initializePlaces(pos) {
     var googlePosition = 
         new google.maps.LatLng(pos.latitude, pos.longitude);
+    latLong = googlePosition;  
     
-    var mapOptions = {
-        zoom: 15,
-        center: googlePosition,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    
-    var mapElement = document.getElementById("map");
-    if (createMap === true) {
-        map = new google.maps.Map(mapElement, mapOptions);
-        createMap = false;
-    }
-    
-    var latlong = new google.maps.LatLng(latitude, longitude);
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: latLong,
+      zoom: 16
+    });
 
-    // pan to the most recent position
-    map.panTo(latlong);
+  var request = {
+    location: latLong,
+    radius: '1000',
+    types: ['store']
+  };
+
+  service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, callbackPlaces);
+}
+
+function callbackPlaces(results, status) {
+  if (status === google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      var place = results[i];
+      //console.log(place);
+      var nextLatLong = place.geometry.location;
+      
+      // add the marker to the map
+      var title = place.name;
+      var content = "Lat: " + nextLatLong.B + 
+                    ", Long: " + nextLatLong.k;
+            
+      addMarker(map, nextLatLong, title, content);
+      
+      $("#searchResultsTable").append("<tr><td>" + title +  "</td></tr>");
+    }
+  }
+}
+
+// add position marker to the map
+function addMarker(map, latlongPosition, title, content) {
+   
+    var options = {
+        position: latlongPosition,
+        map: map,
+        title: title,
+        clickable: true
+    };
+    var marker = new google.maps.Marker(options);
+
+    var popupWindowOptions = {
+        content: title,
+        position: latlongPosition
+    };
+
+    var popupWindow = new google.maps.InfoWindow(popupWindowOptions);
+
+    google.maps.event.addListener(marker, 'click', function() {
+        popupWindow.open(map);
+    });
 }
