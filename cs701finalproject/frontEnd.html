@@ -27,6 +27,7 @@
         }
         #searchResultsTable *{
             text-align: left;
+        
         }
     </style>
      
@@ -38,9 +39,13 @@
             $("#target").tabs(options);
             $("#map").hide();
 
-            $( "#goPlaces" ).click(function() {
+            $("#goPlaces").click(function() {
                 $("#map").show();
                 showMap();
+            });
+            
+            $("#goDetailPlaces").click(function() {
+                getDetailPlaces();
             });
         });
     </script>     
@@ -55,14 +60,15 @@
             <a href="#tab1">FindIt! Start Search</a>
         </li>
         <li>
-            <a href="#tab2">FindIt! Results</a>
+            <a href="#tab2">FindIt! Detail Results</a>
         </li>
         <li>
-            <a href="#tab3">FindIt! Detail Results</a>
+            <a href="#tab3">FindIt! Reviews</a>
         </li>
     </ul>
 
     <div id="tab1">
+        <h2>Start Searching</h2>
         <p>Choose a category to search</p>
         <p></p>
                     
@@ -77,6 +83,9 @@
                     </td>
                     <td>
                         <button type="button" id="goPlaces">Places!</button>
+                    </td>
+                    <td>
+                        <button type="button" id="goDetailPlaces">Places Detail!</button>
                     </td>
                 </tr>
             </table>
@@ -101,15 +110,22 @@
                 
     </div>
     <div id="tab2">
-        Search Results
+        <h2>Search Detail Results</h2>
+        
+        <p id="locationTitle">   </p>
+        
+        <div id="photos">
+            
+        </div>
+        
+        <div id="output">
+            
+        </div>
                 
-                
-                
-                
-                
+    
     </div>
     <div id="tab3">
-        Search Detail Results
+        <h1>Reviews</h1>
                 
                 
                 
