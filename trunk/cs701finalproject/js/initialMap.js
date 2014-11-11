@@ -9,6 +9,13 @@ var service;
 // create map
 var createMap = true;
 
+// map storage
+var mapDataObject = {};
+var mapData = [];
+
+var mapDataDetailObject = {};
+var mapDataDetail = [];
+
 function showMap() {
     // asynchronous call with callback function specified
     var options = {
@@ -107,7 +114,13 @@ function callbackPlaces(results, status) {
       addMarker(map, nextLatLong, title, content);
       
       $("#searchResultsTable").append("<tr><td>" + title +  "</td></tr>");
+      
+      // save important places information 
+      var nextPlaceID = place.place_id;
+      var jSONPlace = {title : title, place_id : nextPlaceID};
+      mapData.push(jSONPlace);
     }
+    mapDataObject.mapData = mapData;
   }
 }
 
@@ -133,3 +146,55 @@ function addMarker(map, latlongPosition, title, content) {
         popupWindow.open(map);
     });
 }
+
+function getDetailPlaces() {
+    // test - see if we can get the detail places call to work
+    var request = {
+        placeId: mapDataObject.mapData[0].place_id
+    };
+
+    service = new google.maps.places.PlacesService(map);
+    service.getDetails(request, callbackDetail);
+}    
+
+function callbackDetail(place, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+        
+        mapDataDetailObject.name = place.name;
+        
+        // display all the photos 
+        var photoCount = place.photos.length;
+        var photos = place.photos;
+        for (var i = 0; i < photoCount; i++) {
+            var urlPhoto = photos[i].getUrl({ 'maxWidth': 200, 'maxHeight': 200 });
+            var jSONData = {url : urlPhoto};
+            
+            // remove duplicate photos which are present on Google for some reason?
+            found = false;
+            for (var j = 0; j < mapDataDetail.length; j++) {
+                if (jSONData.url === mapDataDetail[j].url) {
+                    found = true;
+                }
+            }
+            
+            if (found === false) {
+                mapDataDetail.push(jSONData);
+                //$("#output").append("<p>" + jSONData.url + "</p>");
+            }    
+        }
+        
+        // display the details screen
+        $("#locationTitle").html(mapDataDetailObject.name);
+        
+        for (var i = 0; i < mapDataDetail.length; i++) {
+            $("#photos").append("<img src='" + mapDataDetail[i].url + "'>");
+            if (((i + 1) % 4) === 0) {
+                $("#photos").append("<br>");  // break them out 4 to a line
+            }
+        }
+        
+        $("#target").tabs("select", 1 );
+    }
+}    
+   
+
