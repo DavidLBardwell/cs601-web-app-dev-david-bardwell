@@ -16,7 +16,7 @@
     <style type="text/css">
         #map {
 	    margin: 5px;
-	    width: 600px;
+	    width: 800px;
 	    height: 600px;
 	    border: 1px solid black;
         }
@@ -38,22 +38,58 @@
                      duration: "fast"}};
             $("#target").tabs(options);
             $("#map").hide();
+            $('#searchSelection').attr("disabled", "disabled");
+            $('#searchResultsTableHeader').hide();
 
             $("#goPlaces").click(function() {
-                $("#map").show();
-                showMap();
+                // make sure there is a location selection
+                var locationSelection = $("#searchSelection").val();
+                if (locationSelection !== null && locationSelection.length > 0) {
+                    $("#map").show();
+                    showMap();
+                }    
             });
             
-            $("#goDetailPlaces").click(function() {
-                getDetailPlaces();
-            });
+            // load Google search items from items.xml file
+            getGoogleSearchItems(); 
+            
+            // setup autocomplete options
+            var options = {
+                source : selectEntries,
+                select : makeSelection
+            };
+            $('#searchSelection').autocomplete(options);
         });
+        
+        // request.term -- user entry
+        // callback -- to return array of values
+        function selectEntries (request, callback) {
+            var result = [];
+                
+            // filter the data for matching entries on the item name
+            // Only match if the search string matches from the 
+            // beginning of the given name.
+            result = $.grep(itemList,
+                function(value, index) {
+                    if (request.term.length === 1 && request.term === '*') {
+                        return value.label.toLowerCase().length > 0; // all of them
+                    } else {
+                        return (value.label.toLowerCase().indexOf(
+                            request.term.toLowerCase()) === 0);
+                    }
+                });
+           // return the results
+           callback(result);
+        }
+        // when a selection is made
+        function makeSelection(event, ui) {
+            $('#searchSelection').val(ui.item.data.name);
+        }
+        
     </script>     
 
 </head>
 <body>
-    <h2>FindIt! Finds places of interest</h2>
-    
     <div id="target">
     <ul>
         <li>
@@ -69,30 +105,32 @@
 
     <div id="tab1">
         <h2>Start Searching</h2>
-        <p>Choose a category to search</p>
+        <p>Enter search criteria below</p>
         <p></p>
                     
         <section id="selectionOption">
+            <div id="ui-widget">
             <table>
                 <tr>
-                    <td><label for="searchSelection" id="search_label">Pick a catagory:</label></td> 
-                    <td><select id="searchSelection">
-                        <option value="1">Museums</option>
-                        <option value="2">Restaurants</option>
-                        </select>
-                    </td>
+                    <td><label for="searchSelection" id="search_label">Pick a category:(* to see all)</label></td> 
+                    <td><input id="searchSelection" size="30"/></td>
                     <td>
                         <button type="button" id="goPlaces">Places!</button>
                     </td>
-                    <td>
-                        <button type="button" id="goDetailPlaces">Places Detail!</button>
-                    </td>
                 </tr>
+                <tr>
+                    <td><label for="searchRadius" id="search_radius_label">Enter the search radius:</label></td>
+                    <td><input type="number" id="searchRadius" value="1000"/></td>
+                    <td></td>
+                    <td></td>
+                </tr>    
             </table>
+            </div>
         </section>
         <p></p>
         
         <div id="searchResults">
+            <h3 id="searchResultsTableHeader">Search Result</h3>
             <table id="searchResultsTable">
                 
             </table>
