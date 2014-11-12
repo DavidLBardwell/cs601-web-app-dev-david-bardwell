@@ -1,0 +1,290 @@
+<items>
+<item>
+  <name>accounting</name>
+</item>
+<item>
+  <name>airport</name>
+</item>
+<item>
+  <name>amusement_park</name>
+</item>
+<item>
+  <name>aquarium</name>
+</item>
+<item>
+  <name>art_gallery</name>
+</item>
+<item>
+  <name>atm</name>
+</item>
+<item>
+  <name>bakery</name>
+</item>
+<item>
+  <name>bank</name>
+</item>
+<item>
+  <name>bar</name>
+</item>
+<item>
+  <name>beauty_salon</name>
+</item>
+<item>
+  <name>bicycle_store</name>
+</item>
+<item>
+  <name>book_store</name>
+</item>
+<item>
+  <name>bowling_alley</name>
+</item>
+<item>
+  <name>bus_station</name>
+</item>
+<item>
+  <name>cafe</name>
+</item>
+<item>
+  <name>campground</name>
+</item>
+<item>
+  <name>car_dealer</name>
+</item>
+<item>
+  <name>car_rental</name>
+</item>
+<item>
+  <name>car_repair</name>
+</item>
+<item>
+  <name>car_wash</name>
+</item>
+<item>
+  <name>casino</name>
+</item>
+<item>
+  <name>cemetery</name>
+</item>
+<item>
+  <name>church</name>
+</item>
+<item>
+  <name>city_hall</name>
+</item>
+<item>
+  <name>clothing_store</name>
+</item>
+<item>
+  <name>convenience_store</name>
+</item>
+<item>
+  <name>courthouse</name>
+</item>
+<item>
+  <name>dentist</name>
+</item>
+<item>
+  <name>department_store</name>
+</item>
+<item>
+  <name>doctor</name>
+</item>
+<item>
+  <name>electrician</name>
+</item>
+<item>
+  <name>electronics_store</name>
+</item>
+<item>
+  <name>embassy</name>
+</item>
+<item>
+  <name>establishment</name>
+</item>
+<item>
+  <name>finance</name>
+</item>
+<item>
+<name>fire_station</name>
+</item>
+<item>
+  <name>florist</name>
+</item>
+<item>
+  <name>food</name>
+</item>
+<item>
+  <name>funeral_home</name>
+</item>
+<item>
+  <name>furniture_store</name>
+</item>
+<item>
+  <name>gas_station</name>
+</item>
+<item>
+  <name>general_contractor</name>
+</item>
+<item>
+  <name>grocery_or_supermarket</name>
+</item>
+<item>
+  <name>gym</name>
+</item>
+<item>
+  <name>hair_care</name>
+</item>
+<item>
+  <name>hardware_store</name>
+</item>
+<item>
+  <name>health</name>
+</item>
+<item>
+  <name>hindu_temple</name>
+</item>
+<item>
+  <name>home_goods_store</name>
+</item>
+<item>
+  <name>hospital</name>
+</item>
+<item>
+  <name>insurance_agency</name>
+</item>
+<item>
+  <name>jewelry_store</name>
+</item>
+<item>
+  <name>laundry</name>
+</item>
+<item>
+  <name>lawyer</name>
+</item>
+<item>
+  <name>library</name>
+</item>
+<item>
+  <name>liquor_store</name>
+</item>
+<item>
+  <name>local_government_office</name>
+</item>
+<item>
+  <name>locksmith</name>
+</item>
+<item>
+  <name>lodging</name>
+</item>
+<item>
+  <name>meal_delivery</name>
+</item>
+<item>
+  <name>meal_takeaway</name>
+</item>
+<item>
+  <name>mosque</name>
+</item>
+<item>
+  <name>movie_rental</name>
+</item>
+<item>
+  <name>movie_theater</name>
+</item>
+<item>
+  <name>moving_company</name>
+</item>
+<item>
+  <name>museum</name>
+</item>
+<item>
+  <name>night_club</name>
+</item>
+<item>
+  <name>painter</name>
+</item>
+<item>
+  <name>park</name>
+</item>
+<item>
+  <name>parking</name>
+</item>
+<item>
+  <name>pet_store</name>
+</item>
+<item>
+  <name>pharmacy</name>
+</item>
+<item>
+  <name>physiotherapist</name>
+</item>
+<item>
+  <name>place_of_worship</name>
+</item>
+<item>
+  <name>plumber</name>
+</item>
+<item>
+  <name>police</name>
+</item>
+<item>
+  <name>post_office</name>
+</item>
+<item>
+  <name>real_estate_agency</name>
+</item>
+<item>
+  <name>restaurant</name>
+</item>
+<item>
+  <name>roofing_contractor</name>
+</item>
+<item>
+  <name>rv_park</name>
+</item>
+<item>
+  <name>school</name>
+</item>
+<item>
+  <name>shoe_store</name>
+</item>
+<item>
+  <name>shopping_mall</name>
+</item>
+<item>
+  <name>spa</name>
+</item>
+<item>
+  <name>stadium</name>
+</item>
+<item>
+  <name>storage</name>
+</item>
+<item>
+  <name>store</name>
+</item>
+<item>
+  <name>subway_station</name>
+</item>
+<item>
+  <name>synagogue</name>
+</item>
+<item>
+  <name>taxi_stand</name>
+</item>
+<item>
+  <name>train_station</name>
+</item>
+<item>
+  <name>travel_agency</name>
+</item>
+<item>
+  <name>university</name>
+</item>
+<item>
+  <name>veterinary_care</name>
+</item>
+<item>
+  <name>zoo</name>
+</item>
+</items>
