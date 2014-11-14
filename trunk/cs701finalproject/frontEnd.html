@@ -16,19 +16,23 @@
     <style type="text/css">
         #map {
 	    margin: 5px;
-	    width: 800px;
+	    width: 600px;
 	    height: 600px;
 	    border: 1px solid black;
         }
 
-        #searchResults {
-            float: right;
-            text-align: left;
+        #locationType {
+            float : left;
         }
-        #searchResultsTable *{
-            text-align: left;
         
+        #selectionOption {
+            float : right;
         }
+        
+        h3 {
+            display : inline;
+        }
+
     </style>
      
     <script type="text/javascript">
@@ -39,15 +43,40 @@
             $("#target").tabs(options);
             $("#map").hide();
             $('#searchSelection').attr("disabled", "disabled");
+            $('#nextResultButton').hide();
             $('#searchResultsTableHeader').hide();
 
             $("#goPlaces").click(function() {
-                // make sure there is a location selection
-                var locationSelection = $("#searchSelection").val();
-                if (locationSelection !== null && locationSelection.length > 0) {
+                // get our starting location
+                var userStartChoice = $('input[name="startingPosition"]:checked').val();
+                if (userStartChoice === 'currentLocation') {
+                    // make sure there is a location selection
+                    var locationSelection = $("#searchSelection").val();
+                    if (locationSelection !== null && locationSelection.length > 0) {
+                        $("#map").show();
+                        showMap();
+                    }
+                }
+                else {
+                    var addressStreet = $("#street1").val();
+                    var addressCityState = $("#cityState").val();
+                    var address = addressStreet + ", " + addressCityState;
                     $("#map").show();
-                    showMap();
-                }    
+                    getPositionFromAddress(address);
+                }
+            });
+            
+            // allow user to get the next 20 locations (if available)
+            $("#nextResultButton").click(function() {
+                if (mapDataObject.mapData.length === 20) {
+                    if (mapDataObject.pagination.hasNextPage === true) {
+                        mapDataObject.pagination.nextPage();
+                    }
+                }
+            });
+            
+            $('#detailPhotosButton').click(function() {
+                getStreetViewPhoto();
             });
             
             // load Google search items from items.xml file
@@ -104,16 +133,14 @@
     </ul>
 
     <div id="tab1">
-        <h2>Start Searching</h2>
-        <p>Enter search criteria below</p>
-        <p></p>
-                    
+        <p>Provide your starting location</p>
+        
         <section id="selectionOption">
             <div id="ui-widget">
             <table>
                 <tr>
                     <td><label for="searchSelection" id="search_label">Pick a category:(* to see all)</label></td> 
-                    <td><input id="searchSelection" size="30"/></td>
+                    <td><input id="searchSelection" value="restaurant" size="30"/></td>
                     <td>
                         <button type="button" id="goPlaces">Places!</button>
                     </td>
@@ -122,38 +149,55 @@
                     <td><label for="searchRadius" id="search_radius_label">Enter the search radius:</label></td>
                     <td><input type="number" id="searchRadius" value="1000"/></td>
                     <td></td>
-                    <td></td>
                 </tr>    
             </table>
             </div>
-        </section>
-        <p></p>
-        
-        <div id="searchResults">
-            <h3 id="searchResultsTableHeader">Search Result</h3>
-            <table id="searchResultsTable">
-                
-            </table>
-        </div>
-        
-        <div id="map">
-
-        </div>
-        <p></p>
             
-        <p></p>
-        <div id="status">
-        
-        </div>
+            <div id="searchResults">
+                <p></p>
+                <h3 id="searchResultsTableHeader">Search Result</h3>
+                <button type="button" id="nextResultButton">Next 20 Results</button>
+                <p></p>
+                <table id="searchResultsTable">
                 
+                </table>
+            </div>
+
+        </section>
+        
+        <div id="locationType">
+            <input type="radio" name="startingPosition" value="currentLocation" checked>Current Location
+            <br>
+            <input type="radio" name="startingPosition" value="address">From Address
+
+            <table>
+                <tr>
+                    <td><label for="street1" id="street1_label">Street:</label></td> 
+                    <td><input id="street1" size="30"/></td>
+                </tr>
+                <tr>
+                    <td><label for="cityState" id="cityState_label">City, State:</label></td> 
+                    <td><input id="cityState" size="30"/></td>
+                </tr>
+            </table>
+            
+            <div id="map">
+                
+            </div>
+        </div>
     </div>
     <div id="tab2">
         <h2>Search Detail Results</h2>
+        <button type="button" id="detailPhotosButton">Get Available Photos</button>
         
         <p id="locationTitle">   </p>
         
         <div id="photos">
             
+        </div>
+        
+        <div>
+            <img id="streeViewPhoto">
         </div>
         
         <div id="output">
