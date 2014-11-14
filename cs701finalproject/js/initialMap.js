@@ -17,14 +17,17 @@ var mapDataDetailObject = {};
 var mapDataDetail = [];
 
 var itemList = [];
+var markers = [];
+var callbackCount;
 
 
 /**
  * function showMap
  * 
- * This is called to show the initial search Google map. This function
- * is re-entrant, and will create a new map object each time.
- * 
+ * This is called to show the initial search Google map when the user chooses
+ * to start from their current location. We need to first get their current
+ * location. We then show the search results based on their current location.
+ * This function is re-entrant, and will create a new map object each time.
  */
 function showMap() {
     // asynchronous call with callback function specified
@@ -92,13 +95,14 @@ function updateStatus(message) {
 //}
 
 function initializePlaces(pos) {
+    callbackCount = 0;
     var googlePosition = 
         new google.maps.LatLng(pos.latitude, pos.longitude);
     latLong = googlePosition;  
     
     map = new google.maps.Map(document.getElementById('map'), {
       center: latLong,
-      zoom: 16
+      zoom: 14
     });
 
     var request = {
@@ -111,12 +115,20 @@ function initializePlaces(pos) {
     service.nearbySearch(request, callbackPlaces);
 }
 
-function callbackPlaces(results, status) {
+function callbackPlaces(results, status,  pagination) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         // reset mapData and search results for next search
+        callbackCount++;
         mapData = [];
+        if (markers.length > 0) {
+            setAllMap(null);  // clear previous markers
+        }
+        
+        markers = [];
+        mapDataObject.pagination = pagination;
         $("#searchResultsTable").empty();
         
+        // loop over results and display a link and add marker to the map
         for (var i = 0; i < results.length; i++) {
             var place = results[i];
             //console.log(place);
@@ -130,11 +142,12 @@ function callbackPlaces(results, status) {
             
             addMarker(map, nextLatLong, title, content, iconUrl);
       
-            $("#searchResultsTable").append("<tr><td><a id='locationLink" + i + "' class='dynamic-link' href='#'>" + title + "</a></td></tr>");
+            $("#searchResultsTable").append("<tr><td><img id='locationImage" + i  + "'><a id='locationLink" + i +
+                    "' class='dynamic-link' href='#'>" + title + "</a><button class='mapButton' id='mapButton" + i + "' type='button'>Map</button></td></tr>");
             
             // save important places information 
             var nextPlaceID = place.place_id;
-            var jSONPlace = {title : title, place_id : nextPlaceID, icon : iconUrl};
+            var jSONPlace = {title : title, place_id : nextPlaceID, icon : iconUrl, latLong : nextLatLong};
             mapData.push(jSONPlace);
         }
         
@@ -146,12 +159,26 @@ function callbackPlaces(results, status) {
             $('#searchResultsTableHeader').hide();
         }
         
+        if (results.length === 20 && callbackCount < 3) {
+            $('#nextResultButton').show();
+        }
+        else {
+            $('#nextResultButton').hide();
+        }
+        
         // need to dynamically bind the anchors, and this should work well
         $('a.dynamic-link').click(function() {
             var linkId = this.id;
             var offset = linkId.substr(12);
             getDetailPlaces(offset);
             return false;
+        });
+        
+        // center the link for the place in the map on the left
+        $('button.mapButton').click(function() {
+            var buttonId = this.id;
+            var offset = buttonId.substr(9);
+            map.panTo(mapData[offset].latLong);
         });
         
         mapDataObject.mapData = mapData;
@@ -176,6 +203,7 @@ function addMarker(map, latlongPosition, title, content, iconUrl) {
         clickable: true
     };
     var marker = new google.maps.Marker(options);
+    markers.push(marker);
 
     var popupWindowOptions = {
         content: title,
@@ -184,9 +212,36 @@ function addMarker(map, latlongPosition, title, content, iconUrl) {
 
     var popupWindow = new google.maps.InfoWindow(popupWindowOptions);
 
-    google.maps.event.addListener(marker, 'click', function() {
+    google.maps.event.addListener(marker, 'click', function(e) {
+        // show a check box next to the link for the marker the user just
+        // clickedon
+        var markerIndex = getIndexFromMarkerClickEvent(e.latLng);
+        $('#locationImage' + markerIndex).prop('src', 'accept-Icon.png');
         popupWindow.open(map);
     });
+}
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+function getIndexFromMarkerClickEvent(latLong) {
+    var index = -1;
+    var eventLat = latLong.B;
+    var eventLng = latLong.k;
+    
+    for (var i = 0; i < mapData.length; i++) {
+        var nextLat = mapData[i].latLong.B;
+        var nextLng = mapData[i].latLong.k;
+        if (eventLat === nextLat && eventLng === nextLng) {
+            index = i;
+            break;
+        }
+    }
+    return index;
 }
 
 /**
@@ -209,6 +264,7 @@ function callbackDetail(place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         
         mapDataDetailObject.name = place.name;
+        mapDataDetailObject.location = place.geometry.location;
         mapDataDetail = [];
         
         // display all the photos, note: need to check if there are any
@@ -251,7 +307,20 @@ function callbackDetail(place, status) {
         
         $("#target").tabs("select", 1 );
     }
-}    
+}
+
+function getStreetViewPhoto() {
+    
+    var location = mapDataDetailObject.location;
+    var latitude = location.B;
+    var longitude = location.k;
+
+    //var imageURL = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + latitude + ',' + longitude + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw';
+    //var imageURL = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw';
+    //40.720032,-73.988354
+    $("#streeViewPhoto").prop("src", 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + latitude + ',' + longitude + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw');
+    //$("#streeViewPhoto").prop("src", 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw');
+}
 
 function getGoogleSearchItems() {
     // Read all possible Google Place search items from the items.xml file
@@ -276,4 +345,23 @@ function getGoogleSearchItems() {
             $('#searchSelection').removeAttr("disabled");
         }
     });
+}
+
+function getPositionFromAddress(address) {
+    //var testAddress = "10 Van de Graaff Drive, Burlington, MA";
+    address = encodeURIComponent(address);
+    
+    $.ajax({
+        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw',
+                            
+        success: function(data, status, xhr) {
+            // get the location from the data object
+            if (xhr.status === 200) {
+                // TODO: check the data object more closely in case there is a problem
+                var location = data.results[0].geometry.location;
+                var pos = {latitude : location.lat, longitude : location.lng};
+                initializePlaces(pos);
+            }
+        }
+    });    
 }
