@@ -4,6 +4,7 @@ var latLong;
 
 // Google map
 var map = null;
+var mapForDirections = null;
 var service;
 
 // create map
@@ -19,6 +20,9 @@ var mapDataDetail = [];
 var itemList = [];
 var markers = [];
 var callbackCount;
+
+var directionsDisplay;
+var directionsService=null;
 
 
 /**
@@ -102,7 +106,7 @@ function initializePlaces(pos) {
     
     map = new google.maps.Map(document.getElementById('map'), {
       center: latLong,
-      zoom: 14
+      zoom: 15
     });
 
     var request = {
@@ -115,9 +119,21 @@ function initializePlaces(pos) {
     service.nearbySearch(request, callbackPlaces);
 }
 
+/**
+ *   callbackPlaces - handle callback to the initial places search
+ *   This function is re-entrant if called for next 20 results via
+ *   the pagination object.
+ *   The function populates the populates and sorts the mapData array.
+ *   Also adds a map marker for each location.
+ * @param {type} results
+ * @param {type} status
+ * @param {type} pagination
+ * @returns nothing
+ */
 function callbackPlaces(results, status,  pagination) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         // reset mapData and search results for next search
+        var i;
         callbackCount++;
         mapData = [];
         if (markers.length > 0) {
@@ -129,26 +145,31 @@ function callbackPlaces(results, status,  pagination) {
         $("#searchResultsTable").empty();
         
         // loop over results and display a link and add marker to the map
-        for (var i = 0; i < results.length; i++) {
+        for (i = 0; i < results.length; i++) {
             var place = results[i];
-            //console.log(place);
-            var nextLatLong = place.geometry.location;
-      
-            // add the marker to the map
+
             var title = place.name;
+            var nextPlaceID = place.place_id;
+            var nextLatLong = place.geometry.location;
             var iconUrl = place.icon;
             var content = "Lat: " + nextLatLong.B + 
                         ", Long: " + nextLatLong.k;
             
-            addMarker(map, nextLatLong, title, content, iconUrl);
-      
-            $("#searchResultsTable").append("<tr><td><img id='locationImage" + i  + "'><a id='locationLink" + i +
-                    "' class='dynamic-link' href='#'>" + title + "</a><button class='mapButton' id='mapButton" + i + "' type='button'>Map</button></td></tr>");
-            
             // save important places information 
-            var nextPlaceID = place.place_id;
-            var jSONPlace = {title : title, place_id : nextPlaceID, icon : iconUrl, latLong : nextLatLong};
+            var jSONPlace = {title : title, place_id : nextPlaceID, icon : iconUrl, latLong : nextLatLong, content : content};
             mapData.push(jSONPlace);
+        }
+        
+        // sort the data by location title
+        sortMapData();
+        
+        // add the link and the map marker after sorting
+        for (i = 0; i < mapData.length; i++) {
+            var nextMapData = mapData[i];
+            addMarker(map, nextMapData.latLong, nextMapData.title, nextMapData.content, nextMapData.icon);
+            
+            $("#searchResultsTable").append("<tr><td><img id='locationImage" + i  + "'><a id='locationLink" + i +
+              "' class='dynamic-link' href='#'>" + nextMapData.title + "</a><button class='mapButton' id='mapButton" + i + "' type='button'>Map</button></td></tr>");
         }
         
         $('#searchResultsTableHeader').html('Search Result');
@@ -298,29 +319,35 @@ function callbackDetail(place, status) {
         $("#locationTitle").html(mapDataDetailObject.name);
         
         $("#photos").empty();
-        for (var i = 0; i < mapDataDetail.length; i++) {
+        // show up to 4 photos at the top of the panel for now
+        var photoLimit = (photoCount < 4 ? photoCount : 4);
+        for (var i = 0; i < photoLimit; i++) {
             $("#photos").append("<img src='" + mapDataDetail[i].url + "'>");
             if (((i + 1) % 4) === 0) {
                 $("#photos").append("<br>");  // break them out 4 to a line
             }
         }
         
+        showDirections();
+        $("#directionsMap").hide();  // hide the map as it does not display correctly
         $("#target").tabs("select", 1 );
+        
     }
 }
 
-function getStreetViewPhoto() {
-    
-    var location = mapDataDetailObject.location;
-    var latitude = location.B;
-    var longitude = location.k;
-
-    //var imageURL = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + latitude + ',' + longitude + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw';
-    //var imageURL = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw';
-    //40.720032,-73.988354
-    $("#streeViewPhoto").prop("src", 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + latitude + ',' + longitude + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw');
-    //$("#streeViewPhoto").prop("src", 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw');
-}
+// TO DO: remove this as unfortunately the street view does not work based on a lat/lng position very well
+//function getStreetViewPhoto() {
+//    
+//    var location = mapDataDetailObject.location;
+//    var latitude = location.B;
+//    var longitude = location.k;
+//
+//    //var imageURL = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + latitude + ',' + longitude + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw';
+//    //var imageURL = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw';
+//    //40.720032,-73.988354
+//    $("#streeViewPhoto").prop("src", 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + latitude + ',' + longitude + '&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw');
+//    //$("#streeViewPhoto").prop("src", 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&key=AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw');
+//}
 
 function getGoogleSearchItems() {
     // Read all possible Google Place search items from the items.xml file
@@ -364,4 +391,87 @@ function getPositionFromAddress(address) {
             }
         }
     });    
+}
+
+function showDirections() {
+    if (directionsService === null) {
+        directionsService = new google.maps.DirectionsService();
+    }
+    
+    // clear previous route information
+    $("#directionsPanel").empty();
+    
+    directionsDisplay = new google.maps.DirectionsRenderer();
+    
+    var mapOptions = {
+        center: latLong,
+        zoom: 14
+    };
+    
+    mapForDirections = new google.maps.Map(document.getElementById("directionsMap"), mapOptions);
+    directionsDisplay.setMap(mapForDirections);
+    directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+    calcRoute();
+}
+
+function calcRoute() {
+    var start = latLong;
+    var end = mapDataDetailObject.location;
+    var request = {
+        origin:start,
+        destination:end,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+  
+    directionsService.route(request, function(response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+        }
+    });
+}
+
+function sortMapData() {
+    // order the map data by name alphabetically
+    var smallestTitle;
+    var smallestIndex;
+    var temp = {};
+    
+    if (mapData.length < 2) {
+        return;
+    }
+    
+    for (var i = 0; i < mapData.length - 1; i++) {
+        smallestTitle = mapData[i].title;
+        smallestIndex = i;
+        
+        temp.title = mapData[i].title;
+        temp.place_id = mapData[i].place_id;
+        temp.icon = mapData[i].icon;
+        temp.latLong = mapData[i].latLong;
+        temp.content = mapData[i].content;
+        
+        // find the smallest one from our starting position
+        for (var j = i + 1 ; j < mapData.length; j++) {
+            if (smallestTitle > mapData[j].title) {
+                smallestIndex = j;
+                smallestTitle = mapData[j].title;
+            }
+        }
+        
+        if (smallestIndex !== i) {
+            // copy smallest into the next ith index
+            mapData[i].title = mapData[smallestIndex].title;
+            mapData[i].place_id = mapData[smallestIndex].place_id;
+            mapData[i].icon = mapData[smallestIndex].icon;
+            mapData[i].latLong = mapData[smallestIndex].latLong;
+            mapData[i].content = mapData[smallestIndex].content;
+            
+            // copy what is currenly at position i (from temp) to smallest index
+            mapData[smallestIndex].title = temp.title;
+            mapData[smallestIndex].place_id = temp.place_id;
+            mapData[smallestIndex].icon = temp.icon;
+            mapData[smallestIndex].latLong = temp.latLong;
+            mapData[smallestIndex].content = temp.content;
+        }
+    }
 }
