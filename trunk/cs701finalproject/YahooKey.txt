@@ -1,0 +1,5 @@
+Yahoo keys
+
+consumer key:dj0yJmk9TmF0d3o3UXZUTTUwJmQ9WVdrOVNqTXlXVlJ0TjJjbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1jMg--
+
+Secret Key: 31210607f3875b306aa5b43f1035863abf3975bc
