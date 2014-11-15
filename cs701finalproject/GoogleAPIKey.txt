@@ -1,0 +1,24 @@
+My google API key is as follows:
+AIzaSyDalyyI1J1R-lOW01yc-g5tWlG1xRxxaPg
+
+---------------------------------------------
+New google API key is as follows:
+ 	
+AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw
+
+
+Key for browser apps (with referers)
+API key: AIzaSyCQ74ly4xXn1cadZECibp-kXDYxk_7KyTw
+Referers: 	
+Any referer allowed
+Activated on: 	Nov 13, 2014 3:06 PM
+Activated by: 	dbardwel@bu.edu – you 
+
+Label 	DavidBardwellCS701FinalProject
+Project ID 	142318771847
+Project Name 	diesel-channel-761
+Google+ Page 	
+Request connection
+Owners 	dbardwel@bu.edu - you
+
+https://code.google.com/apis/console

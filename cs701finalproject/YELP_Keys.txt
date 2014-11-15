@@ -1,0 +1,7 @@
+
+YELP:
+
+Consumer Key	rHrQd87QcQzsrhm4PFG82g
+Consumer Secret	YYA8feGgQGcrLKccvCdiAsb-X1g
+Token	DfAHKZfdOTvI6VOW6eDjedNOHOtaPeXf
+Token Secret	NK-yDBCzxVWcZoVg8cCgkJrwjGU

@@ -101,6 +101,10 @@
                 }
             });
             
+            $("#goYelp").click(function() {
+                testYelpAPI();
+            });
+            
             // load Google search items from items.xml file
             getGoogleSearchItems(); 
             
@@ -111,6 +115,32 @@
             };
             $('#searchSelection').autocomplete(options);
         });
+        
+        
+        function testYelpAPI() {
+            // TODO: will need to constuct a data list for a post for the
+            // search type and details
+            
+            $.ajax({
+                url: "php/callstub.php",
+                datatype : "json",
+                complete: function(xhr, result) {
+                   if (result !== "success")
+                        return;
+                    // for some reason there is a bit of extra text before the JSON array
+                    var jsonDataArray = xhr.responseText.substr(xhr.responseText.indexOf('\['));
+                    var yelpJSONList = JSON.parse(jsonDataArray);
+                    for (var i = 0; i < yelpJSONList.length; i++) {
+                        // need to parse out each JSON string in each array element (I think)
+                        var nextJSONElement = JSON.parse(yelpJSONList[i]);
+                        console.log(nextJSONElement.id);
+                        console.log(nextJSONElement.name);
+                    }
+               }
+            });
+        }    
+        
+        
         
         // request.term -- user entry
         // callback -- to return array of values
@@ -166,10 +196,14 @@
                     <td>
                         <button type="button" id="goPlaces">Places!</button>
                     </td>
+                    <td>
+                        <button type="button" id="goYelp">YELP!</button>
+                    </td>
                 </tr>
                 <tr>
                     <td><label for="searchRadius" id="search_radius_label">Enter the search radius:</label></td>
                     <td><input type="number" id="searchRadius" value="1000"/></td>
+                    <td></td>
                     <td></td>
                 </tr>    
             </table>
