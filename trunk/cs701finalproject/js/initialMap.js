@@ -1,6 +1,8 @@
 // current location
 var latitude, longitude;
 var latLong;
+var startLocationForDirections;
+var setStartLocationForDirections;
 
 // Google map
 var map = null;
@@ -19,10 +21,13 @@ var mapDataDetail = [];
 
 var itemList = [];
 var markers = [];
+var youAreHereMarker;
 var callbackCount;
 
 var directionsDisplay;
 var directionsService=null;
+
+var formattedAddress;
 
 
 /**
@@ -99,20 +104,37 @@ function updateStatus(message) {
 //}
 
 function initializePlaces(pos) {
+    
     callbackCount = 0;
     var googlePosition = 
         new google.maps.LatLng(pos.latitude, pos.longitude);
     latLong = googlePosition;  
     
+    if (setStartLocationForDirections === true) {
+        setStartLocationForDirections = false;
+        startLocationForDirections = googlePosition;
+    }
+    
     map = new google.maps.Map(document.getElementById('map'), {
       center: latLong,
       zoom: 15
     });
+    
+    // add initial marker on map for our starting location
+    addMarker(map, startLocationForDirections, "You are here", null, null);
 
+    var typesForSearch;
+    if ($("#searchSelection").val() === 'restaurant') {
+        typesForSearch = ['restaurant', 'bar'];
+    }
+    else {
+        typesForSearch = [$("#searchSelection").val()];
+    }
+    
     var request = {
         location: latLong,
         radius: $("#searchRadius").val(),
-        types: [$("#searchSelection").val()]
+        types: typesForSearch
     };
 
     service = new google.maps.places.PlacesService(map);
@@ -141,6 +163,8 @@ function callbackPlaces(results, status,  pagination) {
         }
         
         markers = [];
+        addMarker(map, startLocationForDirections, "You are here", null, null);
+        markers.push(youAreHereMarker);
         mapDataObject.pagination = pagination;
         $("#searchResultsTable").empty();
         
@@ -168,8 +192,17 @@ function callbackPlaces(results, status,  pagination) {
             var nextMapData = mapData[i];
             addMarker(map, nextMapData.latLong, nextMapData.title, nextMapData.content, nextMapData.icon);
             
-            $("#searchResultsTable").append("<tr><td><img id='locationImage" + i  + "'><a id='locationLink" + i +
-              "' class='dynamic-link' href='#'>" + nextMapData.title + "</a><button class='mapButton' id='mapButton" + i + "' type='button'>Map</button></td></tr>");
+            // TODO: clean this code up with better DOM management
+            $("#searchResultsTable").append("<tr><td><img id='locationImage" + i +
+              "'><a id='locationLink" + i +
+              "' class='dynamic-link' href='#'>" + nextMapData.title +
+              "</a><button class='mapButton' id='mapButton" + i + 
+              "' type='button'>Map</button>" + 
+              "<button class='startFromHereButton' id='startFromHereButton" + i +
+              "' type='button'>Restart</button>" +
+              "<button class='directionsButton' id='directionsButton" + i +
+              "' type='button'>Directions</button>" +              
+              "</td></tr>");
         }
         
         $('#searchResultsTableHeader').html('Search Result');
@@ -202,6 +235,22 @@ function callbackPlaces(results, status,  pagination) {
             map.panTo(mapData[offset].latLong);
         });
         
+        // need to update address and set radius to 500 for now
+        $('button.startFromHereButton').click(function() {
+            var buttonId = this.id;
+            var offset = buttonId.substr(19);
+            
+            getDetailAddress(offset);
+        });
+        
+        // test, see how well we can add directions to first map
+        $('button.directionsButton').click(function() {
+            var buttonId = this.id;
+            var offset = buttonId.substr(16);
+            
+            showDirectionsOnFirstMap(offset);
+        });
+        
         mapDataObject.mapData = mapData;
     }
     else if (status === "ZERO_RESULTS") {
@@ -225,6 +274,10 @@ function addMarker(map, latlongPosition, title, content, iconUrl) {
     };
     var marker = new google.maps.Marker(options);
     markers.push(marker);
+    
+    if (title === 'You are here') {
+        youAreHereMarker = marker;
+    }
 
     var popupWindowOptions = {
         content: title,
@@ -235,7 +288,7 @@ function addMarker(map, latlongPosition, title, content, iconUrl) {
 
     google.maps.event.addListener(marker, 'click', function(e) {
         // show a check box next to the link for the marker the user just
-        // clickedon
+        // clicked on
         var markerIndex = getIndexFromMarkerClickEvent(e.latLng);
         $('#locationImage' + markerIndex).prop('src', 'accept-Icon.png');
         popupWindow.open(map);
@@ -244,9 +297,10 @@ function addMarker(map, latlongPosition, title, content, iconUrl) {
 
 // Sets the map on all markers in the array.
 function setAllMap(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
-  }
+    // Keep initial you are here marker
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
 }
 
 function getIndexFromMarkerClickEvent(latLong) {
@@ -265,6 +319,23 @@ function getIndexFromMarkerClickEvent(latLong) {
     return index;
 }
 
+function getDetailAddress(location_offset) {
+   var request = {
+        placeId: mapDataObject.mapData[location_offset].place_id
+    };
+
+    service = new google.maps.places.PlacesService(map);
+    service.getDetails(request, callbackAddressDetail);
+}
+
+function callbackAddressDetail(place, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+        formattedAddress = place.formatted_address;
+        getPositionFromAddress(formattedAddress);
+    }
+}   
+
+
 /**
  * function getDetailPlaces()
  * @argument location_offset - index into mapData to show detail
@@ -272,7 +343,6 @@ function getIndexFromMarkerClickEvent(latLong) {
  * 
  */
 function getDetailPlaces(location_offset) {
-    // test - see if we can get the detail places call to work
     var request = {
         placeId: mapDataObject.mapData[location_offset].place_id
     };
@@ -291,7 +361,7 @@ function callbackDetail(place, status) {
         // display all the photos, note: need to check if there are any
         var photoCount = 0;
         var photos = null;
-                
+        
         if (place.hasOwnProperty('photos') === true) {
             photos = place.photos;
             photoCount = photos.length;
@@ -393,6 +463,43 @@ function getPositionFromAddress(address) {
     });    
 }
 
+function showDirectionsOnFirstMap(offset) {
+    if (directionsService === null) {
+        directionsService = new google.maps.DirectionsService();
+    }
+    
+    // clear previous route information
+    $("#directionsPanelFirstTab").empty();
+    
+    directionsDisplay = new google.maps.DirectionsRenderer();
+    
+    var mapOptions = {
+        center: startLocationForDirections,
+        zoom: 14
+    };
+    
+    directionsDisplay.setMap(map);
+    directionsDisplay.setPanel(document.getElementById("directionsPanelFirstTab"));
+    calcRouteOnFirstMap(offset);    
+}
+
+function calcRouteOnFirstMap(offset) {
+    var start = startLocationForDirections;
+    var end = mapData[offset].latLong;
+    var request = {
+        origin:start,
+        destination:end,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+  
+    directionsService.route(request, function(response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+        }
+    });
+}
+
+
 function showDirections() {
     if (directionsService === null) {
         directionsService = new google.maps.DirectionsService();
@@ -404,7 +511,7 @@ function showDirections() {
     directionsDisplay = new google.maps.DirectionsRenderer();
     
     var mapOptions = {
-        center: latLong,
+        center: startLocationForDirections,
         zoom: 14
     };
     
@@ -415,7 +522,7 @@ function showDirections() {
 }
 
 function calcRoute() {
-    var start = latLong;
+    var start = startLocationForDirections;
     var end = mapDataDetailObject.location;
     var request = {
         origin:start,
@@ -430,6 +537,8 @@ function calcRoute() {
     });
 }
 
+// sort the mapData by title or name alphabetically for the default order
+// strangely, I could not find a generic sort utility so I just wrote this instead
 function sortMapData() {
     // order the map data by name alphabetically
     var smallestTitle;
