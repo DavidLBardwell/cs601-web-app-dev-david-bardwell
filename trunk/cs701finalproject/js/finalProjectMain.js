@@ -1,3 +1,7 @@
+// File: finalProject.js
+// This java script file contains the top-level initial function and is
+// based on JQuery.
+
 // current location
 var latitude, longitude;
 var latLong;
@@ -30,6 +34,7 @@ var directionsService=null;
 var formattedAddress;
 
 
+// JQuery initialize function
 $(function() {
     var options = {event: "click",
     fx: {opacity : "toggle", 
@@ -99,6 +104,7 @@ $(function() {
         }
     });
             
+    // Test the Yelp API which still needs to be integrated more completely.
     $("#goYelp").click(function() {
         testYelpAPI();
     });
@@ -113,30 +119,6 @@ $(function() {
     };
     $('#searchSelection').autocomplete(options);
 });
-        
-        
-function testYelpAPI() {
-    // TODO: will need to constuct a data list for a post for the
-    // search type and details
-            
-    $.ajax({
-        url: "php/callstub.php",
-        datatype : "json",
-        complete: function(xhr, result) {
-            if (result !== "success")
-                return;
-            // for some reason there is a bit of extra text before the JSON array
-            var jsonDataArray = xhr.responseText.substr(xhr.responseText.indexOf('\['));
-            var yelpJSONList = JSON.parse(jsonDataArray);
-            for (var i = 0; i < yelpJSONList.length; i++) {
-                // need to parse out each JSON string in each array element (I think)
-                var nextJSONElement = JSON.parse(yelpJSONList[i]);
-                console.log(nextJSONElement.id);
-                console.log(nextJSONElement.name);
-            }
-        }
-    });
-}    
         
 // request.term -- user entry
 // callback -- to return array of values
