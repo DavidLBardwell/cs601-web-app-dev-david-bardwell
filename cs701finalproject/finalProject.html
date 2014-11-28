@@ -17,21 +17,23 @@
     <script src="js/finalProjectMapUtil.js"></script>
                 
     <style type="text/css">
+        /* Use the css float to control left and right screen position of the
+           major u/i components. On the first tab the map is displayed on the
+           left-hand side and the links and buttons are displayed on the 
+           right-hand side.
+        */
         #map {
 	    margin: 5px;
 	    width: 600px;
 	    height: 600px;
 	    border: 1px solid black;
         }
-
         #locationType {
             float : left;
         }
-        
         #selectionOption {
             float : right;
         }
-        
         #directionsMap {
             margin-top: 5px;
             margin-bottom: 5px;
@@ -41,7 +43,6 @@
             height : 600px;
             border: 1px solid black;
         }
-        
         #directionsPanel {
             float : right;
             width : 30%;
@@ -51,11 +52,9 @@
             margin-right: 10px;
             margin-left: 5px;            
         }
-        
         #photos {
             float : left;
         }
-        
         h3 {
             display : inline;
         }
@@ -66,13 +65,13 @@
     <div id="target">
     <ul>
         <li>
-            <a href="#tab1">FindIt! Start Search</a>
+            <a href="#tab1">Start Search</a>
         </li>
         <li>
-            <a href="#tab2">FindIt! Detail Results</a>
+            <a href="#tab2">Detail Results</a>
         </li>
         <li>
-            <a href="#tab3">FindIt! Reviews</a>
+            <a href="#tab3">Reviews</a>
         </li>
     </ul>
 
@@ -85,14 +84,14 @@
                     <td><label for="searchSelection" id="search_label">Pick a category:</label></td> 
                     <td><input id="searchSelection" value="restaurant" size="30"/></td>
                     <td>
-                        <button type="button" id="goPlaces">Places!</button>
+                        <button type="button" id="goPlacesButton">Places!</button>
                     </td>
                     <td>
                         <button type="button" id="goYelp">YELP!</button>
                     </td>
                 </tr>
                 <tr>
-                    <td><label for="searchRadius" id="search_radius_label">Enter the search radius:</label></td>
+                    <td><label for="searchRadius" id="search_radius_label">Search Radius (Meters):</label></td>
                     <td><input type="number" id="searchRadius" value="1000"/></td>
                     <td></td>
                     <td></td>

@@ -74,7 +74,7 @@ $(function() {
         $('input[type="radio"][value="address"]').attr('checked',true);
     });
             
-    $("#goPlaces").click(function() {
+    $("#goPlacesButton").click(function() {
         // get our starting location
         var userStartChoice = $('input[name="startingPosition"]:checked').val();
         setStartLocationForDirections = true;
