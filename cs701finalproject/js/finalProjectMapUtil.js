@@ -1,3 +1,7 @@
+// file: finalProjectMapUtil
+// This file contains some utility functions to support the finalProjectMap.js
+// implementation.
+ 
 // sort the mapData by title or name alphabetically for the default order
 // strangely, I could not find a generic sort utility so I just wrote this instead
 function sortMapData() {

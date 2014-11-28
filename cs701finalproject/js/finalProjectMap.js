@@ -1,3 +1,9 @@
+// file: finalProjectMap.js
+// This file contains all the javascript code to manage the Google Map API
+// searchs. The following Google API are used:
+// Places - google.maps.places.PlacesService
+
+
 /**
  * function showMap
  * 
@@ -309,7 +315,6 @@ function callbackAddressDetail(place, status) {
         getPositionFromAddress(formattedAddress);
     }
 }   
-
 
 /**
  * function getDetailPlaces()
