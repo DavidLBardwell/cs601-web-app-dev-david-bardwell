@@ -50,9 +50,9 @@ function sortMapData() {
     }
 }
 
+// Read all possible Google Place search items from the items.xml file
+// so this is not hard-coded.
 function getGoogleSearchItems() {
-    // Read all possible Google Place search items from the items.xml file
-    // so this is not hard-coded.
     itemList = [];  // clear, just in case
     
     $.ajax({
