@@ -4,9 +4,11 @@
  
 // sort the mapData by title or name alphabetically for the default order
 // strangely, I could not find a generic sort utility so I just wrote this instead
-function sortMapData() {
-    // order the map data by name alphabetically
+function sortMapData(sortType) {
+    // order the map data by name (title), rating, or distance
     var smallestTitle;
+    var bestRating;
+    var shortestDistance;
     var smallestIndex;
     var temp = {};
     
@@ -15,7 +17,16 @@ function sortMapData() {
     }
     
     for (var i = 0; i < mapData.length - 1; i++) {
-        smallestTitle = mapData[i].title;
+        if (sortType === 'title') {
+            smallestTitle = mapData[i].title;
+        }
+        else if (sortType === 'rating') {
+            bestRating = mapData[i].rating;
+        }
+        else if (sortType === 'distance') {
+            shortestDistance = Math.sqrt(Math.pow((latitude - mapData[i].latLong.k), 2) + 
+                                         Math.pow((longitude - mapData[i].latLong.B), 2));
+        }
         smallestIndex = i;
         
         temp.title = mapData[i].title;
@@ -23,12 +34,29 @@ function sortMapData() {
         temp.icon = mapData[i].icon;
         temp.latLong = mapData[i].latLong;
         temp.content = mapData[i].content;
+        temp.rating = mapData[i].rating;
         
         // find the smallest one from our starting position
         for (var j = i + 1 ; j < mapData.length; j++) {
-            if (smallestTitle > mapData[j].title) {
-                smallestIndex = j;
-                smallestTitle = mapData[j].title;
+            if (sortType === 'title') {
+                if (smallestTitle > mapData[j].title) {
+                    smallestIndex = j;
+                    smallestTitle = mapData[j].title;
+                }
+            }
+            else if (sortType === 'rating') {
+                if (bestRating < mapData[j].rating) {
+                    smallestIndex = j;
+                    bestRating = mapData[j].rating;
+                }
+            }
+            else if (sortType === 'distance') {
+                checkNextDistance = Math.sqrt(Math.pow((latitude - mapData[j].latLong.k), 2) + 
+                                              Math.pow((longitude - mapData[j].latLong.B), 2));
+                if (checkNextDistance < shortestDistance) {
+                    smallestIndex = j;
+                    shortestDistance = checkNextDistance;
+                }
             }
         }
         
@@ -39,6 +67,7 @@ function sortMapData() {
             mapData[i].icon = mapData[smallestIndex].icon;
             mapData[i].latLong = mapData[smallestIndex].latLong;
             mapData[i].content = mapData[smallestIndex].content;
+            mapData[i].rating = mapData[smallestIndex].rating;
             
             // copy what is currenly at position i (from temp) to smallest index
             mapData[smallestIndex].title = temp.title;
@@ -46,6 +75,7 @@ function sortMapData() {
             mapData[smallestIndex].icon = temp.icon;
             mapData[smallestIndex].latLong = temp.latLong;
             mapData[smallestIndex].content = temp.content;
+            mapData[smallestIndex].rating = temp.rating;
         }
     }
 }

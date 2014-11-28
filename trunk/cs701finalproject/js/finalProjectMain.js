@@ -19,6 +19,7 @@ var createMap = true;
 // map storage
 var mapDataObject = {};
 var mapData = [];
+var mapDataCurrentIndex = 0;
 
 var mapDataDetailObject = {};
 var mapDataDetail = [];
@@ -91,7 +92,7 @@ $(function() {
             var addressCityState = $("#cityState").val();
             var address = addressStreet + ", " + addressCityState;
             $("#map").show();
-            getPositionFromAddress(address);
+            getPositionFromAddress(address, true);
         }
     });
             

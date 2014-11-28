@@ -58,6 +58,16 @@
         h3 {
             display : inline;
         }
+        a {
+            margin-left: 3px;
+            margin-right: 3px;
+        }
+        .mapButton, .startFromHereButton, .directionsButton {
+            margin-right: 2px;
+        }
+        button:hover, a:hover {
+            color : red;
+        }
     </style>
 </head>
 
@@ -95,14 +105,23 @@
                     <td><input type="number" id="searchRadius" value="1000"/></td>
                     <td></td>
                     <td></td>
-                </tr>    
+                </tr>
+                <tr>
+                    <td><label for="orderChoice" id="order_choice_label">Order By:</label></td>
+                    <td><select name="orderChoice" id="orderChoice">
+                        <option value="title">Name</option>
+                        <option value="rating">Rating</option>
+                        <option value="distance">Distance</option>
+                        </select></td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </table>
             </div>
             
             <div id="searchResults">
                 <p></p>
                 <h3 id="searchResultsTableHeader">Search Result</h3>
-                <button type="button" id="previousResultButton">Previous 20 Results</button>
                 <button type="button" id="nextResultButton">Next 20 Results</button>
                 <p></p>
                 <table id="searchResultsTable">

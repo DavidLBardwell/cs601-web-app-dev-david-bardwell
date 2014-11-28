@@ -145,21 +145,35 @@ function callbackPlaces(results, status,  pagination) {
         // loop over results and display a link and add marker to the map
         for (i = 0; i < results.length; i++) {
             var place = results[i];
-
             var title = place.name;
+            
+            // make sure the name is not too long
+            if (title.length > 35) {
+                title = title.substring(0, 35);
+            }
             var nextPlaceID = place.place_id;
             var nextLatLong = place.geometry.location;
             var iconUrl = place.icon;
             var content = "Lat: " + nextLatLong.B + 
                         ", Long: " + nextLatLong.k;
+            var rating = 0;
+            if (place.rating !== undefined) {
+                rating = place.rating;
+            }    
             
             // save important places information 
-            var jSONPlace = {title : title, place_id : nextPlaceID, icon : iconUrl, latLong : nextLatLong, content : content};
+            var jSONPlace = {title : title,
+                             place_id : nextPlaceID,
+                             icon : iconUrl,
+                             latLong : nextLatLong,
+                             content : content,
+                             rating : rating};
             mapData.push(jSONPlace);
         }
         
-        // sort the data by location title
-        sortMapData();
+        // sort the data by location title or rating
+        var orderChoice = $("#orderChoice").val();
+        sortMapData(orderChoice);
         
         // add the link and the map marker after sorting
         for (i = 0; i < mapData.length; i++) {
@@ -171,7 +185,7 @@ function callbackPlaces(results, status,  pagination) {
               "'><a id='locationLink" + i +
               "' class='dynamic-link' href='#'>" + nextMapData.title +
               "</a><button class='mapButton' id='mapButton" + i + 
-              "' type='button'>Map</button>" + 
+              "' type='button'>Center</button>" + 
               "<button class='startFromHereButton' id='startFromHereButton" + i +
               "' type='button'>Restart</button>" +
               "<button class='directionsButton' id='directionsButton" + i +
@@ -192,13 +206,6 @@ function callbackPlaces(results, status,  pagination) {
         }
         else {
             $('#nextResultButton').hide();
-        }
-        
-        if (callbackCount > 1) {
-            $('#previousResultButton').show();
-        }
-        else {
-            $('#previousResultButton').hide();
         }
         
         // need to dynamically bind the anchors, and this should work well
@@ -312,7 +319,7 @@ function getDetailAddress(location_offset) {
 function callbackAddressDetail(place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         formattedAddress = place.formatted_address;
-        getPositionFromAddress(formattedAddress);
+        getPositionFromAddress(formattedAddress, false);
     }
 }   
 
@@ -385,7 +392,7 @@ function callbackDetail(place, status) {
     }
 }
 
-function getPositionFromAddress(address) {
+function getPositionFromAddress(address, setInitialPosition) {
     address = encodeURIComponent(address);
     
     $.ajax({
@@ -397,6 +404,10 @@ function getPositionFromAddress(address) {
                 // TODO: check the data object more closely in case there is a problem
                 var location = data.results[0].geometry.location;
                 var pos = {latitude : location.lat, longitude : location.lng};
+                if (setInitialPosition === true) {
+                    latitude = pos.latitude;
+                    longitude = pos.longitude;
+                }
                 initializePlaces(pos);
             }
         }
