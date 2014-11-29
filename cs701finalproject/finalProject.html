@@ -54,6 +54,7 @@
         }
         #photos {
             float : left;
+            width : 65%;
         }
         h3 {
             display : inline;
@@ -75,13 +76,13 @@
     <div id="target">
     <ul>
         <li>
-            <a href="#tab1">Start Search</a>
+            <a href="#tab1">Google Start Search</a>
         </li>
         <li>
-            <a href="#tab2">Detail Results</a>
+            <a href="#tab2">Google Detail Results</a>
         </li>
         <li>
-            <a href="#tab3">Reviews</a>
+            <a href="#tab3">Yelp Reviews</a>
         </li>
     </ul>
 
@@ -96,14 +97,10 @@
                     <td>
                         <button type="button" id="goPlacesButton">Places!</button>
                     </td>
-                    <td>
-                        <button type="button" id="goYelp">YELP!</button>
-                    </td>
                 </tr>
                 <tr>
                     <td><label for="searchRadius" id="search_radius_label">Search Radius (Meters):</label></td>
                     <td><input type="number" id="searchRadius" value="1000"/></td>
-                    <td></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -113,7 +110,6 @@
                         <option value="rating">Rating</option>
                         <option value="distance">Distance</option>
                         </select></td>
-                    <td></td>
                     <td></td>
                 </tr>
             </table>
@@ -171,11 +167,16 @@
         <h2>Search Detail Results</h2>
         
         <p id="locationTitle">   </p>
+        <p id="locationAddress"> </p>
         
         <div id="photos">
             
-        </div>
+            <div id="detailRatingsPanel">
+            
         
+            </div>
+            
+        </div>
         
         <div id="directionsPanel">
             
@@ -186,7 +187,6 @@
             
         
         </div>
-
         
         
         <div id="output">
@@ -196,12 +196,12 @@
     
     </div>
     <div id="tab3">
-        <h1>Reviews</h1>
-                
-                
-                
-                
-                
+        <h1>Yelp Reviews</h1>
+        
+        <div id="YelpReviews">
+            
+        
+        </div>
     </div>
     </div>
 </body>

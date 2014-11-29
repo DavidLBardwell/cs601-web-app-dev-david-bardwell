@@ -343,6 +343,9 @@ function callbackDetail(place, status) {
         
         mapDataDetailObject.name = place.name;
         mapDataDetailObject.location = place.geometry.location;
+        mapDataDetailObject.formattedAddress = place.formatted_address;
+        mapDataDetailObject.website = place.website;
+        
         mapDataDetail = [];
         
         // display all the photos, note: need to check if there are any
@@ -373,7 +376,8 @@ function callbackDetail(place, status) {
         }
         
         // display the details screen
-        $("#locationTitle").html(mapDataDetailObject.name);
+        $("#locationTitle").html("<a href=" + mapDataDetailObject.website + ">" + mapDataDetailObject.name + "</a>");
+        $("#locationAddress").html(mapDataDetailObject.formattedAddress);
         
         $("#photos").empty();
         // show up to 4 photos at the top of the panel for now
@@ -386,9 +390,34 @@ function callbackDetail(place, status) {
         }
         
         showDirections();
+        
+        // show the google review results
+        if (place.reviews !== undefined) {
+            $("#photos").append("<div id='detailRatingsPanel'>");
+            for (var i = 0; i < place.reviews.length; i++) {
+                if (i === 0) {
+                    $("#photos").append("<table><thead><tr><th>Rating</th><th>Comments</th></tr></thead>");
+                    $("#photos").append("<tbody>");
+                }    
+                $("#photos").append("<tr><td>" + place.reviews[i].rating + "</td>");
+                $("#photos").append("<td>" + place.reviews[i].text + "</td></tr>");
+            }
+            $("#photos").append("</tbody></table></div>");
+        }
+        
         $("#directionsMap").hide();  // hide the map as it does not display correctly
         $("#target").tabs("select", 1 );
         
+        // finally, get the YELP information for the restaurant
+        var searchType = $("#searchSelection").val();
+        if (searchType === 'restaurant') {
+            var formattedAddress = place.formatted_address;
+            var lat = place.geometry.location.k;
+            var long = place.geometry.location.B;
+            cll = lat.toString() + "," + long.toString();
+            
+            yelpAPICallout('restaurant', formattedAddress, cll);
+        }
     }
 }
 
