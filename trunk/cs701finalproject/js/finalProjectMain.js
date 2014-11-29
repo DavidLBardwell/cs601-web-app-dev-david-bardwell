@@ -34,6 +34,8 @@ var directionsService=null;
 
 var formattedAddress;
 
+var yelpResults = [];
+
 
 // JQuery initialize function
 $(function() {
@@ -75,6 +77,53 @@ $(function() {
         $('input[type="radio"][value="address"]').attr('checked',true);
     });
             
+    $("#orderChoice").change(function() {
+        var orderChoice = $("#orderChoice").val();
+        sortMapData(orderChoice);
+        $("#searchResultsTable").empty();
+        
+        // add the link and the map marker after sorting
+        for (i = 0; i < mapData.length; i++) {
+            var nextMapData = mapData[i];
+            
+            // TODO: clean this code up with better DOM management
+            // refactor common code now shared in two places
+            $("#searchResultsTable").append("<tr><td><img id='locationImage" + i +
+              "'><a id='locationLink" + i +
+              "' class='dynamic-link' href='#'>" + nextMapData.title +
+              "</a><button class='mapButton' id='mapButton" + i + 
+              "' type='button'>Center</button>" + 
+              "<button class='startFromHereButton' id='startFromHereButton" + i +
+              "' type='button'>Restart</button>" +
+              "<button class='directionsButton' id='directionsButton" + i +
+              "' type='button'>Directions</button>" +              
+              "</td></tr>");
+        }
+        
+        // need to dynamically bind the anchors, and this should work well
+        $('a.dynamic-link').click(function() {
+            var linkId = this.id;
+            var offset = linkId.substr(12);
+            getDetailPlaces(offset);
+            return false;
+        });
+        
+        // center the link for the place in the map on the left
+        $('button.mapButton').click(function() {
+            var buttonId = this.id;
+            var offset = buttonId.substr(9);
+            map.panTo(mapData[offset].latLong);
+        });
+        
+        // need to update address and set radius to 500 for now
+        $('button.startFromHereButton').click(function() {
+            var buttonId = this.id;
+            var offset = buttonId.substr(19);
+            
+            getDetailAddress(offset);
+        });
+    });
+    
     $("#goPlacesButton").click(function() {
         // get our starting location
         var userStartChoice = $('input[name="startingPosition"]:checked').val();
@@ -103,11 +152,6 @@ $(function() {
                 mapDataObject.pagination.nextPage();
             }
         }
-    });
-            
-    // Test the Yelp API which still needs to be integrated more completely.
-    $("#goYelp").click(function() {
-        testYelpAPI();
     });
             
     // load Google search items from items.xml file
