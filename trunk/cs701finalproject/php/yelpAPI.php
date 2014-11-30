@@ -9,6 +9,9 @@
  * and the Business API to query additional information about the top result
  * from the search query.
  *
+ * Additional functions added by David Bardwell for improved integration with the
+ * Yelp API to include latitude and longitude to pinpoint restaurant of interest.
+ *
  * Please refer to http://www.yelp.com/developers/documentation for the API documentation.
  *
  * This program requires a PHP OAuth2 library, which is included in this branch and can be
@@ -34,7 +37,7 @@ $TOKEN_SECRET = 'NK-yDBCzxVWcZoVg8cCgkJrwjGU';
 $API_HOST = 'api.yelp.com';
 $DEFAULT_TERM = 'dinner';
 $DEFAULT_LOCATION = 'San Francisco, CA';
-$SEARCH_LIMIT = 20;
+$SEARCH_LIMIT = 15;
 $SEARCH_PATH = '/v2/search/';
 $BUSINESS_PATH = '/v2/business/';
 
@@ -100,6 +103,14 @@ function search($term, $location) {
 }
 
 
+/**
+ * Query the Search API by a search term, location and lat/long
+ *
+ * @param    $term        The search term passed to the API
+ * @param    $location    The search location passed to the API
+ * @param    $cll         The latitude and longitude to pintpoint search
+ * @return   The JSON response from the request
+ */
 function search2($term, $location, $cll) {
     $url_params = array();
 
@@ -147,53 +158,25 @@ function query_api($term, $location) {
     print "$response\n";
 }
 
+/**
+ * Queries the API by the input values from the user
+ *
+ *  David Bardwell for CS701 final project
+ *  Add this API entry point for the yelpstub.php file to call.
+ *
+ * @param    $term        The search term to query
+ * @param    $location    The location of the business to query
+ * @param    $cll         The latitude and longitude to pinpoint search
+ */
 function query_api2($term, $location, $cll) {
     $response = json_decode(search2($term, $location, $cll));
-    /* $business_id = $response->businesses[2]->id; */
-
-/*    print sprintf(
-        "%d businesses found, querying business info for the top result \"%s\"\n\n",
-        count($response->businesses),
-        $business_id
-    );
-*/
 
     $arr = array();
     for ($i = 0; $i < count($response->businesses); $i++) {
-       /* print sprintf("The next business name is %s\n", $response->businesses[$i]->name); */
        $business_id = $response->businesses[$i]->id;
        $response_detail = get_business($business_id);
        array_push($arr, $response_detail);
     }
     echo json_encode($arr);
-
-    /* $response = get_business($business_id); */
-
-    /* print sprintf("Result for business \"%s\" found:\n", $business_id); */
-    /* echo "$response\n"; */
-
 }
-
-/**
- * User input is handled here
- */
-
-/* getting error about index not found so I will invoke myself
-$longopts  = array(
-    "term::",
-    "location::",
-);
-
-$options = getopt("", $longopts);
-
-$term = $options['term'] ?: '';
-$location = $options['location'] ?: '';
-*/
-
-/* $term = $DEFAULT_TERM;
-$location = $DEFAULT_LOCATION;
-
-query_api($term, $location); */
-
-
 ?>
