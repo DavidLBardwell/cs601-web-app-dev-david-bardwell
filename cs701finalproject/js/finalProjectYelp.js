@@ -5,9 +5,6 @@
 // the specific authorization implementation needed to call the Yelp API.
 
 function yelpAPICallout(term, location, cll) {
-    // TODO: will need to constuct a data list for a post for the
-    // search type and details
-    
     /* var term = 'restaurant';
     var location = '10 Wayside Road, Burlington, MA 01803';
     var cll = '42.4857853,-71.1911223'; */
@@ -27,16 +24,24 @@ function yelpAPICallout(term, location, cll) {
                 // need to parse out each JSON string in each array element (I think)
                 var nextJSONElement = JSON.parse(yelpJSONList[i]);
                 yelpResults.push(nextJSONElement);
-                //console.log(nextJSONElement.id);
-                //console.log(nextJSONElement.name);
             }
             
             // match the current name of the restaurant and show reviews
             var matchIndex = -1;
             for (var i = 0; i < yelpResults.length; i++) {
+                // See if we have a name match
                 if (yelpResults[i].name === mapDataDetailObject.name) {
                     matchIndex = i;
                     break;
+                }
+                else {
+                    // sometimes names may be a little different, try a phone number match
+                    if (mapDataDetailObject.phoneNumber !== null) {
+                        if (yelpResults[i].phone === mapDataDetailObject.phoneNumber) {
+                            matchIndex = i;
+                            break;
+                        }
+                    }
                 }
             }
             

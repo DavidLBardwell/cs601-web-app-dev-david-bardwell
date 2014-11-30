@@ -345,6 +345,13 @@ function callbackDetail(place, status) {
         mapDataDetailObject.location = place.geometry.location;
         mapDataDetailObject.formattedAddress = place.formatted_address;
         mapDataDetailObject.website = place.website;
+        mapDataDetailObject.url = place.utl;
+        if (place.formatted_phone_number !== undefined) {
+            mapDataDetailObject.phoneNumber = unformatPhoneNumber(place.formatted_phone_number);
+        }
+        else {
+            mapDataDetailObject.phoneNumber = null;
+        }
         
         mapDataDetail = [];
         
@@ -376,7 +383,14 @@ function callbackDetail(place, status) {
         }
         
         // display the details screen
-        $("#locationTitle").html("<a href=" + mapDataDetailObject.website + ">" + mapDataDetailObject.name + "</a>");
+        var urlToShow = null;
+        if (mapDataDetailObject.website !== null && mapDataDetailObject.website.length > 0) {
+            urlToShow = mapDataDetailObject.website;
+        }
+        else {
+            urlToShow = mapDataDetailObject.url;
+        }
+        $("#locationTitle").html("<a href=" + urlToShow + ">" + mapDataDetailObject.name + "</a>");
         $("#locationAddress").html(mapDataDetailObject.formattedAddress);
         
         $("#photos").empty();
@@ -517,3 +531,14 @@ function calcRoute() {
     });
 }
 
+function unformatPhoneNumber(phone_number) {
+    var compressPhoneNumber = "";
+    
+    for (var i = 0; i < phone_number.length; i++) {
+        var nextPhoneChar = phone_number.charAt(i);
+        if (nextPhoneChar >= '0' && nextPhoneChar <= '9') {
+            compressPhoneNumber += nextPhoneChar;
+        }
+    }
+    return compressPhoneNumber;
+}
