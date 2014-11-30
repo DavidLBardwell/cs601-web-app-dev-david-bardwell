@@ -9,6 +9,9 @@ function yelpAPICallout(term, location, cll) {
     var location = '10 Wayside Road, Burlington, MA 01803';
     var cll = '42.4857853,-71.1911223'; */
     yelpResults = [];
+    
+    $("#YelpReviews").empty();
+    $("#YelpReviews").append("<h3>Running Yelp API query, please wait...<br/>");
             
     $.ajax({
         url: "php/yelpstub.php",
