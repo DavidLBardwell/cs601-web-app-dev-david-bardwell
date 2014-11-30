@@ -1,7 +1,8 @@
 // file: finalProjectMap.js
 // This file contains all the javascript code to manage the Google Map API
 // searchs. The following Google API are used:
-// Places - google.maps.places.PlacesService
+//  Places  - google.maps.places.PlacesService
+//  Geocode - maps.googleapis.com/maps/api/geocode
 
 
 /**
@@ -54,29 +55,19 @@ function updateStatus(message) {
         "<strong>Error</strong>: " + message;
 }
 
-//function showOnMap(pos) {
-//    var googlePosition = 
-//        new google.maps.LatLng(pos.latitude, pos.longitude);
-//    latLong = googlePosition;
-//    
-//    var mapOptions = {
-//        zoom: 15,
-//        center: googlePosition,
-//        mapTypeId: google.maps.MapTypeId.ROADMAP
-//    };
-//    
-//    var mapElement = document.getElementById("map");
-//    if (createMap === true) {
-//        map = new google.maps.Map(mapElement, mapOptions);
-//        createMap = false;
-//    }
-//    
-//    var latlong = new google.maps.LatLng(latitude, longitude);
 //
-//    // pan to the most recent position
-//    map.panTo(latlong);
-//}
-
+// initializePlaces
+// 
+// This is the main commonly shared function to display the Google map on
+// the first start search tab. It is called in two cases.
+// In the first case, it is called when the user starts their search from
+// their current location. The second case, this function is called based
+// on the location obtained from a highly accurate address to geo-coordinate
+// lookup using the geocode address service.
+// 
+// Parameter: pos - a highly accurate location coordinate
+//
+//
 function initializePlaces(pos) {
     
     callbackCount = 0;
@@ -307,6 +298,10 @@ function getIndexFromMarkerClickEvent(latLong) {
     return index;
 }
 
+// getDetailAddress is called by the Restart button which is next to a 
+// location link. This is needed to get the official Google formatted address
+// of the location. This in turn will allow us to get a highly accurate 
+// coordinate to base a new nearby search on.
 function getDetailAddress(location_offset) {
    var request = {
         placeId: mapDataObject.mapData[location_offset].place_id
@@ -323,11 +318,13 @@ function callbackAddressDetail(place, status) {
     }
 }   
 
+
 /**
  * function getDetailPlaces()
  * @argument location_offset - index into mapData to show detail
  * This gets specific detail information about a specific place
- * 
+ * Note: This function is called when a user clicks on the location link
+ *       on the right side of the first tab.
  */
 function getDetailPlaces(location_offset) {
     var request = {
@@ -345,7 +342,7 @@ function callbackDetail(place, status) {
         mapDataDetailObject.location = place.geometry.location;
         mapDataDetailObject.formattedAddress = place.formatted_address;
         mapDataDetailObject.website = place.website;
-        mapDataDetailObject.url = place.utl;
+        mapDataDetailObject.url = place.url;
         if (place.formatted_phone_number !== undefined) {
             mapDataDetailObject.phoneNumber = unformatPhoneNumber(place.formatted_phone_number);
         }
@@ -384,8 +381,14 @@ function callbackDetail(place, status) {
         
         // display the details screen
         var urlToShow = null;
-        if (mapDataDetailObject.website !== null && mapDataDetailObject.website.length > 0) {
-            urlToShow = mapDataDetailObject.website;
+        if (mapDataDetailObject.website !== undefined && 
+            mapDataDetailObject.website !== null) {
+            if (mapDataDetailObject.website.length > 0) {
+                urlToShow = mapDataDetailObject.website;
+            }
+            else {
+                urlToShow = mapDataDetailObject.url;
+            }
         }
         else {
             urlToShow = mapDataDetailObject.url;
@@ -403,7 +406,9 @@ function callbackDetail(place, status) {
             }
         }
         
-        showDirections();
+        // display the english turn-by-turn street directions on the 2nd detail
+        // tab on the right side on the panel.
+        showDirectionsOnDetailTab();
         
         // show the google review results
         if (place.reviews !== undefined) {
@@ -419,22 +424,32 @@ function callbackDetail(place, status) {
             $("#photos").append("</tbody></table></div>");
         }
         
-        $("#directionsMap").hide();  // hide the map as it does not display correctly
+        // hide the map as it does not display correctly. There are well known
+        // issues with using multiple jQuery ui tabs and Google Maps. The suggested 
+        // workarounds caused other serious side effects or were based on
+        // iframes which I have been instructed not to use.
+        // We only show the turn-by-turn directions on the detail tab.
+        $("#directionsMap").hide();
         $("#target").tabs("select", 1 );
         
         // finally, get the YELP information for the restaurant
         var searchType = $("#searchSelection").val();
-        if (searchType === 'restaurant') {
-            var formattedAddress = place.formatted_address;
+        // expand to all search types
+        //if (searchType === 'restaurant') {
+            var formattedAddress = purifyFormattedAddress(place.formatted_address);
             var lat = place.geometry.location.k;
             var long = place.geometry.location.B;
             cll = lat.toString() + "," + long.toString();
             
-            yelpAPICallout('restaurant', formattedAddress, cll);
-        }
+            yelpAPICallout(searchType, formattedAddress, cll);
+        //}
     }
 }
 
+// This function is needed to get a highly accurate coordinate from an 
+// address and uses the special Google geocode API. I have found that the
+// Google nearby search does not return an accurate enough coordinate to work
+// with the specific location getDetails.
 function getPositionFromAddress(address, setInitialPosition) {
     address = encodeURIComponent(address);
     
@@ -457,6 +472,8 @@ function getPositionFromAddress(address, setInitialPosition) {
     });    
 }
 
+// This function shows the directions on the main Google Map by drawing the
+// directions directly on the Google Map.
 function showDirectionsOnFirstMap(offset) {
     if (directionsService === null) {
         directionsService = new google.maps.DirectionsService();
@@ -477,6 +494,9 @@ function showDirectionsOnFirstMap(offset) {
     calcRouteOnFirstMap(offset);    
 }
 
+// Helper function to actually display the route on the main Google Map on the
+// first tab. Currently, the english set of direction instructions is not
+// diplayed on the first tab, but is displayed on the 2nd detail places tab.
 function calcRouteOnFirstMap(offset) {
     var start = startLocationForDirections;
     var end = mapData[offset].latLong;
@@ -494,7 +514,11 @@ function calcRouteOnFirstMap(offset) {
 }
 
 
-function showDirections() {
+// 
+// Main function for showing the driving turn-by-turn instructions on the
+// detail places tab.
+//
+function showDirectionsOnDetailTab() {
     if (directionsService === null) {
         directionsService = new google.maps.DirectionsService();
     }
@@ -510,12 +534,14 @@ function showDirections() {
     };
     
     mapForDirections = new google.maps.Map(document.getElementById("directionsMap"), mapOptions);
-    directionsDisplay.setMap(mapForDirections);
+    directionsDisplay.setMap(mapForDirections);  // currently not diplayed
     directionsDisplay.setPanel(document.getElementById("directionsPanel"));
-    calcRoute();
+    calcRouteOnDetailTab();
 }
 
-function calcRoute() {
+// helper function to calculate the driving instructions for the detail tab
+// and present the driving instructions on the right-side of the panel.
+function calcRouteOnDetailTab() {
     var start = startLocationForDirections;
     var end = mapDataDetailObject.location;
     var request = {
@@ -531,6 +557,9 @@ function calcRoute() {
     });
 }
 
+// This function is needed to allow Google and Yelp to have similarly 
+// formatted phone numbers. Yelp does not use any formatting so this
+// function strips formatting from the Google Places phone number.
 function unformatPhoneNumber(phone_number) {
     var compressPhoneNumber = "";
     
@@ -541,4 +570,24 @@ function unformatPhoneNumber(phone_number) {
         }
     }
     return compressPhoneNumber;
+}
+
+// For some reason, Google Places formatted_address may contain control
+// characters and cause issues for Yelp. I will try to clean up any of
+// these odd control characters.
+function purifyFormattedAddress(formatted_address) {
+    var cleanedUpFormattedAddress = "";
+    
+    for (var i = 0; i < formatted_address.length; i++) {
+        var nextChar = formatted_address.charAt(i);
+        if ( (nextChar >= '0' && nextChar <= '9') ||
+             (nextChar >= 'A' && nextChar <= 'Z') ||
+             (nextChar >= 'a' && nextChar <= 'z') ||
+             (nextChar === ' ' || nextChar === ',' || nextChar === "." ||
+              nextChar === "'" || nextChar === '&')) {
+
+            cleanedUpFormattedAddress += nextChar;
+        }
+    }
+    return cleanedUpFormattedAddress;
 }
