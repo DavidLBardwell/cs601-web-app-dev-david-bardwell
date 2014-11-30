@@ -3,6 +3,8 @@
 // based on JQuery.
 
 // current location
+// latitude and longitude store the user's current location be it from
+// their actual physical location or from a starting address.
 var latitude, longitude;
 var latLong;
 var startLocationForDirections;
@@ -21,6 +23,7 @@ var mapDataObject = {};
 var mapData = [];
 var mapDataCurrentIndex = 0;
 
+// map data detail objects for second tab
 var mapDataDetailObject = {};
 var mapDataDetail = [];
 
@@ -32,6 +35,7 @@ var callbackCount;
 var directionsDisplay;
 var directionsService=null;
 
+var favoriteAddresses = [];
 var formattedAddress;
 
 var yelpResults = [];
@@ -42,28 +46,39 @@ $(function() {
     var options = {event: "click",
     fx: {opacity : "toggle", 
         duration: "fast"}};
-    $("#target").tabs(options);
-    $("#map").hide();
+    $("#target").tabs(options);            // use jQuery tab ui for main interface
+    $("#map").hide();                      // hide until the user as done a query
     $('#searchSelection').attr("disabled", "disabled");
-    $("#previousResultButton").hide();
-    $('#nextResultButton').hide();
-    $('#searchResultsTableHeader').hide();
-    $("#directionsPanelFirstTab").hide();
+    $('#nextResultButton').hide();         // hide until there are more results 
+    $('#searchResultsTableHeader').hide(); // hide until user has done a query
+    $("#directionsPanelFirstTab").hide();  // currently not displayed
             
-    // TODO: load from local storage, if empty default the following
-    favoriteAddresses = [];
-    favoriteAddresses.push("9 Saltonstall Parkway, Salem, MA");
-    favoriteAddresses.push("10 Van de Graaff Drive, Burlington, MA");
-    favoriteAddresses.push("808 Commonwealth Ave, Boston, MA");
+    // load our favorite addresses from local storage if available otherwise
+    // default to a starting set of addresses and initialize local storage
+    loadFavoriteAddresses();
             
-    // add our favorite addresses - hard code for now
-    for (var i = 0; i < favoriteAddresses.length; i++) {
-        $("#favoriteAddress").append(
-        $("<option>", {
-            value: favoriteAddresses[i],
-            text: favoriteAddresses[i]
-        }));
-    }
+    // populate the favorite address selection list
+    updateFavoriteAddressSelection();
+    
+    $("#addToFavoritesButton").click(function() {
+        var newStreetAddress = $("#street1").val();
+        var newCityState = $("#cityState").val();
+        var fullAddress = newStreetAddress + ", " + newCityState;
+        var duplicate = false;
+        // make sure this is not a duplicate, if it is, ignore the add request
+        for (var i = 0; i < favoriteAddresses.length; i++) {
+            if (fullAddress === favoriteAddresses[i].address) {
+                duplicate = true;
+                break;
+            }
+        }
+        
+        if (duplicate === false) {
+            favoriteAddresses.push({address : fullAddress, type: 'favorite'});
+            window.localStorage.setItem('addresses', JSON.stringify(favoriteAddresses));
+            updateFavoriteAddressSelection();
+        }
+    });
             
     // add change listener to the favorites, update the address field
     // and select from address also
@@ -77,6 +92,9 @@ $(function() {
         $('input[type="radio"][value="address"]').attr('checked',true);
     });
             
+    // user decides to change how the result search links are sorted. The links
+    // can be sorted by location name (default), rating (best to worst), or
+    // distance (closest to farthest).
     $("#orderChoice").change(function() {
         var orderChoice = $("#orderChoice").val();
         sortMapData(orderChoice);
@@ -189,4 +207,46 @@ function selectEntries (request, callback) {
 // when a selection is made
 function makeSelection(event, ui) {
     $('#searchSelection').val(ui.item.data.name);
+}
+
+function loadFavoriteAddresses() {
+    var foundKey = false;
+    if (window.localStorage.length > 0) {
+        for (var i = 0; i < window.localStorage.length; i++) {
+            var keyValue = localStorage.key(i);
+            // make sure data belongs to addresses, and not something else
+            if (keyValue === 'addresses') {
+                favoriteAddresses = JSON.parse(window.localStorage.getItem('addresses'));
+                foundKey = true;
+            }
+        }
+        
+        // if we did not find our key, default initial favorites
+        if (foundKey === false) {
+            defaultFavoriteAddresses();
+        }
+    }
+    else {
+        // if we did not find any localstorage keys, default initial favorites
+        defaultFavoriteAddresses();
+    }
+}
+
+function updateFavoriteAddressSelection() {
+    // add our favorite addresses
+    $("#favoriteAddress").empty();
+    for (var i = 0; i < favoriteAddresses.length; i++) {
+        $("#favoriteAddress").append(
+        $("<option>", {
+            value: favoriteAddresses[i].address,
+            text: favoriteAddresses[i].address
+        }));
+    }
+}
+
+function defaultFavoriteAddresses() {
+    favoriteAddresses.push({address : "9 Saltonstall Parkway, Salem, MA", type: 'home'});
+    favoriteAddresses.push({address : "10 Van de Graaff Drive, Burlington, MA", type: 'work'});
+    favoriteAddresses.push({address : "808 Commonwealth Ave, Boston, MA", type: 'school'});
+    window.localStorage.setItem('addresses', JSON.stringify(favoriteAddresses));
 }
