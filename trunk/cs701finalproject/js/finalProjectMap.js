@@ -174,7 +174,7 @@ function callbackPlaces(results, status,  pagination) {
             // TODO: clean this code up with better DOM management
             $("#searchResultsTable").append("<tr><td><img id='locationImage" + i +
               "'><a id='locationLink" + i +
-              "' class='dynamic-link' href='#'>" + nextMapData.title +
+              "' href='www.cnn.com'>" + nextMapData.title +
               "</a><button class='mapButton' id='mapButton" + i + 
               "' type='button'>Center</button>" + 
               "<button class='startFromHereButton' id='startFromHereButton" + i +
@@ -200,7 +200,9 @@ function callbackPlaces(results, status,  pagination) {
         }
         
         // need to dynamically bind the anchors, and this should work well
-        $('a.dynamic-link').click(function() {
+        $('a').click(function(e) {
+            e.preventDefault();
+            $(this).addClass('visited-link');
             var linkId = this.id;
             var offset = linkId.substr(12);
             getDetailPlaces(offset);
@@ -214,7 +216,7 @@ function callbackPlaces(results, status,  pagination) {
             map.panTo(mapData[offset].latLong);
         });
         
-        // need to update address and set radius to 500 for now
+        // need to update address
         $('button.startFromHereButton').click(function() {
             var buttonId = this.id;
             var offset = buttonId.substr(19);

@@ -108,7 +108,7 @@ $(function() {
             // refactor common code now shared in two places
             $("#searchResultsTable").append("<tr><td><img id='locationImage" + i +
               "'><a id='locationLink" + i +
-              "' class='dynamic-link' href='#'>" + nextMapData.title +
+              "' href='www.cnn.com'>" + nextMapData.title +
               "</a><button class='mapButton' id='mapButton" + i + 
               "' type='button'>Center</button>" + 
               "<button class='startFromHereButton' id='startFromHereButton" + i +
@@ -119,7 +119,9 @@ $(function() {
         }
         
         // need to dynamically bind the anchors, and this should work well
-        $('a.dynamic-link').click(function() {
+        $('a').click(function(e) {
+            e.preventDefault();
+            $(this).addClass('visited-link');
             var linkId = this.id;
             var offset = linkId.substr(12);
             getDetailPlaces(offset);
@@ -133,7 +135,7 @@ $(function() {
             map.panTo(mapData[offset].latLong);
         });
         
-        // need to update address and set radius to 500 for now
+        // need to update address
         $('button.startFromHereButton').click(function() {
             var buttonId = this.id;
             var offset = buttonId.substr(19);
