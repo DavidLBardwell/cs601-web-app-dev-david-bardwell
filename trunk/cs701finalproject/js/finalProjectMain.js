@@ -142,6 +142,14 @@ $(function() {
             
             getDetailAddress(offset);
         });
+        
+        // see how well we can add directions to first map
+        $('button.directionsButton').click(function() {
+            var buttonId = this.id;
+            var offset = buttonId.substr(16);
+            
+            showDirectionsOnFirstMap(offset);
+        });        
     });
     
     $("#goPlacesButton").click(function() {
