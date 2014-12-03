@@ -6,14 +6,14 @@
 
 
 /**
- * function showMap
+ * function showMapFromCurrentLocation
  * 
  * This is called to show the initial search Google map when the user chooses
  * to start from their current location. We need to first get their current
  * location. We then show the search results based on their current location.
  * This function is re-entrant, and will create a new map object each time.
  */
-function showMap() {
+function showMapFromCurrentLocation() {
     // asynchronous call with callback function specified
     var options = {
       enableHighAccuracy : true,
@@ -23,6 +23,7 @@ function showMap() {
     
     // Default to current location for the search. Other ways of establishing
     // the starting latitude and longitude will be provided.
+    // Use geolocation service to get the user's current position
     navigator.geolocation.getCurrentPosition(
         displayInitialLocation, handleError, options);    
 }
@@ -102,6 +103,7 @@ function initializePlaces(pos) {
         types: typesForSearch
     };
 
+    // now, get locations near the user's starting point
     service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request, callbackPlaces);
 }
@@ -398,13 +400,24 @@ function callbackDetail(place, status) {
         $("#locationTitle").html("<a href=" + urlToShow + ">" + mapDataDetailObject.name + "</a>");
         $("#locationAddress").html(mapDataDetailObject.formattedAddress);
         
-        $("#photos").empty();
+        mapDataDetailObject.photoCount = photoCount;
+        mapDataDetailObject.photoStart = 0;
+        
+        // clear previous interval, if one was set
+        if (mapDataDetailObject.photoDisplay !== undefined) {
+            clearInterval(mapDataDetailObject.photoDisplay);
+        }
+        // rotate the images every 5 seconds
+        mapDataDetailObject.photoDisplay = setInterval(function(){ showLocationImages(); }, 5000);
+        
+        // also, initially show the photos 
+        $("#locationPhotos").empty();
         // show up to 4 photos at the top of the panel for now
         var photoLimit = (photoCount < 4 ? photoCount : 4);
         for (var i = 0; i < photoLimit; i++) {
-            $("#photos").append("<img src='" + mapDataDetail[i].url + "'>");
+            $("#locationPhotos").append("<img src='" + mapDataDetail[i].url + "'>");
             if (((i + 1) % 4) === 0) {
-                $("#photos").append("<br>");  // break them out 4 to a line
+                $("#locationPhotos").append("<br>");
             }
         }
         
@@ -434,7 +447,7 @@ function callbackDetail(place, status) {
         $("#directionsMap").hide();
         $("#target").tabs("select", 1 );
         
-        // finally, get the YELP information for the restaurant
+        // finally, get the YELP information for the restaurant or other business
         var searchType = $("#searchSelection").val();
         // expand to all search types
         //if (searchType === 'restaurant') {
@@ -446,6 +459,56 @@ function callbackDetail(place, status) {
             yelpAPICallout(searchType, formattedAddress, cll);
         //}
     }
+}
+
+// automatically rotate through all available location images
+function showLocationImages() {
+    if (mapDataDetailObject.photoCount === 0) {
+        $("#locationPhotos").empty();
+        return;
+    }
+    
+    $("#locationPhotos").empty();
+    // create an array of indexes to show
+    var photosToShow = [];
+    
+    // determine start index in photo array
+    var startIndex = mapDataDetailObject.photoStart;
+    if (startIndex >= mapDataDetailObject.photoCount) {
+        mapDataDetailObject.photoStart = 0;
+        startIndex = 0;
+    }
+    
+    // little tricky to deal with all possible cases, so very carefully
+    // get the indexes of the photos array into our photosToShow array
+    var loopControl = true;
+    var count = 0;
+    var nextIndex = startIndex;
+    while (loopControl === true) {
+        if (nextIndex >= mapDataDetailObject.photoCount) {
+            nextIndex = 0;
+        }
+        photosToShow.push(nextIndex);
+        count++;
+        nextIndex++;
+        
+        if (count >= mapDataDetailObject.photoCount) {
+            loopControl = false;
+        }
+        else if (count === 4) {
+            loopControl = false;
+        }
+    }
+    
+    // finally, display the next set of 4 photos in a carousel fashion
+    var stopIndex = (mapDataDetailObject.photoCount < 4 ? mapDataDetailObject.photoCount : 4);
+    for (var i = 0; i < stopIndex; i++) {
+        $("#locationPhotos").append("<img src='" + mapDataDetail[photosToShow[i]].url + "'>");
+        if (((i + 1) % 4) === 0) {
+            $("#locationPhotos").append("<br>");
+        }
+    }
+    mapDataDetailObject.photoStart++;
 }
 
 // This function is needed to get a highly accurate coordinate from an 

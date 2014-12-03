@@ -161,7 +161,7 @@ $(function() {
             var locationSelection = $("#searchSelection").val();
             if (locationSelection !== null && locationSelection.length > 0) {
                 $("#map").show();
-                showMap();
+                showMapFromCurrentLocation();
             }
         }
         else {
