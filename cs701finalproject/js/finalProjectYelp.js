@@ -95,7 +95,7 @@ function yelpAPICallout(term, location, cll) {
                     $("#YelpReviews").append("<table><thead><tr><th>Name</th><th>Rating</th><th>Comments</th></tr></thead>");
                     $("#YelpReviews").append("<tbody>");
                 }
-                $("#YelpReviews").append("<tr><td><span id='yelpLocation'>" + yelpResults[i].name + "</span></td>");
+                $("#YelpReviews").append("<tr><td><span id='yelpLocation'><a href=" + yelpResults[i].url + ">" + yelpResults[i].name + "</a></span></td>");
                 $("#YelpReviews").append("<td><span id='yelpRating'>" + nextReview.rating + "</span></td>");
                 $("#YelpReviews").append("<td>" + nextReview.excerpt + "</td></tr>");
             }
