@@ -401,7 +401,7 @@ function callbackDetail(place, status) {
         $("#locationAddress").html(mapDataDetailObject.formattedAddress);
         
         mapDataDetailObject.photoCount = photoCount;
-        mapDataDetailObject.photoStart = 0;
+        mapDataDetailObject.photoStart = 1;  // start with 2nd photo for automatic display
         
         // clear previous interval, if one was set
         if (mapDataDetailObject.photoDisplay !== undefined) {
@@ -427,16 +427,16 @@ function callbackDetail(place, status) {
         
         // show the google review results
         if (place.reviews !== undefined) {
-            $("#photos").append("<div id='detailRatingsPanel'>");
+            $("#detailRatingsPanel").empty();
             for (var i = 0; i < place.reviews.length; i++) {
                 if (i === 0) {
-                    $("#photos").append("<table><thead><tr><th>Rating</th><th>Comments</th></tr></thead>");
-                    $("#photos").append("<tbody>");
+                    $("#detailRatingsPanel").append("<table><thead><tr><th>Rating</th><th>Comments</th></tr></thead>");
+                    $("#detailRatingsPanel").append("<tbody>");
                 }    
-                $("#photos").append("<tr><td>" + place.reviews[i].rating + "</td>");
-                $("#photos").append("<td>" + place.reviews[i].text + "</td></tr>");
+                $("#detailRatingsPanel").append("<tr><td>" + place.reviews[i].rating + "</td>");
+                $("#detailRatingsPanel").append("<td>" + place.reviews[i].text + "</td></tr>");
             }
-            $("#photos").append("</tbody></table></div>");
+            $("#detailRatingsPanel").append("</tbody></table>");
         }
         
         // hide the map as it does not display correctly. There are well known
