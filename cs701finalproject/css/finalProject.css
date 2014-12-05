@@ -61,3 +61,17 @@ a.visited-link {
 button:hover, a:hover {
     color : red;
 }
+div table input:hover {
+    background-color: lightblue;
+}
+div select:hover {
+    background-color: lightblue;
+}
+#yelpLocation {
+    color: green;
+    font-weight: bold;
+}
+#yelpRating {
+    color: orangered;
+    font-weight: bold;
+}

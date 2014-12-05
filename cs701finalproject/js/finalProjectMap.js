@@ -445,6 +445,8 @@ function callbackDetail(place, status) {
         // iframes which I have been instructed not to use.
         // We only show the turn-by-turn directions on the detail tab.
         $("#directionsMap").hide();
+        $("#target").tabs( "enable", 1);
+        $("#target").tabs( "enable", 2);
         $("#target").tabs("select", 1 );
         
         // finally, get the YELP information for the restaurant or other business

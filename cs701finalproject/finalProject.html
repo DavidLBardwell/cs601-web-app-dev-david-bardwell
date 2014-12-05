@@ -17,7 +17,6 @@
     <script src="js/finalProjectMapUtil.js"></script>
                 
     <link rel="stylesheet" href="css/finalProject.css">
-
 </head>
 
 <body>
@@ -35,13 +34,14 @@
     </ul>
 
     <div id="tab1">
-        <p>Provide your starting location</p>        
+        <p>Provide your starting location</p>
         <section id="selectionOption">
             <div id="ui-widget">
             <table>
                 <tr>
                     <td><label for="searchSelection" id="search_label">Pick a category:</label></td> 
-                    <td><input id="searchSelection" value="restaurant" size="30"/></td>
+                    <td><input id="searchSelection" value="restaurant" size="30"
+                               title="Enter * to see all categories"></td>
                     <td>
                         <button type="button" id="goPlacesButton">Places!</button>
                     </td>
@@ -76,15 +76,16 @@
         </section>
         
         <div id="locationType">
+            <input type="radio" name="startingPosition" value="currentLocation" checked>Current Location
+            <br>
+            <input type="radio" name="startingPosition" value="address">From Address
+            <br>
+            
             <label for="favoriteAddress" id="favoriteAddressLabel">Favorite Address:</label>
             <select id="favoriteAddress" name="favoriteAddress">
                 <option value="FavoriteAddress1">10 Van de Graaff Drive, Burlington, MA</option>
             </select>
             <br>
-            
-            <input type="radio" name="startingPosition" value="currentLocation" checked>Current Location
-            <br>
-            <input type="radio" name="startingPosition" value="address">From Address
 
             <table>
                 <tr>
@@ -154,5 +155,9 @@
         </div>
     </div>
     </div>
+<script>
+    //show tooltip for any input field with a title attribute
+    $(document).tooltip();
+</script>    
 </body>
 </html>
