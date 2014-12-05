@@ -52,6 +52,8 @@ $(function() {
     $('#nextResultButton').hide();         // hide until there are more results 
     $('#searchResultsTableHeader').hide(); // hide until user has done a query
     $("#directionsPanelFirstTab").hide();  // currently not displayed
+    $("#target").tabs( "disable", 1);
+    $("#target").tabs( "disable", 2);
             
     // load our favorite addresses from local storage if available otherwise
     // default to a starting set of addresses and initialize local storage
@@ -59,6 +61,14 @@ $(function() {
             
     // populate the favorite address selection list
     updateFavoriteAddressSelection();
+    
+    // default the initial address to the first favorite address
+    var firstSelectedAddress = $("#favoriteAddress").val();
+    var firstCommaPos = firstSelectedAddress.indexOf(",");
+    var initialAddress1 = firstSelectedAddress.substring(0, firstCommaPos);
+    var initialAddress2 = firstSelectedAddress.substr(firstCommaPos + 1).trim();
+    $("#street1").val(initialAddress1);
+    $("#cityState").val(initialAddress2);
     
     $("#addToFavoritesButton").click(function() {
         var newStreetAddress = $("#street1").val();
