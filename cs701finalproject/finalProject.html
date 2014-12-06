@@ -60,7 +60,18 @@
                         </select></td>
                     <td></td>
                 </tr>
+                <tr>
+                    <td><label for="travelModeChoice" id="travel_mode_label">Travel Mode:</label></td>
+                    <td><select name="travelModeChoice" id="travelModeChoice">
+                        <option value="Driving">Driving</option>
+                        <option value="Walking">Walking</option>
+                        <option value="Bicycling">Bicycling</option>
+                        <option value="Transit">Transit</option>
+                        </select></td>
+                    <td></td>
+                </tr>
             </table>
+            <p id="restartSearchLocation"></p>
             </div>
             
             <div id="searchResults">
@@ -107,45 +118,43 @@
         
         <div id="directionsPanelFirstTab">
             
-            
         </div>
-        
     </div>
         
     <div id="tab2">
-        <h2>Search Detail Results</h2>
-        
-        <p id="locationTitle">   </p>
-        <p id="locationAddress"> </p>
-        
-        <div id="photos">
-            
-            <div id="locationPhotos">
+        <h2 id="locationTitle"></h2>
+        <div id="leftSide">
+            <div id="locationSummaryInformation">
+                <p id="locationPhone"></p>
+                <p id="locationAddress"></p>
+            </div>    
+            <div id="photos">
+                <div id="locationPhotos">
                 
-            </div>
-            <div id="detailRatingsPanel">
-            
+                </div>
+                <div id="detailRatingsPanel">
         
+                </div>
             </div>
         </div>
         
-        <div id="directionsPanel">
+        <div id="rightSide">
+            <div id="locationHours">
             
+            </div>
+            <div id="directionsPanel">
             
-        </div>
+            </div>
+        </div>    
         
         <div id="directionsMap">
-            
         
         </div>
-        
         
         <div id="output">
-            
         </div>
-                
-    
     </div>
+        
     <div id="tab3">
         <h1>Yelp Reviews</h1>
         

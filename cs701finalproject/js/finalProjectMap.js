@@ -150,6 +150,8 @@ function callbackPlaces(results, status,  pagination) {
             var content = "Lat: " + nextLatLong.B + 
                         ", Long: " + nextLatLong.k;
             var rating = 0;
+            var indicatedFromMapMarker = false;
+            var visitedLink = false;
             if (place.rating !== undefined) {
                 rating = place.rating;
             }    
@@ -160,7 +162,9 @@ function callbackPlaces(results, status,  pagination) {
                              icon : iconUrl,
                              latLong : nextLatLong,
                              content : content,
-                             rating : rating};
+                             rating : rating,
+                             indicatedFromMapMarker : indicatedFromMapMarker,
+                             visitedLink : visitedLink};
             mapData.push(jSONPlace);
         }
         
@@ -207,6 +211,7 @@ function callbackPlaces(results, status,  pagination) {
             $(this).addClass('visited-link');
             var linkId = this.id;
             var offset = linkId.substr(12);
+            mapData[offset].visitedLink = true;
             getDetailPlaces(offset);
             return false;
         });
@@ -222,6 +227,7 @@ function callbackPlaces(results, status,  pagination) {
         $('button.startFromHereButton').click(function() {
             var buttonId = this.id;
             var offset = buttonId.substr(19);
+            $("#restartSearchLocation").html("Tailor search from " + mapData[offset].title);
             
             getDetailAddress(offset);
         });
@@ -274,6 +280,7 @@ function addMarker(map, latlongPosition, title, content, iconUrl) {
         // clicked on
         var markerIndex = getIndexFromMarkerClickEvent(e.latLng);
         $('#locationImage' + markerIndex).prop('src', 'accept-Icon.png');
+        mapData[markerIndex].indicatedFromMapMarker = true;
         popupWindow.open(map);
     });
 }
@@ -347,6 +354,7 @@ function callbackDetail(place, status) {
         mapDataDetailObject.formattedAddress = place.formatted_address;
         mapDataDetailObject.website = place.website;
         mapDataDetailObject.url = place.url;
+        mapDataDetailObject.formattedPhoneNumber = place.formatted_phone_number;
         if (place.formatted_phone_number !== undefined) {
             mapDataDetailObject.phoneNumber = unformatPhoneNumber(place.formatted_phone_number);
         }
@@ -398,7 +406,22 @@ function callbackDetail(place, status) {
             urlToShow = mapDataDetailObject.url;
         }
         $("#locationTitle").html("<a href=" + urlToShow + ">" + mapDataDetailObject.name + "</a>");
+        $("#locationPhone").html(mapDataDetailObject.formattedPhoneNumber);
         $("#locationAddress").html(mapDataDetailObject.formattedAddress);
+        
+        $("#locationHours").empty();
+        if (place.opening_hours !== undefined) {
+            if (place.opening_hours.weekday_text !== undefined) {
+                for (var i = 0; i < place.opening_hours.weekday_text.length; i++) {
+                    if (i === 0) {
+                        $("#locationHours").append("<table id='hoursTable'><thead><tr><th>Hours</th></tr></thead>");
+                    }
+                    // need to in-line padding as css rule is not firing for some reason?
+                    $("#locationHours").append("<tr><td style='padding:3px'>" + place.opening_hours.weekday_text[i] + "</td></tr>");
+                }
+                $("#locationHours").append("</table>");
+            }
+        }
         
         mapDataDetailObject.photoCount = photoCount;
         mapDataDetailObject.photoStart = 1;  // start with 2nd photo for automatic display
@@ -567,10 +590,27 @@ function showDirectionsOnFirstMap(offset) {
 function calcRouteOnFirstMap(offset) {
     var start = startLocationForDirections;
     var end = mapData[offset].latLong;
+    
+    var googleTravelMode = google.maps.TravelMode.DRIVING;
+    switch ($("#travelModeChoice").val()) {
+        case 'Driving':
+            googleTravelMode = google.maps.TravelMode.DRIVING;
+            break;
+        case 'Walking':
+            googleTravelMode = google.maps.TravelMode.WALKING;
+            break;
+        case 'Bicycling':
+            googleTravelMode = google.maps.TravelMode.BICYCLING;
+            break;
+        case "Transit":
+            googleTravelMode = google.maps.TravelMode.TRANSIT;
+            break;
+    }
+    
     var request = {
         origin:start,
         destination:end,
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: googleTravelMode
     };
   
     directionsService.route(request, function(response, status) {
@@ -611,10 +651,25 @@ function showDirectionsOnDetailTab() {
 function calcRouteOnDetailTab() {
     var start = startLocationForDirections;
     var end = mapDataDetailObject.location;
+    var googleTravelMode = google.maps.TravelMode.DRIVING;
+    switch ($("#travelModeChoice").val()) {
+        case 'Driving':
+            googleTravelMode = google.maps.TravelMode.DRIVING;
+            break;
+        case 'Walking':
+            googleTravelMode = google.maps.TravelMode.WALKING;
+            break;
+        case 'Bicycling':
+            googleTravelMode = google.maps.TravelMode.BICYCLING;
+            break;
+        case "Transit":
+            googleTravelMode = google.maps.TravelMode.TRANSIT;
+            break;
+    }
     var request = {
         origin:start,
         destination:end,
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: googleTravelMode
     };
   
     directionsService.route(request, function(response, status) {

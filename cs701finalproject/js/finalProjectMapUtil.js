@@ -35,6 +35,8 @@ function sortMapData(sortType) {
         temp.latLong = mapData[i].latLong;
         temp.content = mapData[i].content;
         temp.rating = mapData[i].rating;
+        temp.indicatedFromMapMarker = mapData[i].indicatedFromMapMarker;
+        temp.visitedLink = mapData[i].visitedLink;
         
         // find the smallest one from our starting position
         for (var j = i + 1 ; j < mapData.length; j++) {
@@ -68,6 +70,8 @@ function sortMapData(sortType) {
             mapData[i].latLong = mapData[smallestIndex].latLong;
             mapData[i].content = mapData[smallestIndex].content;
             mapData[i].rating = mapData[smallestIndex].rating;
+            mapData[i].indicatedFromMapMarker = mapData[smallestIndex].indicatedFromMapMarker;
+            mapData[i].visitedLink = mapData[smallestIndex].visitedLink;
             
             // copy what is currenly at position i (from temp) to smallest index
             mapData[smallestIndex].title = temp.title;
@@ -76,6 +80,8 @@ function sortMapData(sortType) {
             mapData[smallestIndex].latLong = temp.latLong;
             mapData[smallestIndex].content = temp.content;
             mapData[smallestIndex].rating = temp.rating;
+            mapData[smallestIndex].indicatedFromMapMarker = temp.indicatedFromMapMarker;
+            mapData[smallestIndex].visitedLink = temp.visitedLink;
         }
     }
 }
