@@ -116,9 +116,13 @@ $(function() {
             
             // TODO: clean this code up with better DOM management
             // refactor common code now shared in two places
+            var visitedLinkClass = "";
+            if (mapData[i].visitedLink === true) {
+                visitedLinkClass = "class='visited-link'";
+            }
             $("#searchResultsTable").append("<tr><td><img id='locationImage" + i +
-              "'><a id='locationLink" + i +
-              "' href='www.cnn.com'>" + nextMapData.title +
+              "'><a id='locationLink" + i + 
+              "' " + visitedLinkClass + " href='www.cnn.com'>" + nextMapData.title +
               "</a><button class='mapButton' id='mapButton" + i + 
               "' type='button'>Center</button>" + 
               "<button class='startFromHereButton' id='startFromHereButton" + i +
@@ -126,6 +130,11 @@ $(function() {
               "<button class='directionsButton' id='directionsButton" + i +
               "' type='button'>Directions</button>" +              
               "</td></tr>");
+            
+            // redispay check mark next to link so it is not lost from the sort 
+            if (nextMapData.indicatedFromMapMarker === true) {
+                 $('#locationImage' + i).prop('src', 'accept-Icon.png');
+             }
         }
         
         // need to dynamically bind the anchors, and this should work well
@@ -134,6 +143,7 @@ $(function() {
             $(this).addClass('visited-link');
             var linkId = this.id;
             var offset = linkId.substr(12);
+            mapData[offset].visitedLink = true;
             getDetailPlaces(offset);
             return false;
         });
@@ -149,6 +159,7 @@ $(function() {
         $('button.startFromHereButton').click(function() {
             var buttonId = this.id;
             var offset = buttonId.substr(19);
+            $("#restartSearchLocation").html("Tailor search from " + mapData[offset].title);
             
             getDetailAddress(offset);
         });
@@ -164,6 +175,7 @@ $(function() {
     
     $("#goPlacesButton").click(function() {
         // get our starting location
+        $("#restartSearchLocation").html('');
         var userStartChoice = $('input[name="startingPosition"]:checked').val();
         setStartLocationForDirections = true;
         if (userStartChoice === 'currentLocation') {

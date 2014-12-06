@@ -29,7 +29,11 @@
     height : 600px;
     border: 1px solid black;
 }
-#directionsPanel {
+#leftSide {
+    float : left;
+    width : 65%
+}
+#rightSide {
     float : right;
     width : 30%;
     height : 100%;
@@ -38,9 +42,15 @@
     margin-right: 10px;
     margin-left: 5px;            
 }
-#photos {
-    float : left;
-    width : 65%;
+#locationHours {
+    text-align: left;
+    border: 1px solid black;
+}
+#hoursTable th {
+    padding: 5px;
+}
+#hoursTable td {
+    padding: 5px;
 }
 h3 {
     display : inline;
@@ -66,6 +76,10 @@ div table input:hover {
 }
 div select:hover {
     background-color: lightblue;
+}
+#restartSearchLocation {
+    color : orangered;
+    font-weight : bold;
 }
 #yelpLocation {
     color: green;
